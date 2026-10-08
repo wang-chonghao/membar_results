@@ -1,0 +1,899 @@
+// GeLU Poly Unroll 12：实际底层硬件执行指令流的等效 CCE。
+// 依据同目录 CAModel instr_popped_log / instr_log 按静态 PC 还原。
+// 已显式补入编译器因寄存器溢出生成的保存、重载、mem_bar；保持硬件顺序与循环次数。
+// 动态 vector spill：写 160 / 读 160；predicate spill：写 0 / 读 0；mem_bar 320。
+// 这是硬件 VF 的计算/UB 访存/同步指令流的等价表达；标量地址效果折入指针和立即数，
+// 不表达标量流水时序或 GM wrapper。再次编译时编译器仍可能重新分配寄存器。
+// PC-ordered vector replay; scalar setup/spill timing is not modeled.
+// RV NORM_B8 stack stores are full 256-byte copies represented as FP32 NORM_B32.
+// input origin=0x0, output origin=0x10000, spill origin=0x3e000.
+__attribute__((always_inline)) inline [aicore] void replay_vf(
+    __ubuf__ float *input, __ubuf__ float *output, __ubuf__ float *spill) {
+    __VEC_SCOPE__ {
+        vector_bool mask = pset_b32(PAT_ALL);
+        vector_f32 r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31;
+        #pragma unroll(1)
+        for (int iteration = 0; iteration < 8; ++iteration) {
+            // PC 0x13b40288: RV_VLD
+            vlds(r0, input, 0 + 768 * iteration, NORM);
+            // PC 0x13b4028c: RV_VLD
+            vlds(r1, input, 64 + 768 * iteration, NORM);
+            // PC 0x13b40290: RV_VLD
+            vlds(r2, input, 128 + 768 * iteration, NORM);
+            // PC 0x13b40294: RV_VLD
+            vlds(r3, input, 192 + 768 * iteration, NORM);
+            // PC 0x13b40298: RV_VLD
+            vlds(r12, input, 256 + 768 * iteration, NORM);
+            // PC 0x13b4029c: RV_VLD
+            vlds(r13, input, 320 + 768 * iteration, NORM);
+            // PC 0x13b402a0: RV_VLD
+            vlds(r14, input, 384 + 768 * iteration, NORM);
+            // PC 0x13b402a4: RV_VLD
+            vlds(r15, input, 448 + 768 * iteration, NORM);
+            // PC 0x13b402a8: RV_VLD
+            vlds(r16, input, 512 + 768 * iteration, NORM);
+            // PC 0x13b402ac: RV_VLD
+            vlds(r17, input, 576 + 768 * iteration, NORM);
+            // PC 0x13b402b0: RV_VLD
+            vlds(r18, input, 640 + 768 * iteration, NORM);
+            // PC 0x13b402b4: RV_VLD
+            vlds(r19, input, 704 + 768 * iteration, NORM);
+            // PC 0x13b402b8: RV_VMULS
+            vmuls(r4, r0, 0.5f, mask);
+            // PC 0x13b402bc: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b402c0: RV_VSTI
+            vsts(r4, spill, 1976, NORM_B32, mask);
+            // PC 0x13b402c4: RV_VMULS
+            vmuls(r4, r1, 0.5f, mask);
+            // PC 0x13b402c8: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b402cc: RV_VSTI
+            vsts(r4, spill, 1912, NORM_B32, mask);
+            // PC 0x13b402d0: RV_VMULS
+            vmuls(r4, r2, 0.5f, mask);
+            // PC 0x13b402d4: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b402d8: RV_VSTI
+            vsts(r4, spill, 1848, NORM_B32, mask);
+            // PC 0x13b402dc: RV_VMULS
+            vmuls(r4, r3, 0.5f, mask);
+            // PC 0x13b402e0: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b402e4: RV_VSTI
+            vsts(r4, spill, 1784, NORM_B32, mask);
+            // PC 0x13b402e8: RV_VMULS
+            vmuls(r4, r12, 0.5f, mask);
+            // PC 0x13b402ec: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b402f0: RV_VSTI
+            vsts(r4, spill, 1720, NORM_B32, mask);
+            // PC 0x13b402f4: RV_VMULS
+            vmuls(r4, r13, 0.5f, mask);
+            // PC 0x13b402f8: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b402fc: RV_VSTI
+            vsts(r4, spill, 1656, NORM_B32, mask);
+            // PC 0x13b40300: RV_VMULS
+            vmuls(r4, r14, 0.5f, mask);
+            // PC 0x13b40304: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40308: RV_VSTI
+            vsts(r4, spill, 1592, NORM_B32, mask);
+            // PC 0x13b4030c: RV_VMULS
+            vmuls(r4, r15, 0.5f, mask);
+            // PC 0x13b40310: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40314: RV_VSTI
+            vsts(r4, spill, 1528, NORM_B32, mask);
+            // PC 0x13b40318: RV_VMULS
+            vmuls(r4, r16, 0.5f, mask);
+            // PC 0x13b4031c: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40320: RV_VSTI
+            vsts(r4, spill, 1464, NORM_B32, mask);
+            // PC 0x13b40324: RV_VMULS
+            vmuls(r4, r17, 0.5f, mask);
+            // PC 0x13b40328: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b4032c: RV_VSTI
+            vsts(r4, spill, 1400, NORM_B32, mask);
+            // PC 0x13b40330: RV_VMULS
+            vmuls(r4, r18, 0.5f, mask);
+            // PC 0x13b40334: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40338: RV_VSTI
+            vsts(r4, spill, 1336, NORM_B32, mask);
+            // PC 0x13b4033c: RV_VMULS
+            vmuls(r4, r19, 0.5f, mask);
+            // PC 0x13b40340: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40344: RV_VSTI
+            vsts(r4, spill, 1272, NORM_B32, mask);
+            // PC 0x13b40348: RV_VMULS
+            vmuls(r0, r0, 0.707099974155426f, mask);
+            // PC 0x13b4034c: RV_VMULS
+            vmuls(r1, r1, 0.707099974155426f, mask);
+            // PC 0x13b40350: RV_VMULS
+            vmuls(r2, r2, 0.707099974155426f, mask);
+            // PC 0x13b40354: RV_VMULS
+            vmuls(r3, r3, 0.707099974155426f, mask);
+            // PC 0x13b40358: RV_VMULS
+            vmuls(r12, r12, 0.707099974155426f, mask);
+            // PC 0x13b4035c: RV_VMULS
+            vmuls(r13, r13, 0.707099974155426f, mask);
+            // PC 0x13b40360: RV_VMULS
+            vmuls(r14, r14, 0.707099974155426f, mask);
+            // PC 0x13b40364: RV_VMULS
+            vmuls(r15, r15, 0.707099974155426f, mask);
+            // PC 0x13b40368: RV_VMULS
+            vmuls(r16, r16, 0.707099974155426f, mask);
+            // PC 0x13b4036c: RV_VMULS
+            vmuls(r17, r17, 0.707099974155426f, mask);
+            // PC 0x13b40370: RV_VMULS
+            vmuls(r18, r18, 0.707099974155426f, mask);
+            // PC 0x13b40374: RV_VMULS
+            vmuls(r19, r19, 0.707099974155426f, mask);
+            // PC 0x13b40378: RV_VMINS
+            vmins(r0, r0, 3.9200000762939453f, mask);
+            // PC 0x13b4037c: RV_VMINS
+            vmins(r1, r1, 3.9200000762939453f, mask);
+            // PC 0x13b40380: RV_VMINS
+            vmins(r2, r2, 3.9200000762939453f, mask);
+            // PC 0x13b40384: RV_VMINS
+            vmins(r3, r3, 3.9200000762939453f, mask);
+            // PC 0x13b40388: RV_VMINS
+            vmins(r12, r12, 3.9200000762939453f, mask);
+            // PC 0x13b4038c: RV_VMINS
+            vmins(r13, r13, 3.9200000762939453f, mask);
+            // PC 0x13b40390: RV_VMINS
+            vmins(r14, r14, 3.9200000762939453f, mask);
+            // PC 0x13b40394: RV_VMINS
+            vmins(r15, r15, 3.9200000762939453f, mask);
+            // PC 0x13b40398: RV_VMINS
+            vmins(r16, r16, 3.9200000762939453f, mask);
+            // PC 0x13b4039c: RV_VMINS
+            vmins(r17, r17, 3.9200000762939453f, mask);
+            // PC 0x13b403a0: RV_VMINS
+            vmins(r18, r18, 3.9200000762939453f, mask);
+            // PC 0x13b403a4: RV_VMINS
+            vmins(r19, r19, 3.9200000762939453f, mask);
+            // PC 0x13b403a8: RV_VMAXS
+            vmaxs(r24, r0, -3.9200000762939453f, mask);
+            // PC 0x13b403ac: RV_VMAXS
+            vmaxs(r25, r1, -3.9200000762939453f, mask);
+            // PC 0x13b403b0: RV_VMAXS
+            vmaxs(r26, r2, -3.9200000762939453f, mask);
+            // PC 0x13b403b4: RV_VMAXS
+            vmaxs(r27, r3, -3.9200000762939453f, mask);
+            // PC 0x13b403b8: RV_VMAXS
+            vmaxs(r28, r12, -3.9200000762939453f, mask);
+            // PC 0x13b403bc: RV_VMAXS
+            vmaxs(r29, r13, -3.9200000762939453f, mask);
+            // PC 0x13b403c0: RV_VMAXS
+            vmaxs(r30, r14, -3.9200000762939453f, mask);
+            // PC 0x13b403c4: RV_VMAXS
+            vmaxs(r31, r15, -3.9200000762939453f, mask);
+            // PC 0x13b403c8: RV_VMAXS
+            vmaxs(r0, r16, -3.9200000762939453f, mask);
+            // PC 0x13b403cc: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b403d0: RV_VSTI
+            vsts(r0, spill, 1208, NORM_B32, mask);
+            // PC 0x13b403d4: RV_VMAXS
+            vmaxs(r1, r17, -3.9200000762939453f, mask);
+            // PC 0x13b403d8: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b403dc: RV_VSTI
+            vsts(r1, spill, 1144, NORM_B32, mask);
+            // PC 0x13b403e0: RV_VMAXS
+            vmaxs(r2, r18, -3.9200000762939453f, mask);
+            // PC 0x13b403e4: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b403e8: RV_VSTI
+            vsts(r2, spill, 1080, NORM_B32, mask);
+            // PC 0x13b403ec: RV_VMAXS
+            vmaxs(r3, r19, -3.9200000762939453f, mask);
+            // PC 0x13b403fc: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40400: RV_VSTS
+            vsts(r3, spill, 1016, NORM_B32, mask);
+            // PC 0x13b40408: RV_VMUL
+            vmul(r12, r24, r24, mask);
+            // PC 0x13b4040c: RV_VMUL
+            vmul(r13, r25, r25, mask);
+            // PC 0x13b40410: RV_VMUL
+            vmul(r14, r26, r26, mask);
+            // PC 0x13b40414: RV_VMUL
+            vmul(r15, r27, r27, mask);
+            // PC 0x13b40418: RV_VMUL
+            vmul(r16, r28, r28, mask);
+            // PC 0x13b4041c: RV_VMUL
+            vmul(r17, r29, r29, mask);
+            // PC 0x13b40420: RV_VMUL
+            vmul(r18, r30, r30, mask);
+            // PC 0x13b40424: RV_VMUL
+            vmul(r19, r31, r31, mask);
+            // PC 0x13b40428: RV_VMUL
+            vmul(r20, r0, r0, mask);
+            // PC 0x13b4042c: RV_VMUL
+            vmul(r21, r1, r1, mask);
+            // PC 0x13b40430: RV_VMUL
+            vmul(r22, r2, r2, mask);
+            // PC 0x13b40434: RV_VMUL
+            vmul(r23, r3, r3, mask);
+            // PC 0x13b40438: RV_VMULS
+            vmuls(r0, r12, 0.5343999862670898f, mask);
+            // PC 0x13b4043c: RV_VMULS
+            vmuls(r1, r13, 0.5343999862670898f, mask);
+            // PC 0x13b40440: RV_VMULS
+            vmuls(r2, r14, 0.5343999862670898f, mask);
+            // PC 0x13b40444: RV_VMULS
+            vmuls(r3, r15, 0.5343999862670898f, mask);
+            // PC 0x13b40448: RV_VMULS
+            vmuls(r4, r16, 0.5343999862670898f, mask);
+            // PC 0x13b4044c: RV_VMULS
+            vmuls(r5, r17, 0.5343999862670898f, mask);
+            // PC 0x13b40450: RV_VMULS
+            vmuls(r6, r18, 0.5343999862670898f, mask);
+            // PC 0x13b40454: RV_VMULS
+            vmuls(r7, r19, 0.5343999862670898f, mask);
+            // PC 0x13b40458: RV_VMULS
+            vmuls(r8, r20, 0.5343999862670898f, mask);
+            // PC 0x13b4045c: RV_VMULS
+            vmuls(r9, r21, 0.5343999862670898f, mask);
+            // PC 0x13b40460: RV_VMULS
+            vmuls(r10, r22, 0.5343999862670898f, mask);
+            // PC 0x13b40464: RV_VMULS
+            vmuls(r11, r23, 0.5343999862670898f, mask);
+            // PC 0x13b40468: RV_VADDS
+            vadds(r0, r0, 7.551700115203857f, mask);
+            // PC 0x13b4046c: RV_VADDS
+            vadds(r1, r1, 7.551700115203857f, mask);
+            // PC 0x13b40470: RV_VADDS
+            vadds(r2, r2, 7.551700115203857f, mask);
+            // PC 0x13b40474: RV_VADDS
+            vadds(r3, r3, 7.551700115203857f, mask);
+            // PC 0x13b40478: RV_VADDS
+            vadds(r4, r4, 7.551700115203857f, mask);
+            // PC 0x13b4047c: RV_VADDS
+            vadds(r5, r5, 7.551700115203857f, mask);
+            // PC 0x13b40480: RV_VADDS
+            vadds(r6, r6, 7.551700115203857f, mask);
+            // PC 0x13b40484: RV_VADDS
+            vadds(r7, r7, 7.551700115203857f, mask);
+            // PC 0x13b40488: RV_VADDS
+            vadds(r8, r8, 7.551700115203857f, mask);
+            // PC 0x13b4048c: RV_VADDS
+            vadds(r9, r9, 7.551700115203857f, mask);
+            // PC 0x13b40490: RV_VADDS
+            vadds(r10, r10, 7.551700115203857f, mask);
+            // PC 0x13b40494: RV_VADDS
+            vadds(r11, r11, 7.551700115203857f, mask);
+            // PC 0x13b40498: RV_VMUL
+            vmul(r0, r0, r12, mask);
+            // PC 0x13b4049c: RV_VMUL
+            vmul(r1, r1, r13, mask);
+            // PC 0x13b404a0: RV_VMUL
+            vmul(r2, r2, r14, mask);
+            // PC 0x13b404a4: RV_VMUL
+            vmul(r3, r3, r15, mask);
+            // PC 0x13b404a8: RV_VMUL
+            vmul(r4, r4, r16, mask);
+            // PC 0x13b404ac: RV_VMUL
+            vmul(r5, r5, r17, mask);
+            // PC 0x13b404b0: RV_VMUL
+            vmul(r6, r6, r18, mask);
+            // PC 0x13b404b4: RV_VMUL
+            vmul(r7, r7, r19, mask);
+            // PC 0x13b404b8: RV_VMUL
+            vmul(r8, r8, r20, mask);
+            // PC 0x13b404bc: RV_VMUL
+            vmul(r9, r9, r21, mask);
+            // PC 0x13b404c0: RV_VMUL
+            vmul(r10, r10, r22, mask);
+            // PC 0x13b404c4: RV_VMUL
+            vmul(r11, r11, r23, mask);
+            // PC 0x13b404c8: RV_VADDS
+            vadds(r0, r0, 101.62808990478516f, mask);
+            // PC 0x13b404cc: RV_VADDS
+            vadds(r1, r1, 101.62808990478516f, mask);
+            // PC 0x13b404d0: RV_VADDS
+            vadds(r2, r2, 101.62808990478516f, mask);
+            // PC 0x13b404d4: RV_VADDS
+            vadds(r3, r3, 101.62808990478516f, mask);
+            // PC 0x13b404d8: RV_VADDS
+            vadds(r4, r4, 101.62808990478516f, mask);
+            // PC 0x13b404dc: RV_VADDS
+            vadds(r5, r5, 101.62808990478516f, mask);
+            // PC 0x13b404e0: RV_VADDS
+            vadds(r6, r6, 101.62808990478516f, mask);
+            // PC 0x13b404e4: RV_VADDS
+            vadds(r7, r7, 101.62808990478516f, mask);
+            // PC 0x13b404e8: RV_VADDS
+            vadds(r8, r8, 101.62808990478516f, mask);
+            // PC 0x13b404ec: RV_VADDS
+            vadds(r9, r9, 101.62808990478516f, mask);
+            // PC 0x13b404f0: RV_VADDS
+            vadds(r10, r10, 101.62808990478516f, mask);
+            // PC 0x13b404f4: RV_VADDS
+            vadds(r11, r11, 101.62808990478516f, mask);
+            // PC 0x13b404f8: RV_VMUL
+            vmul(r0, r0, r12, mask);
+            // PC 0x13b404fc: RV_VMUL
+            vmul(r1, r1, r13, mask);
+            // PC 0x13b40500: RV_VMUL
+            vmul(r2, r2, r14, mask);
+            // PC 0x13b40504: RV_VMUL
+            vmul(r3, r3, r15, mask);
+            // PC 0x13b40508: RV_VMUL
+            vmul(r4, r4, r16, mask);
+            // PC 0x13b4050c: RV_VMUL
+            vmul(r5, r5, r17, mask);
+            // PC 0x13b40510: RV_VMUL
+            vmul(r6, r6, r18, mask);
+            // PC 0x13b40514: RV_VMUL
+            vmul(r7, r7, r19, mask);
+            // PC 0x13b40518: RV_VMUL
+            vmul(r8, r8, r20, mask);
+            // PC 0x13b4051c: RV_VMUL
+            vmul(r9, r9, r21, mask);
+            // PC 0x13b40520: RV_VMUL
+            vmul(r10, r10, r22, mask);
+            // PC 0x13b40524: RV_VMUL
+            vmul(r11, r11, r23, mask);
+            // PC 0x13b40528: RV_VADDS
+            vadds(r0, r0, 1393.801513671875f, mask);
+            // PC 0x13b4052c: RV_VADDS
+            vadds(r1, r1, 1393.801513671875f, mask);
+            // PC 0x13b40530: RV_VADDS
+            vadds(r2, r2, 1393.801513671875f, mask);
+            // PC 0x13b40534: RV_VADDS
+            vadds(r3, r3, 1393.801513671875f, mask);
+            // PC 0x13b40538: RV_VADDS
+            vadds(r4, r4, 1393.801513671875f, mask);
+            // PC 0x13b4053c: RV_VADDS
+            vadds(r5, r5, 1393.801513671875f, mask);
+            // PC 0x13b40540: RV_VADDS
+            vadds(r6, r6, 1393.801513671875f, mask);
+            // PC 0x13b40544: RV_VADDS
+            vadds(r7, r7, 1393.801513671875f, mask);
+            // PC 0x13b40548: RV_VADDS
+            vadds(r8, r8, 1393.801513671875f, mask);
+            // PC 0x13b4054c: RV_VADDS
+            vadds(r9, r9, 1393.801513671875f, mask);
+            // PC 0x13b40550: RV_VADDS
+            vadds(r10, r10, 1393.801513671875f, mask);
+            // PC 0x13b40554: RV_VADDS
+            vadds(r11, r11, 1393.801513671875f, mask);
+            // PC 0x13b40558: RV_VMUL
+            vmul(r0, r0, r12, mask);
+            // PC 0x13b4055c: RV_VMUL
+            vmul(r1, r1, r13, mask);
+            // PC 0x13b40560: RV_VMUL
+            vmul(r2, r2, r14, mask);
+            // PC 0x13b40564: RV_VMUL
+            vmul(r3, r3, r15, mask);
+            // PC 0x13b40568: RV_VMUL
+            vmul(r4, r4, r16, mask);
+            // PC 0x13b4056c: RV_VMUL
+            vmul(r5, r5, r17, mask);
+            // PC 0x13b40570: RV_VMUL
+            vmul(r6, r6, r18, mask);
+            // PC 0x13b40574: RV_VMUL
+            vmul(r7, r7, r19, mask);
+            // PC 0x13b40578: RV_VMUL
+            vmul(r8, r8, r20, mask);
+            // PC 0x13b4057c: RV_VMUL
+            vmul(r9, r9, r21, mask);
+            // PC 0x13b40580: RV_VMUL
+            vmul(r10, r10, r22, mask);
+            // PC 0x13b40584: RV_VMUL
+            vmul(r11, r11, r23, mask);
+            // PC 0x13b40588: RV_VADDS
+            vadds(r0, r0, 5063.79150390625f, mask);
+            // PC 0x13b4058c: RV_VADDS
+            vadds(r1, r1, 5063.79150390625f, mask);
+            // PC 0x13b40590: RV_VADDS
+            vadds(r2, r2, 5063.79150390625f, mask);
+            // PC 0x13b40594: RV_VADDS
+            vadds(r3, r3, 5063.79150390625f, mask);
+            // PC 0x13b40598: RV_VADDS
+            vadds(r4, r4, 5063.79150390625f, mask);
+            // PC 0x13b4059c: RV_VADDS
+            vadds(r5, r5, 5063.79150390625f, mask);
+            // PC 0x13b405a0: RV_VADDS
+            vadds(r6, r6, 5063.79150390625f, mask);
+            // PC 0x13b405a4: RV_VADDS
+            vadds(r7, r7, 5063.79150390625f, mask);
+            // PC 0x13b405a8: RV_VADDS
+            vadds(r8, r8, 5063.79150390625f, mask);
+            // PC 0x13b405ac: RV_VADDS
+            vadds(r9, r9, 5063.79150390625f, mask);
+            // PC 0x13b405b0: RV_VADDS
+            vadds(r10, r10, 5063.79150390625f, mask);
+            // PC 0x13b405b4: RV_VADDS
+            vadds(r11, r11, 5063.79150390625f, mask);
+            // PC 0x13b405b8: RV_VMUL
+            vmul(r0, r0, r12, mask);
+            // PC 0x13b405bc: RV_VMUL
+            vmul(r1, r1, r13, mask);
+            // PC 0x13b405c0: RV_VMUL
+            vmul(r2, r2, r14, mask);
+            // PC 0x13b405c4: RV_VMUL
+            vmul(r3, r3, r15, mask);
+            // PC 0x13b405c8: RV_VMUL
+            vmul(r4, r4, r16, mask);
+            // PC 0x13b405cc: RV_VMUL
+            vmul(r5, r5, r17, mask);
+            // PC 0x13b405d0: RV_VMUL
+            vmul(r6, r6, r18, mask);
+            // PC 0x13b405d4: RV_VMUL
+            vmul(r7, r7, r19, mask);
+            // PC 0x13b405d8: RV_VMUL
+            vmul(r8, r8, r20, mask);
+            // PC 0x13b405dc: RV_VMUL
+            vmul(r9, r9, r21, mask);
+            // PC 0x13b405e0: RV_VMUL
+            vmul(r10, r10, r22, mask);
+            // PC 0x13b405e4: RV_VMUL
+            vmul(r11, r11, r23, mask);
+            // PC 0x13b405e8: RV_VADDS
+            vadds(r0, r0, 29639.384765625f, mask);
+            // PC 0x13b405ec: RV_VADDS
+            vadds(r1, r1, 29639.384765625f, mask);
+            // PC 0x13b405f0: RV_VADDS
+            vadds(r2, r2, 29639.384765625f, mask);
+            // PC 0x13b405f4: RV_VADDS
+            vadds(r3, r3, 29639.384765625f, mask);
+            // PC 0x13b405f8: RV_VADDS
+            vadds(r4, r4, 29639.384765625f, mask);
+            // PC 0x13b405fc: RV_VADDS
+            vadds(r5, r5, 29639.384765625f, mask);
+            // PC 0x13b40600: RV_VADDS
+            vadds(r6, r6, 29639.384765625f, mask);
+            // PC 0x13b40604: RV_VADDS
+            vadds(r7, r7, 29639.384765625f, mask);
+            // PC 0x13b40608: RV_VADDS
+            vadds(r8, r8, 29639.384765625f, mask);
+            // PC 0x13b4060c: RV_VADDS
+            vadds(r9, r9, 29639.384765625f, mask);
+            // PC 0x13b40610: RV_VADDS
+            vadds(r10, r10, 29639.384765625f, mask);
+            // PC 0x13b40614: RV_VADDS
+            vadds(r11, r11, 29639.384765625f, mask);
+            // PC 0x13b40618: RV_VMUL
+            vmul(r24, r0, r24, mask);
+            // PC 0x13b4061c: RV_VMUL
+            vmul(r25, r1, r25, mask);
+            // PC 0x13b40620: RV_VMUL
+            vmul(r26, r2, r26, mask);
+            // PC 0x13b40624: RV_VMUL
+            vmul(r27, r3, r27, mask);
+            // PC 0x13b40628: RV_VMUL
+            vmul(r28, r4, r28, mask);
+            // PC 0x13b4062c: RV_VMUL
+            vmul(r29, r5, r29, mask);
+            // PC 0x13b40630: RV_VMUL
+            vmul(r30, r6, r30, mask);
+            // PC 0x13b40634: RV_VMUL
+            vmul(r31, r7, r31, mask);
+            // PC 0x13b40638: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b4063c: RV_VLDI
+            vlds(r0, spill, 1208, NORM);
+            // PC 0x13b40640: RV_VMUL
+            vmul(r0, r8, r0, mask);
+            // PC 0x13b40644: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40648: RV_VSTI
+            vsts(r0, spill, 1208, NORM_B32, mask);
+            // PC 0x13b4064c: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40650: RV_VLDI
+            vlds(r0, spill, 1144, NORM);
+            // PC 0x13b40654: RV_VMUL
+            vmul(r0, r9, r0, mask);
+            // PC 0x13b40658: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b4065c: RV_VSTI
+            vsts(r0, spill, 1144, NORM_B32, mask);
+            // PC 0x13b40660: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40664: RV_VLDI
+            vlds(r0, spill, 1080, NORM);
+            // PC 0x13b40668: RV_VMUL
+            vmul(r0, r10, r0, mask);
+            // PC 0x13b4066c: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b40670: RV_VSTI
+            vsts(r0, spill, 1080, NORM_B32, mask);
+            // PC 0x13b40680: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40684: RV_VLDS
+            vlds(r0, spill, 1016, NORM);
+            // PC 0x13b4068c: RV_VMUL
+            vmul(r0, r11, r0, mask);
+            // PC 0x13b4069c: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b406a0: RV_VSTS
+            vsts(r0, spill, 1016, NORM_B32, mask);
+            // PC 0x13b406a8: RV_VADDS
+            vadds(r4, r12, 31.212858200073242f, mask);
+            // PC 0x13b406ac: RV_VADDS
+            vadds(r5, r13, 31.212858200073242f, mask);
+            // PC 0x13b406b0: RV_VADDS
+            vadds(r6, r14, 31.212858200073242f, mask);
+            // PC 0x13b406b4: RV_VADDS
+            vadds(r7, r15, 31.212858200073242f, mask);
+            // PC 0x13b406b8: RV_VADDS
+            vadds(r8, r16, 31.212858200073242f, mask);
+            // PC 0x13b406bc: RV_VADDS
+            vadds(r9, r17, 31.212858200073242f, mask);
+            // PC 0x13b406c0: RV_VADDS
+            vadds(r10, r18, 31.212858200073242f, mask);
+            // PC 0x13b406c4: RV_VADDS
+            vadds(r11, r19, 31.212858200073242f, mask);
+            // PC 0x13b406c8: RV_VADDS
+            vadds(r0, r20, 31.212858200073242f, mask);
+            // PC 0x13b406cc: RV_VADDS
+            vadds(r1, r21, 31.212858200073242f, mask);
+            // PC 0x13b406d0: RV_VADDS
+            vadds(r2, r22, 31.212858200073242f, mask);
+            // PC 0x13b406d4: RV_VADDS
+            vadds(r3, r23, 31.212858200073242f, mask);
+            // PC 0x13b406d8: RV_VMUL
+            vmul(r4, r4, r12, mask);
+            // PC 0x13b406dc: RV_VMUL
+            vmul(r5, r5, r13, mask);
+            // PC 0x13b406e0: RV_VMUL
+            vmul(r6, r6, r14, mask);
+            // PC 0x13b406e4: RV_VMUL
+            vmul(r7, r7, r15, mask);
+            // PC 0x13b406e8: RV_VMUL
+            vmul(r8, r8, r16, mask);
+            // PC 0x13b406ec: RV_VMUL
+            vmul(r9, r9, r17, mask);
+            // PC 0x13b406f0: RV_VMUL
+            vmul(r10, r10, r18, mask);
+            // PC 0x13b406f4: RV_VMUL
+            vmul(r11, r11, r19, mask);
+            // PC 0x13b406f8: RV_VMUL
+            vmul(r0, r0, r20, mask);
+            // PC 0x13b406fc: RV_VMUL
+            vmul(r1, r1, r21, mask);
+            // PC 0x13b40700: RV_VMUL
+            vmul(r2, r2, r22, mask);
+            // PC 0x13b40704: RV_VMUL
+            vmul(r3, r3, r23, mask);
+            // PC 0x13b40708: RV_VADDS
+            vadds(r4, r4, 308.56964111328125f, mask);
+            // PC 0x13b4070c: RV_VADDS
+            vadds(r5, r5, 308.56964111328125f, mask);
+            // PC 0x13b40710: RV_VADDS
+            vadds(r6, r6, 308.56964111328125f, mask);
+            // PC 0x13b40714: RV_VADDS
+            vadds(r7, r7, 308.56964111328125f, mask);
+            // PC 0x13b40718: RV_VADDS
+            vadds(r8, r8, 308.56964111328125f, mask);
+            // PC 0x13b4071c: RV_VADDS
+            vadds(r9, r9, 308.56964111328125f, mask);
+            // PC 0x13b40720: RV_VADDS
+            vadds(r10, r10, 308.56964111328125f, mask);
+            // PC 0x13b40724: RV_VADDS
+            vadds(r11, r11, 308.56964111328125f, mask);
+            // PC 0x13b40728: RV_VADDS
+            vadds(r0, r0, 308.56964111328125f, mask);
+            // PC 0x13b4072c: RV_VADDS
+            vadds(r1, r1, 308.56964111328125f, mask);
+            // PC 0x13b40730: RV_VADDS
+            vadds(r2, r2, 308.56964111328125f, mask);
+            // PC 0x13b40734: RV_VADDS
+            vadds(r3, r3, 308.56964111328125f, mask);
+            // PC 0x13b40738: RV_VMUL
+            vmul(r4, r4, r12, mask);
+            // PC 0x13b4073c: RV_VMUL
+            vmul(r5, r5, r13, mask);
+            // PC 0x13b40740: RV_VMUL
+            vmul(r6, r6, r14, mask);
+            // PC 0x13b40744: RV_VMUL
+            vmul(r7, r7, r15, mask);
+            // PC 0x13b40748: RV_VMUL
+            vmul(r8, r8, r16, mask);
+            // PC 0x13b4074c: RV_VMUL
+            vmul(r9, r9, r17, mask);
+            // PC 0x13b40750: RV_VMUL
+            vmul(r10, r10, r18, mask);
+            // PC 0x13b40754: RV_VMUL
+            vmul(r11, r11, r19, mask);
+            // PC 0x13b40758: RV_VMUL
+            vmul(r0, r0, r20, mask);
+            // PC 0x13b4075c: RV_VMUL
+            vmul(r1, r1, r21, mask);
+            // PC 0x13b40760: RV_VMUL
+            vmul(r2, r2, r22, mask);
+            // PC 0x13b40764: RV_VMUL
+            vmul(r3, r3, r23, mask);
+            // PC 0x13b40768: RV_VADDS
+            vadds(r4, r4, 3023.124755859375f, mask);
+            // PC 0x13b4076c: RV_VADDS
+            vadds(r5, r5, 3023.124755859375f, mask);
+            // PC 0x13b40770: RV_VADDS
+            vadds(r6, r6, 3023.124755859375f, mask);
+            // PC 0x13b40774: RV_VADDS
+            vadds(r7, r7, 3023.124755859375f, mask);
+            // PC 0x13b40778: RV_VADDS
+            vadds(r8, r8, 3023.124755859375f, mask);
+            // PC 0x13b4077c: RV_VADDS
+            vadds(r9, r9, 3023.124755859375f, mask);
+            // PC 0x13b40780: RV_VADDS
+            vadds(r10, r10, 3023.124755859375f, mask);
+            // PC 0x13b40784: RV_VADDS
+            vadds(r11, r11, 3023.124755859375f, mask);
+            // PC 0x13b40788: RV_VADDS
+            vadds(r0, r0, 3023.124755859375f, mask);
+            // PC 0x13b4078c: RV_VADDS
+            vadds(r1, r1, 3023.124755859375f, mask);
+            // PC 0x13b40790: RV_VADDS
+            vadds(r2, r2, 3023.124755859375f, mask);
+            // PC 0x13b40794: RV_VADDS
+            vadds(r3, r3, 3023.124755859375f, mask);
+            // PC 0x13b40798: RV_VMUL
+            vmul(r4, r4, r12, mask);
+            // PC 0x13b4079c: RV_VMUL
+            vmul(r5, r5, r13, mask);
+            // PC 0x13b407a0: RV_VMUL
+            vmul(r6, r6, r14, mask);
+            // PC 0x13b407a4: RV_VMUL
+            vmul(r7, r7, r15, mask);
+            // PC 0x13b407a8: RV_VMUL
+            vmul(r8, r8, r16, mask);
+            // PC 0x13b407ac: RV_VMUL
+            vmul(r9, r9, r17, mask);
+            // PC 0x13b407b0: RV_VMUL
+            vmul(r10, r10, r18, mask);
+            // PC 0x13b407b4: RV_VMUL
+            vmul(r11, r11, r19, mask);
+            // PC 0x13b407b8: RV_VMUL
+            vmul(r0, r0, r20, mask);
+            // PC 0x13b407bc: RV_VMUL
+            vmul(r1, r1, r21, mask);
+            // PC 0x13b407c0: RV_VMUL
+            vmul(r2, r2, r22, mask);
+            // PC 0x13b407c4: RV_VMUL
+            vmul(r3, r3, r23, mask);
+            // PC 0x13b407c8: RV_VADDS
+            vadds(r4, r4, 14243.3662109375f, mask);
+            // PC 0x13b407cc: RV_VADDS
+            vadds(r5, r5, 14243.3662109375f, mask);
+            // PC 0x13b407d0: RV_VADDS
+            vadds(r6, r6, 14243.3662109375f, mask);
+            // PC 0x13b407d4: RV_VADDS
+            vadds(r7, r7, 14243.3662109375f, mask);
+            // PC 0x13b407d8: RV_VADDS
+            vadds(r8, r8, 14243.3662109375f, mask);
+            // PC 0x13b407dc: RV_VADDS
+            vadds(r9, r9, 14243.3662109375f, mask);
+            // PC 0x13b407e0: RV_VADDS
+            vadds(r10, r10, 14243.3662109375f, mask);
+            // PC 0x13b407e4: RV_VADDS
+            vadds(r11, r11, 14243.3662109375f, mask);
+            // PC 0x13b407e8: RV_VADDS
+            vadds(r0, r0, 14243.3662109375f, mask);
+            // PC 0x13b407ec: RV_VADDS
+            vadds(r1, r1, 14243.3662109375f, mask);
+            // PC 0x13b407f0: RV_VADDS
+            vadds(r2, r2, 14243.3662109375f, mask);
+            // PC 0x13b407f4: RV_VADDS
+            vadds(r3, r3, 14243.3662109375f, mask);
+            // PC 0x13b407f8: RV_VMUL
+            vmul(r4, r4, r12, mask);
+            // PC 0x13b407fc: RV_VMUL
+            vmul(r5, r5, r13, mask);
+            // PC 0x13b40800: RV_VMUL
+            vmul(r6, r6, r14, mask);
+            // PC 0x13b40804: RV_VMUL
+            vmul(r7, r7, r15, mask);
+            // PC 0x13b40808: RV_VMUL
+            vmul(r8, r8, r16, mask);
+            // PC 0x13b4080c: RV_VMUL
+            vmul(r9, r9, r17, mask);
+            // PC 0x13b40810: RV_VMUL
+            vmul(r10, r10, r18, mask);
+            // PC 0x13b40814: RV_VMUL
+            vmul(r11, r11, r19, mask);
+            // PC 0x13b40818: RV_VMUL
+            vmul(r0, r0, r20, mask);
+            // PC 0x13b4081c: RV_VMUL
+            vmul(r1, r1, r21, mask);
+            // PC 0x13b40820: RV_VMUL
+            vmul(r2, r2, r22, mask);
+            // PC 0x13b40824: RV_VMUL
+            vmul(r3, r3, r23, mask);
+            // PC 0x13b40828: RV_VADDS
+            vadds(r4, r4, 26267.224609375f, mask);
+            // PC 0x13b4082c: RV_VADDS
+            vadds(r5, r5, 26267.224609375f, mask);
+            // PC 0x13b40830: RV_VADDS
+            vadds(r6, r6, 26267.224609375f, mask);
+            // PC 0x13b40834: RV_VADDS
+            vadds(r7, r7, 26267.224609375f, mask);
+            // PC 0x13b40838: RV_VADDS
+            vadds(r8, r8, 26267.224609375f, mask);
+            // PC 0x13b4083c: RV_VADDS
+            vadds(r9, r9, 26267.224609375f, mask);
+            // PC 0x13b40840: RV_VADDS
+            vadds(r10, r10, 26267.224609375f, mask);
+            // PC 0x13b40844: RV_VADDS
+            vadds(r11, r11, 26267.224609375f, mask);
+            // PC 0x13b40848: RV_VADDS
+            vadds(r0, r0, 26267.224609375f, mask);
+            // PC 0x13b4084c: RV_VADDS
+            vadds(r1, r1, 26267.224609375f, mask);
+            // PC 0x13b40850: RV_VADDS
+            vadds(r2, r2, 26267.224609375f, mask);
+            // PC 0x13b40854: RV_VADDS
+            vadds(r3, r3, 26267.224609375f, mask);
+            // PC 0x13b40858: RV_VDIV
+            vdiv(r4, r24, r4, mask);
+            // PC 0x13b4085c: RV_VDIV
+            vdiv(r5, r25, r5, mask);
+            // PC 0x13b40860: RV_VDIV
+            vdiv(r6, r26, r6, mask);
+            // PC 0x13b40864: RV_VDIV
+            vdiv(r7, r27, r7, mask);
+            // PC 0x13b40868: RV_VDIV
+            vdiv(r8, r28, r8, mask);
+            // PC 0x13b4086c: RV_VDIV
+            vdiv(r9, r29, r9, mask);
+            // PC 0x13b40870: RV_VDIV
+            vdiv(r10, r30, r10, mask);
+            // PC 0x13b40874: RV_VDIV
+            vdiv(r11, r31, r11, mask);
+            // PC 0x13b40878: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b4087c: RV_VLDI
+            vlds(r12, spill, 1208, NORM);
+            // PC 0x13b40880: RV_VDIV
+            vdiv(r0, r12, r0, mask);
+            // PC 0x13b40884: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40888: RV_VLDI
+            vlds(r12, spill, 1144, NORM);
+            // PC 0x13b4088c: RV_VDIV
+            vdiv(r1, r12, r1, mask);
+            // PC 0x13b40890: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40894: RV_VLDI
+            vlds(r12, spill, 1080, NORM);
+            // PC 0x13b40898: RV_VDIV
+            vdiv(r2, r12, r2, mask);
+            // PC 0x13b408a8: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b408ac: RV_VLDS
+            vlds(r12, spill, 1016, NORM);
+            // PC 0x13b408b4: RV_VDIV
+            vdiv(r3, r12, r3, mask);
+            // PC 0x13b408b8: RV_VADDS
+            vadds(r4, r4, 1.0f, mask);
+            // PC 0x13b408bc: RV_VADDS
+            vadds(r5, r5, 1.0f, mask);
+            // PC 0x13b408c0: RV_VADDS
+            vadds(r6, r6, 1.0f, mask);
+            // PC 0x13b408c4: RV_VADDS
+            vadds(r7, r7, 1.0f, mask);
+            // PC 0x13b408c8: RV_VADDS
+            vadds(r8, r8, 1.0f, mask);
+            // PC 0x13b408cc: RV_VADDS
+            vadds(r9, r9, 1.0f, mask);
+            // PC 0x13b408d0: RV_VADDS
+            vadds(r10, r10, 1.0f, mask);
+            // PC 0x13b408d4: RV_VADDS
+            vadds(r11, r11, 1.0f, mask);
+            // PC 0x13b408d8: RV_VADDS
+            vadds(r0, r0, 1.0f, mask);
+            // PC 0x13b408dc: RV_VADDS
+            vadds(r1, r1, 1.0f, mask);
+            // PC 0x13b408e0: RV_VADDS
+            vadds(r2, r2, 1.0f, mask);
+            // PC 0x13b408e4: RV_VADDS
+            vadds(r3, r3, 1.0f, mask);
+            // PC 0x13b408e8: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b408ec: RV_VLDI
+            vlds(r12, spill, 1976, NORM);
+            // PC 0x13b408f0: RV_VMUL
+            vmul(r4, r4, r12, mask);
+            // PC 0x13b408f4: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b408f8: RV_VLDI
+            vlds(r12, spill, 1912, NORM);
+            // PC 0x13b408fc: RV_VMUL
+            vmul(r5, r5, r12, mask);
+            // PC 0x13b40900: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40904: RV_VLDI
+            vlds(r12, spill, 1848, NORM);
+            // PC 0x13b40908: RV_VMUL
+            vmul(r6, r6, r12, mask);
+            // PC 0x13b4090c: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40910: RV_VLDI
+            vlds(r12, spill, 1784, NORM);
+            // PC 0x13b40914: RV_VMUL
+            vmul(r7, r7, r12, mask);
+            // PC 0x13b40918: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b4091c: RV_VLDI
+            vlds(r12, spill, 1720, NORM);
+            // PC 0x13b40920: RV_VMUL
+            vmul(r8, r8, r12, mask);
+            // PC 0x13b40924: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40928: RV_VLDI
+            vlds(r12, spill, 1656, NORM);
+            // PC 0x13b4092c: RV_VMUL
+            vmul(r9, r9, r12, mask);
+            // PC 0x13b40930: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40934: RV_VLDI
+            vlds(r12, spill, 1592, NORM);
+            // PC 0x13b40938: RV_VMUL
+            vmul(r10, r10, r12, mask);
+            // PC 0x13b4093c: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40940: RV_VLDI
+            vlds(r12, spill, 1528, NORM);
+            // PC 0x13b40944: RV_VMUL
+            vmul(r11, r11, r12, mask);
+            // PC 0x13b40948: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b4094c: RV_VLDI
+            vlds(r12, spill, 1464, NORM);
+            // PC 0x13b40950: RV_VMUL
+            vmul(r0, r0, r12, mask);
+            // PC 0x13b40954: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40958: RV_VLDI
+            vlds(r12, spill, 1400, NORM);
+            // PC 0x13b4095c: RV_VMUL
+            vmul(r1, r1, r12, mask);
+            // PC 0x13b40960: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40964: RV_VLDI
+            vlds(r12, spill, 1336, NORM);
+            // PC 0x13b40968: RV_VMUL
+            vmul(r2, r2, r12, mask);
+            // PC 0x13b4096c: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b40970: RV_VLDI
+            vlds(r12, spill, 1272, NORM);
+            // PC 0x13b40974: RV_VMUL
+            vmul(r3, r3, r12, mask);
+            // PC 0x13b40978: RV_VST
+            vsts(r4, output, 0 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b4097c: RV_VST
+            vsts(r5, output, 64 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b40980: RV_VST
+            vsts(r6, output, 128 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b40984: RV_VST
+            vsts(r7, output, 192 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b40988: RV_VST
+            vsts(r8, output, 256 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b4098c: RV_VST
+            vsts(r9, output, 320 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b40990: RV_VST
+            vsts(r10, output, 384 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b40994: RV_VST
+            vsts(r11, output, 448 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b40998: RV_VST
+            vsts(r0, output, 512 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b4099c: RV_VST
+            vsts(r1, output, 576 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b409a0: RV_VST
+            vsts(r2, output, 640 + 768 * iteration, NORM_B32, mask);
+            // PC 0x13b409a4: RV_VST
+            vsts(r3, output, 704 + 768 * iteration, NORM_B32, mask);
+        }
+    }
+}

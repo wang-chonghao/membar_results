@@ -1,0 +1,182 @@
+{
+  "unroll": 1,
+  "iterations": 48,
+  "elements": 3072,
+  "full_groups": 48,
+  "remainder": 0,
+  "compile_returncode": 0,
+  "compile_seconds": 1.454471642995486,
+  "unroll_applied": true,
+  "build_returncode": 0,
+  "camodel_returncode": 0,
+  "camodel_wall_seconds": 61.84694691000186,
+  "vf_cycles": 516,
+  "opcode_counts": {
+    "PSET": 1,
+    "SEND": 3,
+    "VADD": 144,
+    "VDIV": 48,
+    "VLD": 192,
+    "VLDI": 6,
+    "VMUL": 288,
+    "VSQRT": 48,
+    "VST": 144,
+    "VSUB": 48
+  },
+  "load_count": 198,
+  "store_count": 144,
+  "extra_loads": 0,
+  "extra_stores": 0,
+  "membar_count": 0,
+  "architectural_vregs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "golden_pass": true,
+  "vfsim_returncode": 0,
+  "vfsim_cycles": 461,
+  "vfsim_wall_seconds": 1.555880640000396,
+  "spill_loads_by_address": 0,
+  "spill_stores_by_address": 0,
+  "spill_min_address": null,
+  "spill_max_address": null,
+  "vfsim_dynamic_opcode_counts": {
+    "VLDS": 198,
+    "VMUL": 288,
+    "VADD": 144,
+    "VSTS": 144,
+    "VSQRT": 48,
+    "VDIV": 48,
+    "VSUB": 48
+  },
+  "vfsim_fallback_warnings": [
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VADD.fp32",
+      "consumer": "VSQRT.fp32",
+      "producer_latency": 7,
+      "used_default": 4,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VSQRT.fp32",
+      "consumer": "VADD.fp32",
+      "producer_latency": 9,
+      "used_default": 6,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMUL.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 8,
+      "cur_latency": 9,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VADD.fp32",
+      "prev_latency": 9,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VADD.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 7,
+      "cur_latency": 9,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDIV.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 17,
+      "cur_latency": 9,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VMUL.fp32",
+      "prev_latency": 9,
+      "cur_latency": 8,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VDIV.fp32",
+      "prev_latency": 9,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VSUB.fp32",
+      "prev_latency": 9,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSUB.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 7,
+      "cur_latency": 9,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "unsupported_isa_op",
+      "op": "VSQRT",
+      "form": "fp32",
+      "used_defaults": {
+        "latency": 9,
+        "pipeline_startup_cost": 0,
+        "pipeline_drain_cost": 0,
+        "throughput": 1
+      },
+      "preserved_structure": {
+        "op_class": "COMPUTE",
+        "EXU": "ALU",
+        "eligible_exus": [
+          "EXU0",
+          "EXU1"
+        ]
+      },
+      "count": 1
+    }
+  ],
+  "vfsim_min_idu_visible_free_pregs": 0
+}

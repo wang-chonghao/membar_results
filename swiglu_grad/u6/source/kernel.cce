@@ -1,0 +1,59 @@
+#ifdef __CCE_KT_TEST__
+#define __aicore__
+#else
+#define __aicore__ [aicore]
+#endif
+
+__attribute__((always_inline)) inline [aicore] void swiglu_grad_vf(
+    __ubuf__ float *memA, __ubuf__ float *memB, __ubuf__ float *memGrad,
+    __ubuf__ float *memDA, __ubuf__ float *memDB, int repeat_times)
+{
+    __VEC_SCOPE__ {
+        vector_bool mask = pset_b32(PAT_ALL);
+        vector_f32 srcA, srcB, grad, dstA, dstB, tempReg, one;
+        vdup(one, 1.0f, mask, MODE_ZEROING);
+        #pragma unroll(6)
+        for (uint16_t i = 0; i < uint16_t(repeat_times); ++i) {
+            vlds(srcA, memA, 64 * i, NORM);
+            vlds(srcB, memB, 64 * i, NORM);
+            vlds(grad, memGrad, 64 * i, NORM);
+            vmuls(dstB, srcA, -1.0f, mask);
+            vexp(dstB, dstB, mask);
+            vadds(dstB, dstB, 1.0f, mask);
+            vdiv(dstB, one, dstB, mask);
+            vmuls(dstA, dstB, -1.0f, mask);
+            vadds(dstA, dstA, 1.0f, mask);
+            vmul(dstA, dstA, srcA, mask);
+            vadds(dstA, dstA, 1.0f, mask);
+            vmul(tempReg, grad, dstB, mask);
+            vmul(dstA, dstA, tempReg, mask);
+            vmul(dstA, dstA, srcB, mask);
+            vmul(dstB, dstB, grad, mask);
+            vmul(dstB, dstB, srcA, mask);
+            vsts(dstA, memDA, 64 * i, NORM_B32, mask);
+            vsts(dstB, memDB, 64 * i, NORM_B32, mask);
+        }
+    }
+}
+
+extern "C" __global__ __aicore__ void swiglu_grad_kernel(
+    __gm__ float *inputA, __gm__ float *inputB, __gm__ float *inputGrad,
+    __gm__ float *outputDA, __gm__ float *outputDB)
+{
+    __ubuf__ float *memA = (__ubuf__ float *)get_imm(0x0);
+    __ubuf__ float *memB = (__ubuf__ float *)get_imm(0x8000);
+    __ubuf__ float *memGrad = (__ubuf__ float *)get_imm(0x10000);
+    __ubuf__ float *memDA = (__ubuf__ float *)get_imm(0x18000);
+    __ubuf__ float *memDB = (__ubuf__ float *)get_imm(0x20000);
+    int repeat_times = 96;
+    copy_gm_to_ubuf_align_v2(memA, inputA, 0, 1, repeat_times * 64 * 4, 0, 0, 0, 0, 0, 0);
+    copy_gm_to_ubuf_align_v2(memB, inputB, 0, 1, repeat_times * 64 * 4, 0, 0, 0, 0, 0, 0);
+    copy_gm_to_ubuf_align_v2(memGrad, inputGrad, 0, 1, repeat_times * 64 * 4, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    swiglu_grad_vf(memA, memB, memGrad, memDA, memDB, repeat_times);
+    pipe_barrier(PIPE_ALL);
+    copy_ubuf_to_gm_align_v2(outputDA, memDA, 0, 1, repeat_times * 64 * 4, 0, 0, 0);
+    copy_ubuf_to_gm_align_v2(outputDB, memDB, 0, 1, repeat_times * 64 * 4, 0, 0, 0);
+    pipe_barrier(PIPE_ALL);
+}

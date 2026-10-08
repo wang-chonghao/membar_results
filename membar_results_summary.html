@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A5 Membar 实验结果汇总</title>
+  <link rel="stylesheet" href="report.css">
+  <script defer src="assets/chart.umd.js"></script>
+  <script defer src="data.js"></script>
+  <script defer src="report.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="#overview" class="brand">VF Simulator<span>A5 Membar 实验</span></a>
+    <nav aria-label="实验导航" id="case-nav"></nav>
+    <div class="sidebar-footer">
+      <a href="comparison.csv" download>下载结果 CSV</a>
+      <a href="manifest.json">源码与日志校验清单</a>
+      <span>历史记录归档 · 2026-10-08</span>
+    </div>
+  </aside>
+  <main id="main">
+    <header class="page-header">
+      <div><p class="eyebrow">A5 / DV100 · FP32 · CAModel + VfSim</p><h1 id="page-title">Membar 实验结果</h1></div>
+      <span class="archive-badge">6 个 case · 25 个版本</span>
+    </header>
+    <div id="view" aria-live="polite"></div>
+    <footer class="page-footer">
+      <p>全局预测精度 = (1 − |VfSim − CAModel| / CAModel) × 100%。局部依赖是在假设硬件支持 UB 地址识别时的模型内 A/B；加速比按同一指令流的全局周期 / 局部周期计算。</p>
+      <p>本页整理既有实验，未重跑 CAModel 或重新校准模型。不同实验的参数版本与建模范围见各版本证据记录。原始实验目录保留。</p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,292 @@
+// AdamApplyOne Unroll 6：实际底层硬件执行指令流的等效 CCE。
+// 依据同目录 CAModel instr_popped_log / instr_log 按静态 PC 还原。
+// 已显式补入编译器因寄存器溢出生成的保存、重载、mem_bar；保持硬件顺序与循环次数。
+// 动态 vector spill：写 32 / 读 32；predicate spill：写 0 / 读 0；mem_bar 64。
+// 这是硬件 VF 的计算/UB 访存/同步指令流的等价表达；标量地址效果折入指针和立即数，
+// 不表达标量流水时序或 GM wrapper。再次编译时编译器仍可能重新分配寄存器。
+// AdamApplyOne FP32 I48/U6: PC-ordered vector/LSU/membar replay.
+// Simulator input, not an assembly round trip: recompilation can change register allocation.
+// Scalar instructions have their address effects resolved; scalar execution time excluded.
+// Stack byte copies represented as full 256-byte FP32 accesses; offsets in FP32 elements.
+__attribute__((always_inline)) inline [aicore] void replay_vf(
+    __ubuf__ float *memG, __ubuf__ float *memV, __ubuf__ float *memM, __ubuf__ float *memP, __ubuf__ float *outV, __ubuf__ float *outM, __ubuf__ float *outP, __ubuf__ float *lr, __ubuf__ float *c0, __ubuf__ float *c1, __ubuf__ float *c2, __ubuf__ float *c3, __ubuf__ float *eps, __ubuf__ float *spill) {
+    __VEC_SCOPE__ {
+        vector_bool mask = pset_b32(PAT_ALL);
+        vector_f32 r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31;
+            // PC 0x13b44314: RV_VLDI
+            vlds(r9, lr, 0, BRC_B32);
+            // PC 0x13b44318: RV_VLDI
+            vlds(r1, c0, 0, BRC_B32);
+            // PC 0x13b4431c: RV_VLDI
+            vlds(r2, c1, 0, BRC_B32);
+            // PC 0x13b44320: RV_VLDI
+            vlds(r3, c2, 0, BRC_B32);
+            // PC 0x13b44324: RV_VLDI
+            vlds(r4, c3, 0, BRC_B32);
+            // PC 0x13b44328: RV_VLDI
+            vlds(r5, eps, 0, BRC_B32);
+        #pragma unroll(1)
+        for (int iteration=0; iteration<8; ++iteration) {
+            // PC 0x13b4439c: RV_VLD
+            vlds(r12, memG, 0 + 384 * iteration, NORM);
+            // PC 0x13b443a0: RV_VLD
+            vlds(r13, memG, 64 + 384 * iteration, NORM);
+            // PC 0x13b443a4: RV_VLD
+            vlds(r14, memG, 128 + 384 * iteration, NORM);
+            // PC 0x13b443a8: RV_VLD
+            vlds(r15, memG, 192 + 384 * iteration, NORM);
+            // PC 0x13b443ac: RV_VLD
+            vlds(r16, memG, 256 + 384 * iteration, NORM);
+            // PC 0x13b443b0: RV_VLD
+            vlds(r17, memG, 320 + 384 * iteration, NORM);
+            // PC 0x13b443b4: RV_VLD
+            vlds(r18, memV, 0 + 384 * iteration, NORM);
+            // PC 0x13b443b8: RV_VLD
+            vlds(r19, memV, 64 + 384 * iteration, NORM);
+            // PC 0x13b443bc: RV_VLD
+            vlds(r20, memV, 128 + 384 * iteration, NORM);
+            // PC 0x13b443c0: RV_VLD
+            vlds(r21, memV, 192 + 384 * iteration, NORM);
+            // PC 0x13b443c4: RV_VLD
+            vlds(r22, memV, 256 + 384 * iteration, NORM);
+            // PC 0x13b443c8: RV_VLD
+            vlds(r23, memV, 320 + 384 * iteration, NORM);
+            // PC 0x13b443cc: RV_VLD
+            vlds(r24, memM, 0 + 384 * iteration, NORM);
+            // PC 0x13b443d0: RV_VLD
+            vlds(r25, memM, 64 + 384 * iteration, NORM);
+            // PC 0x13b443d4: RV_VLD
+            vlds(r26, memM, 128 + 384 * iteration, NORM);
+            // PC 0x13b443d8: RV_VLD
+            vlds(r27, memM, 192 + 384 * iteration, NORM);
+            // PC 0x13b443dc: RV_VLD
+            vlds(r28, memM, 256 + 384 * iteration, NORM);
+            // PC 0x13b443e0: RV_VLD
+            vlds(r29, memM, 320 + 384 * iteration, NORM);
+            // PC 0x13b443e4: RV_VLD
+            vlds(r0, memP, 0 + 384 * iteration, NORM);
+            // PC 0x13b443e8: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b443ec: RV_VSTI
+            vsts(r0, spill, 1976, NORM_B32, mask);
+            // PC 0x13b443f0: RV_VLD
+            vlds(r0, memP, 64 + 384 * iteration, NORM);
+            // PC 0x13b443f4: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b443f8: RV_VSTI
+            vsts(r0, spill, 1912, NORM_B32, mask);
+            // PC 0x13b443fc: RV_VLD
+            vlds(r0, memP, 128 + 384 * iteration, NORM);
+            // PC 0x13b44400: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b44404: RV_VSTI
+            vsts(r0, spill, 1848, NORM_B32, mask);
+            // PC 0x13b44408: RV_VLD
+            vlds(r0, memP, 192 + 384 * iteration, NORM);
+            // PC 0x13b4440c: RV_SMEM_BAR
+            mem_bar(VLD_VST);
+            // PC 0x13b44410: RV_VSTI
+            vsts(r0, spill, 1784, NORM_B32, mask);
+            // PC 0x13b44414: RV_VLD
+            vlds(r10, memP, 256 + 384 * iteration, NORM);
+            // PC 0x13b44418: RV_VLD
+            vlds(r11, memP, 320 + 384 * iteration, NORM);
+            // PC 0x13b4441c: RV_VMUL
+            vmul(r30, r12, r12, mask);
+            // PC 0x13b44420: RV_VMUL
+            vmul(r31, r13, r13, mask);
+            // PC 0x13b44424: RV_VMUL
+            vmul(r0, r14, r14, mask);
+            // PC 0x13b44428: RV_VMUL
+            vmul(r6, r15, r15, mask);
+            // PC 0x13b4442c: RV_VMUL
+            vmul(r7, r16, r16, mask);
+            // PC 0x13b44430: RV_VMUL
+            vmul(r8, r17, r17, mask);
+            // PC 0x13b44434: RV_VMUL
+            vmul(r30, r30, r4, mask);
+            // PC 0x13b44438: RV_VMUL
+            vmul(r31, r31, r4, mask);
+            // PC 0x13b4443c: RV_VMUL
+            vmul(r0, r0, r4, mask);
+            // PC 0x13b44440: RV_VMUL
+            vmul(r6, r6, r4, mask);
+            // PC 0x13b44444: RV_VMUL
+            vmul(r7, r7, r4, mask);
+            // PC 0x13b44448: RV_VMUL
+            vmul(r8, r8, r4, mask);
+            // PC 0x13b4444c: RV_VMUL
+            vmul(r18, r18, r3, mask);
+            // PC 0x13b44450: RV_VMUL
+            vmul(r19, r19, r3, mask);
+            // PC 0x13b44454: RV_VMUL
+            vmul(r20, r20, r3, mask);
+            // PC 0x13b44458: RV_VMUL
+            vmul(r21, r21, r3, mask);
+            // PC 0x13b4445c: RV_VMUL
+            vmul(r22, r22, r3, mask);
+            // PC 0x13b44460: RV_VMUL
+            vmul(r23, r23, r3, mask);
+            // PC 0x13b44464: RV_VMUL
+            vmul(r24, r24, r1, mask);
+            // PC 0x13b44468: RV_VMUL
+            vmul(r25, r25, r1, mask);
+            // PC 0x13b4446c: RV_VMUL
+            vmul(r26, r26, r1, mask);
+            // PC 0x13b44470: RV_VMUL
+            vmul(r27, r27, r1, mask);
+            // PC 0x13b44474: RV_VMUL
+            vmul(r28, r28, r1, mask);
+            // PC 0x13b44478: RV_VMUL
+            vmul(r29, r29, r1, mask);
+            // PC 0x13b4447c: RV_VMUL
+            vmul(r12, r12, r2, mask);
+            // PC 0x13b44480: RV_VMUL
+            vmul(r13, r13, r2, mask);
+            // PC 0x13b44484: RV_VMUL
+            vmul(r14, r14, r2, mask);
+            // PC 0x13b44488: RV_VMUL
+            vmul(r15, r15, r2, mask);
+            // PC 0x13b4448c: RV_VMUL
+            vmul(r16, r16, r2, mask);
+            // PC 0x13b44490: RV_VMUL
+            vmul(r17, r17, r2, mask);
+            // PC 0x13b44494: RV_VADD
+            vadd(r18, r30, r18, mask);
+            // PC 0x13b44498: RV_VADD
+            vadd(r19, r31, r19, mask);
+            // PC 0x13b4449c: RV_VADD
+            vadd(r0, r0, r20, mask);
+            // PC 0x13b444a0: RV_VADD
+            vadd(r6, r6, r21, mask);
+            // PC 0x13b444a4: RV_VADD
+            vadd(r7, r7, r22, mask);
+            // PC 0x13b444a8: RV_VADD
+            vadd(r8, r8, r23, mask);
+            // PC 0x13b444ac: RV_VADD
+            vadd(r12, r24, r12, mask);
+            // PC 0x13b444b0: RV_VADD
+            vadd(r13, r25, r13, mask);
+            // PC 0x13b444b4: RV_VADD
+            vadd(r14, r26, r14, mask);
+            // PC 0x13b444b8: RV_VADD
+            vadd(r15, r27, r15, mask);
+            // PC 0x13b444bc: RV_VADD
+            vadd(r16, r28, r16, mask);
+            // PC 0x13b444c0: RV_VADD
+            vadd(r17, r29, r17, mask);
+            // PC 0x13b444c4: RV_VSQRT
+            vsqrt(r20, r18, mask);
+            // PC 0x13b444c8: RV_VSQRT
+            vsqrt(r21, r19, mask);
+            // PC 0x13b444cc: RV_VSQRT
+            vsqrt(r22, r0, mask);
+            // PC 0x13b444d0: RV_VSQRT
+            vsqrt(r23, r6, mask);
+            // PC 0x13b444d4: RV_VSQRT
+            vsqrt(r24, r7, mask);
+            // PC 0x13b444d8: RV_VSQRT
+            vsqrt(r25, r8, mask);
+            // PC 0x13b444dc: RV_VADD
+            vadd(r20, r20, r5, mask);
+            // PC 0x13b444e0: RV_VADD
+            vadd(r21, r21, r5, mask);
+            // PC 0x13b444e4: RV_VADD
+            vadd(r22, r22, r5, mask);
+            // PC 0x13b444e8: RV_VADD
+            vadd(r23, r23, r5, mask);
+            // PC 0x13b444ec: RV_VADD
+            vadd(r24, r24, r5, mask);
+            // PC 0x13b444f0: RV_VADD
+            vadd(r25, r25, r5, mask);
+            // PC 0x13b444f4: RV_VDIV
+            vdiv(r20, r12, r20, mask);
+            // PC 0x13b444f8: RV_VDIV
+            vdiv(r21, r13, r21, mask);
+            // PC 0x13b444fc: RV_VDIV
+            vdiv(r22, r14, r22, mask);
+            // PC 0x13b44500: RV_VDIV
+            vdiv(r23, r15, r23, mask);
+            // PC 0x13b44504: RV_VDIV
+            vdiv(r24, r16, r24, mask);
+            // PC 0x13b44508: RV_VDIV
+            vdiv(r25, r17, r25, mask);
+            // PC 0x13b4450c: RV_VMUL
+            vmul(r20, r20, r9, mask);
+            // PC 0x13b44510: RV_VMUL
+            vmul(r21, r21, r9, mask);
+            // PC 0x13b44514: RV_VMUL
+            vmul(r22, r22, r9, mask);
+            // PC 0x13b44518: RV_VMUL
+            vmul(r23, r23, r9, mask);
+            // PC 0x13b4451c: RV_VMUL
+            vmul(r24, r24, r9, mask);
+            // PC 0x13b44520: RV_VMUL
+            vmul(r25, r25, r9, mask);
+            // PC 0x13b44524: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b44528: RV_VLDI
+            vlds(r26, spill, 1976, NORM);
+            // PC 0x13b4452c: RV_VSUB
+            vsub(r20, r26, r20, mask);
+            // PC 0x13b44530: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b44534: RV_VLDI
+            vlds(r26, spill, 1912, NORM);
+            // PC 0x13b44538: RV_VSUB
+            vsub(r21, r26, r21, mask);
+            // PC 0x13b4453c: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b44540: RV_VLDI
+            vlds(r26, spill, 1848, NORM);
+            // PC 0x13b44544: RV_VSUB
+            vsub(r22, r26, r22, mask);
+            // PC 0x13b44548: RV_SMEM_BAR
+            mem_bar(VST_VLD);
+            // PC 0x13b4454c: RV_VLDI
+            vlds(r26, spill, 1784, NORM);
+            // PC 0x13b44550: RV_VSUB
+            vsub(r23, r26, r23, mask);
+            // PC 0x13b44554: RV_VSUB
+            vsub(r10, r10, r24, mask);
+            // PC 0x13b44558: RV_VSUB
+            vsub(r11, r11, r25, mask);
+            // PC 0x13b4455c: RV_VST
+            vsts(r18, outV, 0 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44560: RV_VST
+            vsts(r19, outV, 64 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44564: RV_VST
+            vsts(r0, outV, 128 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44568: RV_VST
+            vsts(r6, outV, 192 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b4456c: RV_VST
+            vsts(r7, outV, 256 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44570: RV_VST
+            vsts(r8, outV, 320 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44574: RV_VST
+            vsts(r12, outM, 0 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44578: RV_VST
+            vsts(r13, outM, 64 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b4457c: RV_VST
+            vsts(r14, outM, 128 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44580: RV_VST
+            vsts(r15, outM, 192 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44584: RV_VST
+            vsts(r16, outM, 256 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44588: RV_VST
+            vsts(r17, outM, 320 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b4458c: RV_VST
+            vsts(r20, outP, 0 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44590: RV_VST
+            vsts(r21, outP, 64 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44594: RV_VST
+            vsts(r22, outP, 128 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b44598: RV_VST
+            vsts(r23, outP, 192 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b4459c: RV_VST
+            vsts(r10, outP, 256 + 384 * iteration, NORM_B32, mask);
+            // PC 0x13b445a0: RV_VST
+            vsts(r11, outP, 320 + 384 * iteration, NORM_B32, mask);
+        }
+    }
+}

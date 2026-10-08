@@ -1,0 +1,63 @@
+{
+  "unroll": 1,
+  "iterations": 96,
+  "elements": 6144,
+  "source_sha256": "445756979cad3afbadeb24ad2d1ab1db7999f73da80d6f3094ea1780ce1fb792",
+  "golden_pass": true,
+  "checks": [
+    "[CHECK] kernel=foo_add mismatches=0 max_abs_err=1.1920929e-07 max_rel_err=3.9180424e-07",
+    "[CHECK] PASS"
+  ],
+  "returncode": 0,
+  "wall_seconds": 72.31870183499996,
+  "timing": {
+    "run_dir": "/tmp/vfsim_gelu_unroll_spill_20260911/u1/gelu_poly_i96_u1_native_simexec",
+    "first_vf_start": 2373,
+    "last_vf_end": 4618,
+    "vf_total_cycles": 2245,
+    "vf_count": 1,
+    "popped_starts": [
+      2373
+    ],
+    "vf_end_cycles": [
+      4618
+    ],
+    "vf_execute_times": [
+      2245
+    ],
+    "vf_instr_counts": [
+      34
+    ]
+  },
+  "opcode_counts": {
+    "RV_PSET": 1,
+    "RV_SEND": 1,
+    "RV_VADDS": 1056,
+    "RV_VDIV": 96,
+    "RV_VLD": 96,
+    "RV_VLOOPv2": 1,
+    "RV_VMAXS": 96,
+    "RV_VMINS": 96,
+    "RV_VMUL": 1056,
+    "RV_VMULS": 288,
+    "RV_VST": 96
+  },
+  "load_count": 96,
+  "store_count": 96,
+  "membar_count": 0,
+  "architectural_vregs_used": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "spill_load_count": 0,
+  "spill_store_count": 0,
+  "spill_pcs": [],
+  "spill_min_byte_address": null,
+  "spill_max_observed_byte_address": null,
+  "barrier_types": {},
+  "output_bitwise_equal_u1": true,
+  "extra_scalar_load_count": 0,
+  "extra_scalar_store_count": 0
+}

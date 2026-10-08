@@ -1,0 +1,1996 @@
+{
+  "basis": "对应原始 CAModel 的实际底层 VF 指令流",
+  "camodel_cycles": 2553,
+  "modeled_pc_coverage_complete": true,
+  "dynamic_instruction_counts": {
+    "RV_PSET": 2,
+    "RV_VDUPS": 4,
+    "RV_VMOV": 130,
+    "RV_VLDS": 128,
+    "RV_SMEM_BAR": 128,
+    "RV_VSTI": 40,
+    "RV_VMUL": 448,
+    "RV_VAXPY": 128,
+    "RV_VEXP": 64,
+    "RV_VADDS": 64,
+    "RV_VDIV": 64,
+    "RV_VCMP_EQ": 64,
+    "RV_PSTI": 24,
+    "RV_PLDI": 24,
+    "RV_VSEL": 64,
+    "RV_VADD": 64,
+    "RV_VLDI": 40,
+    "RV_VSTS": 64
+  },
+  "unrepresented_opcodes": {
+    "RV_SMOVI": 9,
+    "RV_SMOVK": 1,
+    "RV_SADD": 21,
+    "RV_SMOV": 3,
+    "RV_VLOOPv2": 1,
+    "RV_SEND": 1
+  },
+  "pc_mapping": [
+    {
+      "pc": "0x13b3a208",
+      "opcode": "RV_PSET",
+      "binary": "0x80040055",
+      "cce": "p0 = pset_b8(PAT_ALL);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a20c",
+      "opcode": "RV_PSET",
+      "binary": "0x82040155",
+      "cce": "p1 = pset_b32(PAT_ALL);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a210",
+      "opcode": "RV_VDUPS",
+      "binary": "0x80182550",
+      "cce": "vdup(r0, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a214",
+      "opcode": "RV_VDUPS",
+      "binary": "0x82082550",
+      "cce": "vdup(r1, 0.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a218",
+      "opcode": "RV_VDUPS",
+      "binary": "0x841a2550",
+      "cce": "vdup(r2, -1.59576917f, p1, MODE_ZEROING);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a21c",
+      "opcode": "RV_VDUPS",
+      "binary": "0x86282550",
+      "cce": "vdup(r3, 1.59576917f, p1, MODE_ZEROING);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a220",
+      "opcode": "RV_VMOV",
+      "binary": "0x8e200053",
+      "cce": "vmov(r7, r2);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a224",
+      "opcode": "RV_VMOV",
+      "binary": "0x90300053",
+      "cce": "vmov(r8, r3);",
+      "dynamic_count": 1,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a2ac",
+      "opcode": "RV_VLDS",
+      "binary": "0x05b9a830",
+      "cce": "vlds(r2, ptr_13b3a2ac, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        0,
+        2048,
+        4096,
+        6144,
+        8192,
+        10240,
+        12288,
+        14336
+      ]
+    },
+    {
+      "pc": "0x13b3a2b0",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a2b4",
+      "opcode": "RV_VSTI",
+      "binary": "0x45ffb802",
+      "cce": "vsts((vector_u8 &)r2, (__ubuf__ uint8_t *)spill, -288, NORM_B8, p0);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261856,
+        261856,
+        261856,
+        261856,
+        261856,
+        261856,
+        261856,
+        261856
+      ]
+    },
+    {
+      "pc": "0x13b3a2b8",
+      "opcode": "RV_VLDS",
+      "binary": "0x0501a830",
+      "cce": "vlds(r2, ptr_13b3a2b8, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        256,
+        2304,
+        4352,
+        6400,
+        8448,
+        10496,
+        12544,
+        14592
+      ]
+    },
+    {
+      "pc": "0x13b3a2bc",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a2c0",
+      "opcode": "RV_VSTI",
+      "binary": "0x45ff7802",
+      "cce": "vsts((vector_u8 &)r2, (__ubuf__ uint8_t *)spill, -544, NORM_B8, p0);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261600,
+        261600,
+        261600,
+        261600,
+        261600,
+        261600,
+        261600,
+        261600
+      ]
+    },
+    {
+      "pc": "0x13b3a2c4",
+      "opcode": "RV_VLDS",
+      "binary": "0x0509a830",
+      "cce": "vlds(r2, ptr_13b3a2c4, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        512,
+        2560,
+        4608,
+        6656,
+        8704,
+        10752,
+        12800,
+        14848
+      ]
+    },
+    {
+      "pc": "0x13b3a2c8",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a2cc",
+      "opcode": "RV_VSTI",
+      "binary": "0x45ff3802",
+      "cce": "vsts((vector_u8 &)r2, (__ubuf__ uint8_t *)spill, -800, NORM_B8, p0);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261344,
+        261344,
+        261344,
+        261344,
+        261344,
+        261344,
+        261344,
+        261344
+      ]
+    },
+    {
+      "pc": "0x13b3a2d0",
+      "opcode": "RV_VLDS",
+      "binary": "0x0511a830",
+      "cce": "vlds(r2, ptr_13b3a2d0, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        768,
+        2816,
+        4864,
+        6912,
+        8960,
+        11008,
+        13056,
+        15104
+      ]
+    },
+    {
+      "pc": "0x13b3a2d4",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a2d8",
+      "opcode": "RV_VSTI",
+      "binary": "0x45fef802",
+      "cce": "vsts((vector_u8 &)r2, (__ubuf__ uint8_t *)spill, -1056, NORM_B8, p0);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261088,
+        261088,
+        261088,
+        261088,
+        261088,
+        261088,
+        261088,
+        261088
+      ]
+    },
+    {
+      "pc": "0x13b3a2dc",
+      "opcode": "RV_VLDS",
+      "binary": "0x0519a830",
+      "cce": "vlds(r2, ptr_13b3a2dc, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        1024,
+        3072,
+        5120,
+        7168,
+        9216,
+        11264,
+        13312,
+        15360
+      ]
+    },
+    {
+      "pc": "0x13b3a2e0",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a2e4",
+      "opcode": "RV_VSTI",
+      "binary": "0x45feb802",
+      "cce": "vsts((vector_u8 &)r2, (__ubuf__ uint8_t *)spill, -1312, NORM_B8, p0);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260832,
+        260832,
+        260832,
+        260832,
+        260832,
+        260832,
+        260832,
+        260832
+      ]
+    },
+    {
+      "pc": "0x13b3a2e8",
+      "opcode": "RV_VLDS",
+      "binary": "0x1321a830",
+      "cce": "vlds(r9, ptr_13b3a2e8, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        1280,
+        3328,
+        5376,
+        7424,
+        9472,
+        11520,
+        13568,
+        15616
+      ]
+    },
+    {
+      "pc": "0x13b3a2ec",
+      "opcode": "RV_VLDS",
+      "binary": "0x1529a830",
+      "cce": "vlds(r10, ptr_13b3a2ec, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        1536,
+        3584,
+        5632,
+        7680,
+        9728,
+        11776,
+        13824,
+        15872
+      ]
+    },
+    {
+      "pc": "0x13b3a2f0",
+      "opcode": "RV_VLDS",
+      "binary": "0x1731a830",
+      "cce": "vlds(r11, ptr_13b3a2f0, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        1792,
+        3840,
+        5888,
+        7936,
+        9984,
+        12032,
+        14080,
+        16128
+      ]
+    },
+    {
+      "pc": "0x13b3a2f4",
+      "opcode": "RV_VLDS",
+      "binary": "0x19c1a830",
+      "cce": "vlds(r12, ptr_13b3a2f4, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        16384,
+        18432,
+        20480,
+        22528,
+        24576,
+        26624,
+        28672,
+        30720
+      ]
+    },
+    {
+      "pc": "0x13b3a2f8",
+      "opcode": "RV_VLDS",
+      "binary": "0x1b39a830",
+      "cce": "vlds(r13, ptr_13b3a2f8, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        16640,
+        18688,
+        20736,
+        22784,
+        24832,
+        26880,
+        28928,
+        30976
+      ]
+    },
+    {
+      "pc": "0x13b3a2fc",
+      "opcode": "RV_VLDS",
+      "binary": "0x1d41a830",
+      "cce": "vlds(r14, ptr_13b3a2fc, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        16896,
+        18944,
+        20992,
+        23040,
+        25088,
+        27136,
+        29184,
+        31232
+      ]
+    },
+    {
+      "pc": "0x13b3a300",
+      "opcode": "RV_VLDS",
+      "binary": "0x1f49a830",
+      "cce": "vlds(r15, ptr_13b3a300, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        17152,
+        19200,
+        21248,
+        23296,
+        25344,
+        27392,
+        29440,
+        31488
+      ]
+    },
+    {
+      "pc": "0x13b3a304",
+      "opcode": "RV_VLDS",
+      "binary": "0x2151a830",
+      "cce": "vlds(r16, ptr_13b3a304, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        17408,
+        19456,
+        21504,
+        23552,
+        25600,
+        27648,
+        29696,
+        31744
+      ]
+    },
+    {
+      "pc": "0x13b3a308",
+      "opcode": "RV_VLDS",
+      "binary": "0x2359a830",
+      "cce": "vlds(r17, ptr_13b3a308, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        17664,
+        19712,
+        21760,
+        23808,
+        25856,
+        27904,
+        29952,
+        32000
+      ]
+    },
+    {
+      "pc": "0x13b3a30c",
+      "opcode": "RV_VLDS",
+      "binary": "0x2561a830",
+      "cce": "vlds(r18, ptr_13b3a30c, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        17920,
+        19968,
+        22016,
+        24064,
+        26112,
+        28160,
+        30208,
+        32256
+      ]
+    },
+    {
+      "pc": "0x13b3a310",
+      "opcode": "RV_VLDS",
+      "binary": "0x2769a830",
+      "cce": "vlds(r19, ptr_13b3a310, 512, NORM, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        18176,
+        20224,
+        22272,
+        24320,
+        26368,
+        28416,
+        30464,
+        32512
+      ]
+    },
+    {
+      "pc": "0x13b3a314",
+      "opcode": "RV_VMUL",
+      "binary": "0xa8c187c0",
+      "cce": "vmul(r20, r12, r12, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a318",
+      "opcode": "RV_VMUL",
+      "binary": "0xaad1a7c0",
+      "cce": "vmul(r21, r13, r13, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a31c",
+      "opcode": "RV_VMUL",
+      "binary": "0xace1c7c0",
+      "cce": "vmul(r22, r14, r14, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a320",
+      "opcode": "RV_VMUL",
+      "binary": "0xaef1e7c0",
+      "cce": "vmul(r23, r15, r15, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a324",
+      "opcode": "RV_VMUL",
+      "binary": "0xb10207c0",
+      "cce": "vmul(r24, r16, r16, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a328",
+      "opcode": "RV_VMUL",
+      "binary": "0xb31227c0",
+      "cce": "vmul(r25, r17, r17, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a32c",
+      "opcode": "RV_VMUL",
+      "binary": "0xb52247c0",
+      "cce": "vmul(r26, r18, r18, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a330",
+      "opcode": "RV_VMUL",
+      "binary": "0xb73267c0",
+      "cce": "vmul(r27, r19, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a334",
+      "opcode": "RV_VMOV",
+      "binary": "0xb8700053",
+      "cce": "vmov(r28, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a338",
+      "opcode": "RV_VAXPY",
+      "binary": "0xb941c7c9",
+      "cce": "vaxpy(r28, r20, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a33c",
+      "opcode": "RV_VMOV",
+      "binary": "0xba700053",
+      "cce": "vmov(r29, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a340",
+      "opcode": "RV_VAXPY",
+      "binary": "0xbb51c7c9",
+      "cce": "vaxpy(r29, r21, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a344",
+      "opcode": "RV_VMOV",
+      "binary": "0xbc700053",
+      "cce": "vmov(r30, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a348",
+      "opcode": "RV_VAXPY",
+      "binary": "0xbd61c7c9",
+      "cce": "vaxpy(r30, r22, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a34c",
+      "opcode": "RV_VMOV",
+      "binary": "0xbe700053",
+      "cce": "vmov(r31, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a350",
+      "opcode": "RV_VAXPY",
+      "binary": "0xbf71c7c9",
+      "cce": "vaxpy(r31, r23, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a354",
+      "opcode": "RV_VMOV",
+      "binary": "0x84700053",
+      "cce": "vmov(r2, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a358",
+      "opcode": "RV_VAXPY",
+      "binary": "0x8581c7c9",
+      "cce": "vaxpy(r2, r24, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a35c",
+      "opcode": "RV_VMOV",
+      "binary": "0x88700053",
+      "cce": "vmov(r4, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a360",
+      "opcode": "RV_VAXPY",
+      "binary": "0x8991c7c9",
+      "cce": "vaxpy(r4, r25, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a364",
+      "opcode": "RV_VMOV",
+      "binary": "0x8a700053",
+      "cce": "vmov(r5, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a368",
+      "opcode": "RV_VAXPY",
+      "binary": "0x8ba1c7c9",
+      "cce": "vaxpy(r5, r26, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a36c",
+      "opcode": "RV_VMOV",
+      "binary": "0x8c700053",
+      "cce": "vmov(r6, r7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a370",
+      "opcode": "RV_VAXPY",
+      "binary": "0x8db1c7c9",
+      "cce": "vaxpy(r6, r27, -0.0713548139f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a374",
+      "opcode": "RV_VMUL",
+      "binary": "0xb9c187c0",
+      "cce": "vmul(r28, r28, r12, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a378",
+      "opcode": "RV_VMUL",
+      "binary": "0xbbd1a7c0",
+      "cce": "vmul(r29, r29, r13, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a37c",
+      "opcode": "RV_VMUL",
+      "binary": "0xbde1c7c0",
+      "cce": "vmul(r30, r30, r14, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a380",
+      "opcode": "RV_VMUL",
+      "binary": "0xbff1e7c0",
+      "cce": "vmul(r31, r31, r15, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a384",
+      "opcode": "RV_VMUL",
+      "binary": "0x842207c0",
+      "cce": "vmul(r2, r2, r16, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a388",
+      "opcode": "RV_VMUL",
+      "binary": "0x884227c0",
+      "cce": "vmul(r4, r4, r17, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a38c",
+      "opcode": "RV_VMUL",
+      "binary": "0x8a5247c0",
+      "cce": "vmul(r5, r5, r18, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a390",
+      "opcode": "RV_VMUL",
+      "binary": "0x8c6267c0",
+      "cce": "vmul(r6, r6, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a394",
+      "opcode": "RV_VEXP",
+      "binary": "0xb9c407da",
+      "cce": "vexp(r28, r28, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a398",
+      "opcode": "RV_VEXP",
+      "binary": "0xbbd407da",
+      "cce": "vexp(r29, r29, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a39c",
+      "opcode": "RV_VEXP",
+      "binary": "0xbde407da",
+      "cce": "vexp(r30, r30, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3a0",
+      "opcode": "RV_VEXP",
+      "binary": "0xbff407da",
+      "cce": "vexp(r31, r31, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3a4",
+      "opcode": "RV_VEXP",
+      "binary": "0x842407da",
+      "cce": "vexp(r2, r2, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3a8",
+      "opcode": "RV_VEXP",
+      "binary": "0x884407da",
+      "cce": "vexp(r4, r4, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3ac",
+      "opcode": "RV_VEXP",
+      "binary": "0x8a5407da",
+      "cce": "vexp(r5, r5, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3b0",
+      "opcode": "RV_VEXP",
+      "binary": "0x8c6407da",
+      "cce": "vexp(r6, r6, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3b4",
+      "opcode": "RV_VMOV",
+      "binary": "0x86800053",
+      "cce": "vmov(r3, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3b8",
+      "opcode": "RV_VAXPY",
+      "binary": "0x874207c9",
+      "cce": "vaxpy(r3, r20, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3bc",
+      "opcode": "RV_VMOV",
+      "binary": "0xa8800053",
+      "cce": "vmov(r20, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3c0",
+      "opcode": "RV_VAXPY",
+      "binary": "0xa95207c9",
+      "cce": "vaxpy(r20, r21, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3c4",
+      "opcode": "RV_VMOV",
+      "binary": "0xaa800053",
+      "cce": "vmov(r21, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3c8",
+      "opcode": "RV_VAXPY",
+      "binary": "0xab6207c9",
+      "cce": "vaxpy(r21, r22, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3cc",
+      "opcode": "RV_VMOV",
+      "binary": "0xac800053",
+      "cce": "vmov(r22, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3d0",
+      "opcode": "RV_VAXPY",
+      "binary": "0xad7207c9",
+      "cce": "vaxpy(r22, r23, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3d4",
+      "opcode": "RV_VMOV",
+      "binary": "0xae800053",
+      "cce": "vmov(r23, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3d8",
+      "opcode": "RV_VAXPY",
+      "binary": "0xaf8207c9",
+      "cce": "vaxpy(r23, r24, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3dc",
+      "opcode": "RV_VMOV",
+      "binary": "0xb0800053",
+      "cce": "vmov(r24, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3e0",
+      "opcode": "RV_VAXPY",
+      "binary": "0xb19207c9",
+      "cce": "vaxpy(r24, r25, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3e4",
+      "opcode": "RV_VMOV",
+      "binary": "0xb2800053",
+      "cce": "vmov(r25, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3e8",
+      "opcode": "RV_VAXPY",
+      "binary": "0xb3a207c9",
+      "cce": "vaxpy(r25, r26, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3ec",
+      "opcode": "RV_VMOV",
+      "binary": "0xb4800053",
+      "cce": "vmov(r26, r8);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3f0",
+      "opcode": "RV_VAXPY",
+      "binary": "0xb5b207c9",
+      "cce": "vaxpy(r26, r27, 0.214064449f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3f4",
+      "opcode": "RV_VMUL",
+      "binary": "0x863187c0",
+      "cce": "vmul(r3, r3, r12, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3f8",
+      "opcode": "RV_VMUL",
+      "binary": "0x9941a7c0",
+      "cce": "vmul(r12, r20, r13, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a3fc",
+      "opcode": "RV_VMUL",
+      "binary": "0x9b51c7c0",
+      "cce": "vmul(r13, r21, r14, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a400",
+      "opcode": "RV_VMUL",
+      "binary": "0x9d61e7c0",
+      "cce": "vmul(r14, r22, r15, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a404",
+      "opcode": "RV_VMUL",
+      "binary": "0x9f7207c0",
+      "cce": "vmul(r15, r23, r16, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a408",
+      "opcode": "RV_VMUL",
+      "binary": "0xa18227c0",
+      "cce": "vmul(r16, r24, r17, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a40c",
+      "opcode": "RV_VMUL",
+      "binary": "0xa39247c0",
+      "cce": "vmul(r17, r25, r18, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a410",
+      "opcode": "RV_VMUL",
+      "binary": "0xa5a267c0",
+      "cce": "vmul(r18, r26, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a414",
+      "opcode": "RV_VADDS",
+      "binary": "0xa7c087a8",
+      "cce": "vadds(r19, r28, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a418",
+      "opcode": "RV_VADDS",
+      "binary": "0xa9d087a8",
+      "cce": "vadds(r20, r29, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a41c",
+      "opcode": "RV_VADDS",
+      "binary": "0xabe087a8",
+      "cce": "vadds(r21, r30, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a420",
+      "opcode": "RV_VADDS",
+      "binary": "0xadf087a8",
+      "cce": "vadds(r22, r31, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a424",
+      "opcode": "RV_VADDS",
+      "binary": "0xae2087a8",
+      "cce": "vadds(r23, r2, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a428",
+      "opcode": "RV_VADDS",
+      "binary": "0xb04087a8",
+      "cce": "vadds(r24, r4, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a42c",
+      "opcode": "RV_VADDS",
+      "binary": "0xb25087a8",
+      "cce": "vadds(r25, r5, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a430",
+      "opcode": "RV_VADDS",
+      "binary": "0xb46087a8",
+      "cce": "vadds(r26, r6, 1.0f, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a434",
+      "opcode": "RV_VDIV",
+      "binary": "0xa60667db",
+      "cce": "vdiv(r19, r0, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a438",
+      "opcode": "RV_VDIV",
+      "binary": "0xa80687db",
+      "cce": "vdiv(r20, r0, r20, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a43c",
+      "opcode": "RV_VDIV",
+      "binary": "0xaa06a7db",
+      "cce": "vdiv(r21, r0, r21, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a440",
+      "opcode": "RV_VDIV",
+      "binary": "0xac06c7db",
+      "cce": "vdiv(r22, r0, r22, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a444",
+      "opcode": "RV_VDIV",
+      "binary": "0xae06e7db",
+      "cce": "vdiv(r23, r0, r23, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a448",
+      "opcode": "RV_VDIV",
+      "binary": "0xb00707db",
+      "cce": "vdiv(r24, r0, r24, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a44c",
+      "opcode": "RV_VDIV",
+      "binary": "0xb20727db",
+      "cce": "vdiv(r25, r0, r25, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a450",
+      "opcode": "RV_VDIV",
+      "binary": "0xb40747db",
+      "cce": "vdiv(r26, r0, r26, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a454",
+      "opcode": "RV_VMUL",
+      "binary": "0xb7c267c0",
+      "cce": "vmul(r27, r28, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a458",
+      "opcode": "RV_VMUL",
+      "binary": "0xb9d287c0",
+      "cce": "vmul(r28, r29, r20, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a45c",
+      "opcode": "RV_VMUL",
+      "binary": "0xbbe2a7c0",
+      "cce": "vmul(r29, r30, r21, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a460",
+      "opcode": "RV_VMUL",
+      "binary": "0xbdf2c7c0",
+      "cce": "vmul(r30, r31, r22, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a464",
+      "opcode": "RV_VMUL",
+      "binary": "0x8422e7c0",
+      "cce": "vmul(r2, r2, r23, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a468",
+      "opcode": "RV_VMUL",
+      "binary": "0x884307c0",
+      "cce": "vmul(r4, r4, r24, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a46c",
+      "opcode": "RV_VMUL",
+      "binary": "0x8a5327c0",
+      "cce": "vmul(r5, r5, r25, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a470",
+      "opcode": "RV_VMUL",
+      "binary": "0x8c6347c0",
+      "cce": "vmul(r6, r6, r26, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a474",
+      "opcode": "RV_VMUL",
+      "binary": "0x87b067c0",
+      "cce": "vmul(r3, r27, r3, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a478",
+      "opcode": "RV_VMUL",
+      "binary": "0x99c187c0",
+      "cce": "vmul(r12, r28, r12, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a47c",
+      "opcode": "RV_VMUL",
+      "binary": "0x9bd1a7c0",
+      "cce": "vmul(r13, r29, r13, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a480",
+      "opcode": "RV_VMUL",
+      "binary": "0x9de1c7c0",
+      "cce": "vmul(r14, r30, r14, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a484",
+      "opcode": "RV_VMUL",
+      "binary": "0x8421e7c0",
+      "cce": "vmul(r2, r2, r15, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a488",
+      "opcode": "RV_VMUL",
+      "binary": "0x884207c0",
+      "cce": "vmul(r4, r4, r16, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a48c",
+      "opcode": "RV_VMUL",
+      "binary": "0x8a5227c0",
+      "cce": "vmul(r5, r5, r17, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a490",
+      "opcode": "RV_VMUL",
+      "binary": "0x8c6247c0",
+      "cce": "vmul(r6, r6, r18, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a494",
+      "opcode": "RV_VMUL",
+      "binary": "0x863267c0",
+      "cce": "vmul(r3, r3, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a498",
+      "opcode": "RV_VMUL",
+      "binary": "0x98c287c0",
+      "cce": "vmul(r12, r12, r20, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a49c",
+      "opcode": "RV_VMUL",
+      "binary": "0x9ad2a7c0",
+      "cce": "vmul(r13, r13, r21, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4a0",
+      "opcode": "RV_VMUL",
+      "binary": "0x9ce2c7c0",
+      "cce": "vmul(r14, r14, r22, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4a4",
+      "opcode": "RV_VMUL",
+      "binary": "0x8422e7c0",
+      "cce": "vmul(r2, r2, r23, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4a8",
+      "opcode": "RV_VMUL",
+      "binary": "0x884307c0",
+      "cce": "vmul(r4, r4, r24, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4ac",
+      "opcode": "RV_VMUL",
+      "binary": "0x8a5327c0",
+      "cce": "vmul(r5, r5, r25, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4b0",
+      "opcode": "RV_VMUL",
+      "binary": "0x8c6347c0",
+      "cce": "vmul(r6, r6, r26, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4b4",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x84346780",
+      "cce": "vcmp_eq(p2, r3, r3, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4b8",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4bc",
+      "opcode": "RV_PSTI",
+      "binary": "0x45fea842",
+      "cce": "psts(p2, spill, -1376, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260768,
+        260768,
+        260768,
+        260768,
+        260768,
+        260768,
+        260768,
+        260768
+      ]
+    },
+    {
+      "pc": "0x13b3a4c0",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x86c58780",
+      "cce": "vcmp_eq(p3, r12, r12, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4c4",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x88d5a780",
+      "cce": "vcmp_eq(p4, r13, r13, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4c8",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x8ae5c780",
+      "cce": "vcmp_eq(p5, r14, r14, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4cc",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x8c244780",
+      "cce": "vcmp_eq(p6, r2, r2, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4d0",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x8e448780",
+      "cce": "vcmp_eq(p7, r4, r4, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4d4",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x8454a780",
+      "cce": "vcmp_eq(p2, r5, r5, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4d8",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4dc",
+      "opcode": "RV_PSTI",
+      "binary": "0x45feb042",
+      "cce": "psts(p2, spill, -1344, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260800,
+        260800,
+        260800,
+        260800,
+        260800,
+        260800,
+        260800,
+        260800
+      ]
+    },
+    {
+      "pc": "0x13b3a4e0",
+      "opcode": "RV_VCMP_EQ",
+      "binary": "0x8464c780",
+      "cce": "vcmp_eq(p2, r6, r6, p1);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4e4",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000098",
+      "cce": "mem_bar(VLD_VST);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4e8",
+      "opcode": "RV_PSTI",
+      "binary": "0x45fea042",
+      "cce": "psts(p2, spill, -1408, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260736,
+        260736,
+        260736,
+        260736,
+        260736,
+        260736,
+        260736,
+        260736
+      ]
+    },
+    {
+      "pc": "0x13b3a4ec",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4f0",
+      "opcode": "RV_PLDI",
+      "binary": "0x05fea81c",
+      "cce": "plds(p2, spill, -1376, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260768,
+        260768,
+        260768,
+        260768,
+        260768,
+        260768,
+        260768,
+        260768
+      ]
+    },
+    {
+      "pc": "0x13b3a4f4",
+      "opcode": "RV_VSEL",
+      "binary": "0x86302952",
+      "cce": "vsel(r3, r3, r1, p2);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4f8",
+      "opcode": "RV_VSEL",
+      "binary": "0x98c02d52",
+      "cce": "vsel(r12, r12, r1, p3);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a4fc",
+      "opcode": "RV_VSEL",
+      "binary": "0x9ad03152",
+      "cce": "vsel(r13, r13, r1, p4);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a500",
+      "opcode": "RV_VSEL",
+      "binary": "0x9ce03552",
+      "cce": "vsel(r14, r14, r1, p5);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a504",
+      "opcode": "RV_VSEL",
+      "binary": "0x84203952",
+      "cce": "vsel(r2, r2, r1, p6);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a508",
+      "opcode": "RV_VSEL",
+      "binary": "0x88403d52",
+      "cce": "vsel(r4, r4, r1, p7);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a50c",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a510",
+      "opcode": "RV_PLDI",
+      "binary": "0x05feb01c",
+      "cce": "plds(p2, spill, -1344, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260800,
+        260800,
+        260800,
+        260800,
+        260800,
+        260800,
+        260800,
+        260800
+      ]
+    },
+    {
+      "pc": "0x13b3a514",
+      "opcode": "RV_VSEL",
+      "binary": "0x8a502952",
+      "cce": "vsel(r5, r5, r1, p2);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a518",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a51c",
+      "opcode": "RV_PLDI",
+      "binary": "0x05fea01c",
+      "cce": "plds(p2, spill, -1408, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260736,
+        260736,
+        260736,
+        260736,
+        260736,
+        260736,
+        260736,
+        260736
+      ]
+    },
+    {
+      "pc": "0x13b3a520",
+      "opcode": "RV_VSEL",
+      "binary": "0x8c602952",
+      "cce": "vsel(r6, r6, r1, p2);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a524",
+      "opcode": "RV_VADD",
+      "binary": "0x863a6780",
+      "cce": "vadd(r3, r3, r19, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a528",
+      "opcode": "RV_VADD",
+      "binary": "0x98ca8780",
+      "cce": "vadd(r12, r12, r20, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a52c",
+      "opcode": "RV_VADD",
+      "binary": "0x9adaa780",
+      "cce": "vadd(r13, r13, r21, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a530",
+      "opcode": "RV_VADD",
+      "binary": "0x9ceac780",
+      "cce": "vadd(r14, r14, r22, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a534",
+      "opcode": "RV_VADD",
+      "binary": "0x842ae780",
+      "cce": "vadd(r2, r2, r23, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a538",
+      "opcode": "RV_VADD",
+      "binary": "0x884b0780",
+      "cce": "vadd(r4, r4, r24, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a53c",
+      "opcode": "RV_VADD",
+      "binary": "0x8a5b2780",
+      "cce": "vadd(r5, r5, r25, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a540",
+      "opcode": "RV_VADD",
+      "binary": "0x8c6b4780",
+      "cce": "vadd(r6, r6, r26, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a544",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a548",
+      "opcode": "RV_VLDI",
+      "binary": "0x1fffb818",
+      "cce": "vlds(r15, (__ubuf__ float *)spill, -72, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261856,
+        261856,
+        261856,
+        261856,
+        261856,
+        261856,
+        261856,
+        261856
+      ]
+    },
+    {
+      "pc": "0x13b3a54c",
+      "opcode": "RV_VMUL",
+      "binary": "0x86f067c0",
+      "cce": "vmul(r3, r15, r3, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a550",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a554",
+      "opcode": "RV_VLDI",
+      "binary": "0x1fff7818",
+      "cce": "vlds(r15, (__ubuf__ float *)spill, -136, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261600,
+        261600,
+        261600,
+        261600,
+        261600,
+        261600,
+        261600,
+        261600
+      ]
+    },
+    {
+      "pc": "0x13b3a558",
+      "opcode": "RV_VMUL",
+      "binary": "0x98f187c0",
+      "cce": "vmul(r12, r15, r12, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a55c",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a560",
+      "opcode": "RV_VLDI",
+      "binary": "0x1fff3818",
+      "cce": "vlds(r15, (__ubuf__ float *)spill, -200, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261344,
+        261344,
+        261344,
+        261344,
+        261344,
+        261344,
+        261344,
+        261344
+      ]
+    },
+    {
+      "pc": "0x13b3a564",
+      "opcode": "RV_VMUL",
+      "binary": "0x9af1a7c0",
+      "cce": "vmul(r13, r15, r13, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a568",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a56c",
+      "opcode": "RV_VLDI",
+      "binary": "0x1ffef818",
+      "cce": "vlds(r15, (__ubuf__ float *)spill, -264, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        261088,
+        261088,
+        261088,
+        261088,
+        261088,
+        261088,
+        261088,
+        261088
+      ]
+    },
+    {
+      "pc": "0x13b3a570",
+      "opcode": "RV_VMUL",
+      "binary": "0x9cf1c7c0",
+      "cce": "vmul(r14, r15, r14, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a574",
+      "opcode": "RV_SMEM_BAR",
+      "binary": "0xc0000058",
+      "cce": "mem_bar(VST_VLD);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a578",
+      "opcode": "RV_VLDI",
+      "binary": "0x1ffeb818",
+      "cce": "vlds(r15, (__ubuf__ float *)spill, -328, NORM);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        260832,
+        260832,
+        260832,
+        260832,
+        260832,
+        260832,
+        260832,
+        260832
+      ]
+    },
+    {
+      "pc": "0x13b3a57c",
+      "opcode": "RV_VMUL",
+      "binary": "0x84f047c0",
+      "cce": "vmul(r2, r15, r2, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a580",
+      "opcode": "RV_VMUL",
+      "binary": "0x889087c0",
+      "cce": "vmul(r4, r9, r4, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a584",
+      "opcode": "RV_VMUL",
+      "binary": "0x8aa0a7c0",
+      "cce": "vmul(r5, r10, r5, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a588",
+      "opcode": "RV_VMUL",
+      "binary": "0x8cb0c7c0",
+      "cce": "vmul(r6, r11, r6, p1, MODE_ZEROING);",
+      "dynamic_count": 8,
+      "byte_addresses": null
+    },
+    {
+      "pc": "0x13b3a58c",
+      "opcode": "RV_VSTS",
+      "binary": "0x47c9a989",
+      "cce": "vsts(r3, ptr_13b3a58c, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        32768,
+        34816,
+        36864,
+        38912,
+        40960,
+        43008,
+        45056,
+        47104
+      ]
+    },
+    {
+      "pc": "0x13b3a590",
+      "opcode": "RV_VSTS",
+      "binary": "0x5971a989",
+      "cce": "vsts(r12, ptr_13b3a590, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        33024,
+        35072,
+        37120,
+        39168,
+        41216,
+        43264,
+        45312,
+        47360
+      ]
+    },
+    {
+      "pc": "0x13b3a594",
+      "opcode": "RV_VSTS",
+      "binary": "0x5b79a989",
+      "cce": "vsts(r13, ptr_13b3a594, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        33280,
+        35328,
+        37376,
+        39424,
+        41472,
+        43520,
+        45568,
+        47616
+      ]
+    },
+    {
+      "pc": "0x13b3a598",
+      "opcode": "RV_VSTS",
+      "binary": "0x5d81a989",
+      "cce": "vsts(r14, ptr_13b3a598, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        33536,
+        35584,
+        37632,
+        39680,
+        41728,
+        43776,
+        45824,
+        47872
+      ]
+    },
+    {
+      "pc": "0x13b3a59c",
+      "opcode": "RV_VSTS",
+      "binary": "0x4589a989",
+      "cce": "vsts(r2, ptr_13b3a59c, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        33792,
+        35840,
+        37888,
+        39936,
+        41984,
+        44032,
+        46080,
+        48128
+      ]
+    },
+    {
+      "pc": "0x13b3a5a0",
+      "opcode": "RV_VSTS",
+      "binary": "0x4991a989",
+      "cce": "vsts(r4, ptr_13b3a5a0, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        34048,
+        36096,
+        38144,
+        40192,
+        42240,
+        44288,
+        46336,
+        48384
+      ]
+    },
+    {
+      "pc": "0x13b3a5a4",
+      "opcode": "RV_VSTS",
+      "binary": "0x4b99a989",
+      "cce": "vsts(r5, ptr_13b3a5a4, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        34304,
+        36352,
+        38400,
+        40448,
+        42496,
+        44544,
+        46592,
+        48640
+      ]
+    },
+    {
+      "pc": "0x13b3a5a8",
+      "opcode": "RV_VSTS",
+      "binary": "0x4da1a989",
+      "cce": "vsts(r6, ptr_13b3a5a8, 512, NORM_B32, p1, POST_UPDATE);",
+      "dynamic_count": 8,
+      "byte_addresses": [
+        34560,
+        36608,
+        38656,
+        40704,
+        42752,
+        44800,
+        46848,
+        48896
+      ]
+    }
+  ],
+  "sha256": "796ac2f8b03ae987894c3840d1a95e4df5d818cb5e7945a1ee316c03c57b9fdd"
+}
