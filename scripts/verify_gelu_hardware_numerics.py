@@ -1,15 +1,18 @@
-import json,re,sys
+import argparse,json,re,sys
 from pathlib import Path
 import numpy as np
-sys.path.insert(0,'/mnt/e/vfsimulator')
+parser=argparse.ArgumentParser(description='逐条解释 GeLU Grad 硬件等效 CCE，比较原 CAModel 输出。')
+parser.add_argument('--vfsim-root',type=Path,required=True,help='VfSimulator 仓库路径，需包含原实验输入与输出。')
+repo=parser.parse_args().vfsim_root.resolve()
+sys.path.insert(0,str(repo))
 from api.cce_adapter import _split_args
-root=Path('/mnt/e/vfsimulator/results/membar_results')
-archives=Path('/mnt/e/vfsimulator/results/ub_address_dependency_experiment/GeLU_grad/experiments')
+root=Path(__file__).resolve().parents[1]
+archives=repo/'results/ub_address_dependency_experiment/GeLU_grad/experiments'
 checks=[]
 for version,archive in (('u8',archives/'explicit_vmov_validation/u8'),('u8_explicit',archives/'u8_explicit_spill')):
     folder=root/'gelu_grad'/version
-    audit=json.loads((folder/'source/hardware_pc_mapping.json').read_text())
-    code=(folder/'source/hardware_equivalent.cce').read_text()
+    audit=json.loads((folder/'source/hardware_pc_mapping.json').read_text(encoding='utf-8'))
+    code=(folder/'source/hardware_equivalent.cce').read_text(encoding='utf-8')
     mem=bytearray(0x40000)
     mem[:32768]=(archive/'data/input.bin').read_bytes()
     regs={};pred={};ptr={}
@@ -64,5 +67,5 @@ for version,archive in (('u8',archives/'explicit_vmov_validation/u8'),('u8_expli
     assert np.all(np.isfinite(output)) and np.all(errors<=2e-6+2e-4*np.abs(expected)),(version,errors.max())
     checks.append(dict(version=version,elements=4096,passed=True,max_abs_error_vs_camodel=float(errors.max()),
                        method='按生成的等效 CCE 逐条解释，保留 spill 和 predicate bitmaps；比较既有 CAModel 输出'))
-(root/'gelu_grad/hardware_numerical_validation.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2))
+(root/'gelu_grad/hardware_numerical_validation.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2),encoding='utf-8')
 print(json.dumps(checks,ensure_ascii=False,indent=2))

@@ -7,16 +7,15 @@ import shutil
 from collections import Counter
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-DEST = Path(__file__).resolve().parent
-EXPERIMENTS = ROOT / "results/ub_address_dependency_experiment"
+DEST = Path(__file__).resolve().parents[1]
+METADATA = DEST / "metadata"
 MANIFEST = []
 COLORS = {"camodel": "#344251", "global": "#2376b8", "local": "#18846d", "source": "#bc6137"}
 LABELS = {"camodel": "CAModel 实测", "global": "VfSim 全局同步", "local": "VfSim 局部依赖", "source": "VfSim 源码预测"}
 
 
 def read(path):
-    return json.loads(path.read_text())
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def copy_file(source, target):
@@ -59,7 +58,7 @@ def camodel_logs(folder, target):
     done = folder / "core0.veccore0.instr_log.dump"
     popped = folder / "core0.veccore0.instr_popped_log.dump"
     links = [copy_file(p, target / "camodel" / p.name) for p in (popped, done)]
-    complete = done.read_text()
+    complete = done.read_text(encoding="utf-8")
     vf = list(re.finditer(r"\[info\]\s*\[(\d+)\].*?\bVF\s+addr:.*?vf_execute_time:\s*(\d+)", complete))
     assert len(vf) == 1, str(done)
     end, duration = map(int, vf[0].groups())
@@ -76,7 +75,7 @@ def camodel_logs(folder, target):
 
 def model_curve(folder, key):
     done = folder / "done_by_cycle.json"
-    events = [json.loads(line) for line in done.read_text().splitlines() if line.strip()]
+    events = [json.loads(line) for line in done.read_text(encoding="utf-8").splitlines() if line.strip()]
     cycles = [row["cy"] for row in events if compute_opcode(row["op"]) and row.get("op_class", "COMPUTE") == "COMPUTE"]
     assert cycles, str(done)
     return curve(cycles, key)
@@ -109,7 +108,7 @@ def make_variant(case_id, variant_id, label, source, logs, cam, source_cycles=No
          "vector_store": spill[0], "vector_load": spill[1], "predicate_store": predicate_spill[0],
          "predicate_load": predicate_spill[1], "membars": membars, "golden": "已通过",
          "note": note, "sources": source_links, "logs": log_links, "evidence": evidence_links, "series": series}
-    (directory / "result.json").write_text(json.dumps(v, ensure_ascii=False, indent=2))
+    (directory / "result.json").write_text(json.dumps(v, ensure_ascii=False, indent=2), encoding="utf-8")
     return v
 
 
@@ -240,13 +239,14 @@ def collect():
                   "variants":comparison+[three_v], "overlay":True})
 
     for case in cases:
-        (DEST/case["id"] / "summary.json").write_text(json.dumps(case,ensure_ascii=False,indent=2))
+        (DEST/case["id"] / "summary.json").write_text(json.dumps(case,ensure_ascii=False,indent=2), encoding="utf-8")
     data={"generated":"2026-10-08", "soc":"A5 / DV100 / dav-3510", "window":10,
           "ipc_method":"向量计算指令完成事件，10-cycle trailing window，各曲线以首条计算完成为 cycle 0；不含 LSU、Membar、PSET、scalar。",
           "cases":cases}
-    (DEST/"data.json").write_text(json.dumps(data,ensure_ascii=False,separators=(",",":")))
-    (DEST/"data.js").write_text("window.MEMBAR_REPORT="+json.dumps(data,ensure_ascii=False,separators=(",",":"))+";\n")
-    (DEST/"manifest.json").write_text(json.dumps(MANIFEST,ensure_ascii=False,indent=2))
+    METADATA.mkdir(exist_ok=True)
+    (METADATA/"data.json").write_text(json.dumps(data,ensure_ascii=False,separators=(",",":")), encoding="utf-8")
+    (METADATA/"data.js").write_text("window.MEMBAR_REPORT="+json.dumps(data,ensure_ascii=False,separators=(",",":"))+";\n", encoding="utf-8")
+    (METADATA/"manifest.json").write_text(json.dumps(MANIFEST,ensure_ascii=False,indent=2), encoding="utf-8")
     with (DEST/"comparison.csv").open("w",newline="",encoding="utf-8-sig") as stream:
         writer=csv.writer(stream)
         writer.writerow(["case","variant","CAModel","源码预测","全局预测","局部预测","全局精度%","模型内加速倍数","vector写","vector读","predicate写","predicate读","动态Membar"])
@@ -257,6 +257,11 @@ def collect():
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="从 VfSimulator 原实验目录重新生成结果归档。")
+    parser.add_argument("--vfsim-root", type=Path, required=True, help="VfSimulator 仓库路径，需包含原实验数据。")
+    ROOT = parser.parse_args().vfsim_root.resolve()
+    EXPERIMENTS = ROOT / "results/ub_address_dependency_experiment"
     collect()
     from prepare_hardware_equivalent import bundle
     bundle(DEST)

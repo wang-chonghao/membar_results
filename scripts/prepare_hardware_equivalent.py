@@ -14,7 +14,7 @@ def modeled(op):
 def decode_log(path):
     pattern = re.compile(r"\(PC: (0x[0-9a-f]+)\).*?\(Binary: (0x[0-9a-f]+)\).*?\(ID:\s*(\d+)\)\s+(RV_\w+)(.*)")
     rows = {}
-    for line in path.read_text().splitlines():
+    for line in path.read_text(encoding="utf-8").splitlines():
         match = pattern.search(line)
         if match:
             pc, binary, iid, op, detail = match.groups()
@@ -152,7 +152,8 @@ def gelu_hardware(rows, occurrences):
 
 
 def bundle(root):
-    data = json.loads((root / "data.json").read_text())
+    metadata = root / "metadata"
+    data = json.loads((metadata / "data.json").read_text(encoding="utf-8"))
     generated = []
     for case in data["cases"]:
         for v in case["variants"]:
@@ -164,7 +165,7 @@ def bundle(root):
                 code, mapping = gelu_hardware(rows, occurrences)
             else:
                 original = folder / "source/compiled_pc_replay.cce"
-                code = original.read_text()
+                code = original.read_text(encoding="utf-8")
                 static = {r["pc"]: r for r in rows}
                 annotations = re.findall(r"// PC (0x[0-9a-f]+):\s*(RV_\w+)", code)
                 mapping = []
@@ -190,14 +191,14 @@ def bundle(root):
                       "// 这是硬件 VF 的计算/UB 访存/同步指令流的等价表达；标量地址效果折入指针和立即数，\n"
                       "// 不表达标量流水时序或 GM wrapper。再次编译时编译器仍可能重新分配寄存器。\n")
             target = folder / "source/hardware_equivalent.cce"
-            target.write_text(header + code)
+            target.write_text(header + code, encoding="utf-8")
             audit = {"basis": "对应原始 CAModel 的实际底层 VF 指令流", "camodel_cycles": v["camodel"],
                      "modeled_pc_coverage_complete": True, "dynamic_instruction_counts": dict(counts),
                      "unrepresented_opcodes": dict(Counter(item["opcode"] for pc, items in occurrences.items()
                          if pc not in covered for item in items)), "pc_mapping": mapping,
                      "sha256": hashlib.sha256(target.read_bytes()).hexdigest()}
             mapping_path = folder / "source/hardware_pc_mapping.json"
-            mapping_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2))
+            mapping_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2), encoding="utf-8")
             link = {"label": "实际硬件执行指令流 · 等效 CCE（含 spill）", "path": str(target.relative_to(root))}
             v["sources"] = [link] + [s for s in v["sources"] if not s["path"].endswith("/hardware_equivalent.cce")]
             for s in v["sources"]:
@@ -209,18 +210,18 @@ def bundle(root):
                                          "pc_coverage": True, "camodel_cycles": v["camodel"]}
             if str(mapping_path.relative_to(root)) not in v["evidence"]:
                 v["evidence"].append(str(mapping_path.relative_to(root)))
-            (folder / "result.json").write_text(json.dumps(v, ensure_ascii=False, indent=2))
+            (folder / "result.json").write_text(json.dumps(v, ensure_ascii=False, indent=2), encoding="utf-8")
             generated.append({"case": case["title"], "variant": v["label"], "file": str(target.relative_to(root)),
                               "membars": v["membars"], "covered_pcs": len(covered)})
-        (root / case["id"] / "summary.json").write_text(json.dumps(case, ensure_ascii=False, indent=2))
-    (root / "data.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
-    (root / "data.js").write_text("window.MEMBAR_REPORT=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")
-    (root / "hardware_equivalent_index.json").write_text(json.dumps(generated, ensure_ascii=False, indent=2))
+        (root / case["id"] / "summary.json").write_text(json.dumps(case, ensure_ascii=False, indent=2), encoding="utf-8")
+    (metadata / "data.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (metadata / "data.js").write_text("window.MEMBAR_REPORT=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
+    (metadata / "hardware_equivalent_index.json").write_text(json.dumps(generated, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(generated, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     bundle(parser.parse_args().root)

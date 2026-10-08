@@ -1,0 +1,39 @@
+A5 Membar 实验结果汇总
+
+查看结果
+--------
+完整克隆或下载本仓库后，用浏览器打开 membar_results_summary.html。
+左侧选择 case，页面展示周期、预测精度、IPC 曲线、等效 CCE 和原始日志。
+图表、数据、源码和日志均在仓库内，离线也能查看。
+Git 已禁用自动换行转换，以保留原始日志及源码的字节校验一致性。
+查看结果不需要安装 Python、CANN 或 VfSimulator，也不需要启动服务器。
+请保留整个目录；只下载 HTML 文件会缺少数据和图表资源。
+GitHub 的文件页面显示 HTML 源码，下载后的 HTML 才是可交互报告。
+
+目录说明
+--------
+membar_results_summary.html  结果汇总入口。
+comparison.csv              全部版本的周期、精度和 spill 数量，可用表格软件打开。
+assets/                     离线图表库、报告样式和交互代码。
+metadata/                   汇总数据、文件校验清单和验证记录。
+scripts/                    生成、还原和验证工具；查看结果时无需运行。
+各 case 目录/               每个版本的源码、两份 CAModel 日志、IPC PNG 和实验记录。
+
+发生 spill 的版本中的 source/hardware_equivalent.cce 是实际底层硬件 VF 计算、
+UB 访存及同步指令流的等效表达，已补入寄存器溢出引入的保存、重载和 mem_bar。
+源文件注释和 PC 映射记录给出了还原范围；标量地址计算效果折入指针及立即数。
+
+辅助脚本
+--------
+以下两个工具只依赖 Python 标准库，可在独立结果仓库中运行：
+  python scripts/validate_archive.py
+  python scripts/prepare_hardware_equivalent.py
+
+其余脚本需要另外提供 VfSimulator 仓库路径，不再固定本机磁盘地址：
+  python scripts/validate_hardware_cce.py --vfsim-root <VfSimulator路径>
+  python scripts/verify_gelu_hardware_numerics.py --vfsim-root <VfSimulator路径>
+  python scripts/build_archive.py --vfsim-root <VfSimulator路径>
+
+build_archive.py 和数值核查需要原实验数据；这些数据不是打开报告的依赖。
+数值核查还需要 NumPy，前端核查需要 VfSimulator 自身的 Python 依赖。
+无需为了查看已有结果而运行生成脚本。
