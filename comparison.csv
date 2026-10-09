@@ -24,3 +24,10 @@ GeLU Grad,U8 · 显式 vector + predicate spill,2541,,2421,862,95.2774,2.8086,40
 GeLU Grad 三段循环,单循环 U1 参考,996,,944,,94.7791,,0,0,0,0,0
 GeLU Grad 三段循环,单循环 U4 参考,891,,865,,97.0819,,0,0,0,0,0
 GeLU Grad 三段循环,三段循环 · POST_UPDATE · 每段 U1,854,,932,,90.8665,,0,0,0,0,2
+FlashAttention Grad 前段,原始单循环 U1,240,201,201,,83.75,,0,0,0,0,0
+FlashAttention Grad 前段,原序直接展开 U2,234,201,201,,85.8974,,0,0,0,0,0
+FlashAttention Grad 前段,最短生命周期重排 U2,264,201,201,,76.1364,,0,0,0,0,0
+FlashAttention Grad 前段,集中加载 U2 · 编译器 spill,3237,208,3208,306,99.1041,10.4837,84,84,0,0,168
+FlashAttention Grad 前段,Bank-aware U2 · 预取 1 组,228,204,204,,89.4737,,0,0,0,0,0
+FlashAttention Grad 前段,Bank-aware U2 · 预取 2 组,229,205,205,,89.5197,,0,0,0,0,0
+FlashAttention Grad 前段,Bank-aware U2 · 预取 3 组,234,202,202,,86.3248,,0,0,0,0,0

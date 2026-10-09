@@ -1,0 +1,4 @@
+export ACL_PATH="/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1"
+export ASCEND_TOOLKIT_HOME="/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1"
+export NPU_TYPE="Ascend950PR_9599"
+export LD_LIBRARY_PATH="/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/aarch64-linux/simulator/Ascend950PR_9599/lib:/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/simulator/Ascend950PR_9599/lib:/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/tools/simulator/Ascend950PR_9599/lib:/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/lib64:/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/devlib:/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/devlib/device:/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/lib64/device/lib64:${LD_LIBRARY_PATH:-}"

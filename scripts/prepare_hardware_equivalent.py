@@ -206,7 +206,7 @@ def bundle(root):
                     s["label"] = "显式 spill 的可编译实验源码" if v["id"] == "u8_explicit" else "编译前实验源码"
                 elif s["path"].endswith("/compiled_pc_replay.cce"):
                     s["label"] = "原预测使用的 PC 回放输入"
-            v["hardware_equivalent"] = {"path": str(target.relative_to(root)), "mapping": str(mapping_path.relative_to(root)),
+            v["hardware_equivalent"] = {**v.get("hardware_equivalent", {}), "path": str(target.relative_to(root)), "mapping": str(mapping_path.relative_to(root)),
                                          "pc_coverage": True, "camodel_cycles": v["camodel"]}
             if str(mapping_path.relative_to(root)) not in v["evidence"]:
                 v["evidence"].append(str(mapping_path.relative_to(root)))

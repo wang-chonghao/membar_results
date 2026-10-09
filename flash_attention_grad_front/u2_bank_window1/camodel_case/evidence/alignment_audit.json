@@ -1,0 +1,113 @@
+{
+  "opcode_order_equal": true,
+  "source_opcode_distribution_equal": true,
+  "ordinary_dynamic_count": 394,
+  "register_dependency_graph_equal": true,
+  "numerical_replay_pass": true,
+  "replay_errors_vs_camodel": [
+    7.62939453125e-06,
+    7.62939453125e-06,
+    0.0,
+    2.86102294921875e-06,
+    1.9073486328125e-06,
+    1.9073486328125e-06,
+    0.0,
+    2.86102294921875e-06
+  ],
+  "vector_registers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "predicate_registers": [
+    1
+  ],
+  "camodel_first_load_relative_cycle": 45,
+  "model_first_load_cycle": 23,
+  "compiler_spill_detected": false,
+  "dynamic_load_store_address_checks": 200,
+  "missing_timing_pairs": {
+    "has_warning": true,
+    "vreg_capacity_warnings": [],
+    "instruction_fallback_warnings": [
+      {
+        "kind": "missing_forwarding_pair",
+        "producer": "VADD.fp32",
+        "consumer": "VCADD.fp32",
+        "producer_latency": 7,
+        "used_default": 4,
+        "rule": "producer_latency_minus_default_offset",
+        "count": 1
+      },
+      {
+        "kind": "missing_ii_pair",
+        "prev": "PSET_B32.b32",
+        "cur": "VMUL.fp32",
+        "prev_latency": 6,
+        "cur_latency": 8,
+        "used_default": 1,
+        "rule": "default_one",
+        "count": 1
+      },
+      {
+        "kind": "missing_ii_pair",
+        "prev": "VMUL.fp32",
+        "cur": "VCADD.fp32",
+        "prev_latency": 8,
+        "cur_latency": 22,
+        "used_default": 1,
+        "rule": "default_one",
+        "count": 1
+      },
+      {
+        "kind": "missing_ii_pair",
+        "prev": "VCADD.fp32",
+        "cur": "VMUL.fp32",
+        "prev_latency": 22,
+        "cur_latency": 8,
+        "used_default": 1,
+        "rule": "default_one",
+        "count": 1
+      },
+      {
+        "kind": "missing_ii_pair",
+        "prev": "VCADD.fp32",
+        "cur": "VCADD.fp32",
+        "prev_latency": 22,
+        "cur_latency": 22,
+        "used_default": 1,
+        "rule": "default_one",
+        "count": 1
+      },
+      {
+        "kind": "missing_ii_pair",
+        "prev": "VADD.fp32",
+        "cur": "VCADD.fp32",
+        "prev_latency": 7,
+        "cur_latency": 22,
+        "used_default": 1,
+        "rule": "default_one",
+        "count": 1
+      },
+      {
+        "kind": "missing_ii_pair",
+        "prev": "VCADD.fp32",
+        "cur": "VADD.fp32",
+        "prev_latency": 22,
+        "cur_latency": 7,
+        "used_default": 1,
+        "rule": "default_one",
+        "count": 1
+      }
+    ]
+  }
+}

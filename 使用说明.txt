@@ -17,7 +17,101 @@ comparison.csv              全部版本的周期、精度和 spill 数量，可
 assets/                     离线图表库、报告样式和交互代码。
 metadata/                   汇总数据、文件校验清单和验证记录。
 scripts/                    生成、还原和验证工具；查看结果时无需运行。
+set_env.sh                  CANN 路径、模拟型号、编译目标、额外头文件/库及编译器的集中环境配置。
 各 case 目录/               每个版本的源码、两份 CAModel 日志、IPC PNG 和实验记录。
+各版本/camodel_case/        CAModel 用例：host 源码、构建运行入口、输入输出、golden、完整已保存日志及仍存在的编译产物。
+
+CAModel 用例复现
+---------------
+运行环境：Linux 或 WSL 的 Bash，Python 3.11 或更新版本，以及带对应模拟器的 CANN。
+原实验使用 CANN 9.0.0-beta.1、Ascend950PR_9599、dav-c310-vec。
+CAModel 运行入口只依赖 Python 标准库和 CANN，不需要安装 VfSimulator。
+
+1. 配置新机器的环境
+
+编辑结果根目录的 set_env.sh，通常只需要确认下面四项：
+  export MEMBAR_CANN_ROOT="/你的CANN安装目录"
+  export MEMBAR_HOST_ARCH="x86_64-linux"
+  export MEMBAR_NPU_TYPE="Ascend950PR_9599"
+  export MEMBAR_CORE_ARCH="dav-c310-vec"
+
+MEMBAR_CANN_ROOT 是包含 CANN 自身 set_env.sh 的安装目录。
+MEMBAR_HOST_ARCH 是主机架构；普通 Intel/AMD Linux 或 WSL 使用 x86_64-linux。
+MEMBAR_NPU_TYPE 是模拟芯片型号，MEMBAR_CORE_ARCH 是匹配的 CCE 编译目标。
+更换型号或编译目标必须得到当前 CANN 的支持，也可能改变编译后的指令与周期。
+
+下面两组配置通常保持空字符串，无需填写：
+  MEMBAR_CXX_INCLUDE_DIRS、MEMBAR_EXTRA_LIBRARY_DIRS：额外头文件/库目录。
+  仅在标准安装位置无法找到依赖时使用；多个目录按冒号分隔，例如 /opt/include1:/opt/include2。
+  MEMBAR_CCEC、MEMBAR_HOST_CXX、MEMBAR_LINKER：指定自定义编译器或链接器。
+  留空时自动从 MEMBAR_CANN_ROOT 下查找 ccec、bisheng 和 ld.lld。
+
+修改后，在结果根目录加载这一份配置：
+  cd /你的路径/membar_results
+  source ./set_env.sh
+
+set_env.sh 会加载 CANN 环境，并设置编译目标、模拟型号和运行库路径。
+不需要再加载各 case 的历史 run_output/run_simexec_env.sh；它们保留原始环境记录。
+
+2. 运行 SwiGLU Grad U6
+
+在已经 source set_env.sh 的同一个终端中执行：
+  python3 swiglu_grad/u6/camodel_case/run.py --out-dir /tmp/swiglu_grad_u6_run1
+
+脚本按顺序编译 host、编译 CCE、链接 kernel、执行 CAModel，然后对两个输出做 golden 校验。
+成功时终端显示 "passed": true。输出目录必须为空或尚不存在，并位于归档目录之外。
+再次运行时换一个目录名，例如 /tmp/swiglu_grad_u6_run2。
+
+Windows E 盘上的当前目录，在 WSL 中可以直接运行：
+  cd /mnt/e/VfSimulator/results/membar_results
+  source ./set_env.sh
+  python3 swiglu_grad/u6/camodel_case/run.py --out-dir /tmp/swiglu_grad_u6_run1
+
+输出文件位于 /tmp/swiglu_grad_u6_run1：
+  validation.json：两个输出的 golden 精度校验结果。
+  host_build.log、compile.log、link.log：构建日志，构建失败时查看相应文件。
+  camodel.log：CAModel 运行日志。
+  core0.veccore0.instr_log.dump、core0.veccore0.instr_popped_log.dump：指令流水日志。
+  input*.bin、output*.bin、golden*.bin：本次执行的输入、输出与 golden。
+
+查看 VF 周期：
+  grep 'vf_execute_time' /tmp/swiglu_grad_u6_run1/core0.veccore0.instr_log.dump
+该 U6 版本的历史 CAModel 时间为 3281 cycles；重跑时以新日志为准。
+
+3. 只查看命令或检查历史精度
+
+查看将执行的构建与运行命令，不进行编译或仿真：
+  python3 swiglu_grad/u6/camodel_case/run.py --dry-run
+只核验已保存的输出与 golden，不需要 CANN，也不需要 source set_env.sh：
+  python3 swiglu_grad/u6/camodel_case/run.py --check-archived
+同一终端里运行其他 case 时，替换 run.py 路径即可；无需重新修改环境配置。
+--toolkit <CANN目录> 可单次覆盖集中配置中的 CANN 路径。
+
+归档材料说明
+------------
+每个版本的 camodel_case/README.txt 和 case.json 说明材料来源、运行入口和缺失项。
+FlashAttention Grad 的原临时目录仍在，已完整复制；较早实验从仓库保留材料恢复，
+原编译产物缺失时明确标记。Softmax 旧版本没有保存 input/output/golden 数据，
+其历史精度证据保留在原报告中；重跑时由 host 重新生成输入和 golden。
+run_output/ 保存历史运行材料；original_scripts/ 保留原实验脚本及历史路径。
+独立 run.py 使用用例内的源码和 host，不依赖 VfSimulator 预测 API。
+进入任一 camodel_case/ 后，也可从该目录加载集中配置并运行：
+  source ../../../set_env.sh
+  python3 run.py --dry-run
+  python3 run.py --check-archived
+  python3 run.py --out-dir /tmp/自定义重跑目录
+本次补齐为材料归档，没有重新运行 CAModel，也没有刷新表中的周期或 IPC。
+metadata/camodel_cases.json 为各版本材料完整性清单。
+远程发布时，超过 GitHub 单文件限制的附带 VfSim 历史 JSON 以 .gz 无损压缩保存。
+metadata/manifest.json 记录压缩文件校验值及原始文件路径、原始 SHA-256。
+该文件不是 CAModel 运行或查看报告的依赖；需要原文件时可执行 gzip -dk <文件名>.gz。
+本机 E 盘原始文件保留，压缩处理仅用于远程发布副本。
+
+FlashAttention Grad 前段新增 7 个版本，包含集中加载 U2 的 compiler spill、
+原序直接 U2、生命周期重排与三个 bank-aware 预取窗口。
+228 cycle 为重排后 CAModel 实测；306 cycle 为保留 spill 的局部依赖假设性预测。
+228/306 约为 74.51%，只是跨口径的耗时数值比较，不是已验证的硬件加速比。
+同指令流的模型内同步收益比较为全局 3208 / 局部 306，约 10.48 倍。
 
 发生 spill 的版本中的 source/hardware_equivalent.cce 是实际底层硬件 VF 计算、
 UB 访存及同步指令流的等效表达，已补入寄存器溢出引入的保存、重载和 mem_bar。
@@ -33,6 +127,11 @@ UB 访存及同步指令流的等效表达，已补入寄存器溢出引入的�
   python scripts/validate_hardware_cce.py --vfsim-root <VfSimulator路径>
   python scripts/verify_gelu_hardware_numerics.py --vfsim-root <VfSimulator路径>
   python scripts/build_archive.py --vfsim-root <VfSimulator路径>
+  python scripts/add_flash_attention_grad_front.py --vfsim-root <VfSimulator路径>
+  python scripts/bundle_camodel_cases.py --vfsim-root <VfSimulator路径>
+
+add_flash_attention_grad_front.py 只更新该 case，不重建其余历史实验。
+bundle_camodel_cases.py 按 manifest 的原始日志来源补齐用例目录，并核对材料与报告日志一致。
 
 build_archive.py 和数值核查需要原实验数据；这些数据不是打开报告的依赖。
 数值核查还需要 NumPy，前端核查需要 VfSimulator 自身的 Python 依赖。

@@ -1,0 +1,96 @@
+{
+  "case": "flash_attention_grad_front",
+  "camodel": 228,
+  "vfsim_source": 204,
+  "accuracy_percent": 89.47368421052632,
+  "validation": {
+    "passed": true,
+    "expected": [
+      -54.250947782615754,
+      -83.16155641142767,
+      -22.22546528908793,
+      0.9986719073051343,
+      10.063516298739259,
+      -12.30244004130293,
+      -22.666678096216383,
+      -9.329421709887528
+    ],
+    "actual": [
+      -54.250946044921875,
+      -83.16155242919922,
+      -22.225467681884766,
+      0.9986696243286133,
+      10.063518524169922,
+      -12.302434921264648,
+      -22.666675567626953,
+      -9.329418182373047
+    ],
+    "absolute_errors": [
+      1.7376938785673701e-06,
+      3.982228449217473e-06,
+      2.3927968371140196e-06,
+      2.2829765210508057e-06,
+      2.225430662861072e-06,
+      5.120038281347661e-06,
+      2.5285894302840006e-06,
+      3.527514481405092e-06
+    ],
+    "atol": 2e-06,
+    "rtol": 0.0002,
+    "guard_mismatches": [],
+    "reference": "independent double-precision row dot products"
+  },
+  "hardware_op_counts": {
+    "RV_SMOV": 25,
+    "RV_PSET": 1,
+    "RV_VLOOPv2": 1,
+    "RV_VLDI": 192,
+    "RV_VMUL": 96,
+    "RV_VADD": 88,
+    "RV_VCADD": 8,
+    "RV_VSTUI": 8,
+    "RV_SEND": 1,
+    "RV_VSTAI": 1
+  },
+  "source_sha256": "dd014e111ab22ea5181836400239c8ffa0930eae5f56f299ac98df46815b36d8",
+  "model_branch": "MultiSoC-membar",
+  "model_commit": "1ff6ada",
+  "soc": "dav-3510",
+  "kernel_scope": "extracted VF, not complete operator",
+  "requested_unroll": 2,
+  "unroll_method": "manual_bank_interleaved",
+  "instruction_schedule": "bank_window",
+  "bank_prefetch_leaf_window": 1,
+  "vfsim_hardware": 204,
+  "hardware_accuracy_percent": 89.47368421052632,
+  "scalar_instructions_not_modeled": {
+    "RV_SMOV": 25
+  },
+  "hardware_equivalent_scope": "vector / predicate / LSU / membar; scalar timing excluded",
+  "alignment_audit": {
+    "opcode_order_equal": true,
+    "register_dependency_graph_equal": true,
+    "numerical_replay_pass": true,
+    "ordinary_dynamic_count": 394,
+    "vector_registers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "predicate_registers": [
+      1
+    ],
+    "camodel_first_load_relative_cycle": 45,
+    "model_first_load_cycle": 23,
+    "compiler_spill_detected": false
+  }
+}

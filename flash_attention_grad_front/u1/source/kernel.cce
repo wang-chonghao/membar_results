@@ -1,0 +1,101 @@
+#define __aicore__ [aicore]
+// CastAligned768F32VF768: eight independent rows, preserve its add tree.
+__attribute__((always_inline)) inline [aicore] void candidate_vf(
+    __ubuf__ float *src, __ubuf__ float *grad, __ubuf__ float *dst) {
+    __ubuf__ float *s0 = src + 0;
+    __ubuf__ float *g0 = grad + 0;
+    __ubuf__ float *s1 = src + 64;
+    __ubuf__ float *g1 = grad + 64;
+    __ubuf__ float *s2 = src + 128;
+    __ubuf__ float *g2 = grad + 128;
+    __ubuf__ float *s3 = src + 192;
+    __ubuf__ float *g3 = grad + 192;
+    __ubuf__ float *s4 = src + 256;
+    __ubuf__ float *g4 = grad + 256;
+    __ubuf__ float *s5 = src + 320;
+    __ubuf__ float *g5 = grad + 320;
+    __ubuf__ float *s6 = src + 384;
+    __ubuf__ float *g6 = grad + 384;
+    __ubuf__ float *s7 = src + 448;
+    __ubuf__ float *g7 = grad + 448;
+    __ubuf__ float *s8 = src + 512;
+    __ubuf__ float *g8 = grad + 512;
+    __ubuf__ float *s9 = src + 576;
+    __ubuf__ float *g9 = grad + 576;
+    __ubuf__ float *s10 = src + 640;
+    __ubuf__ float *g10 = grad + 640;
+    __ubuf__ float *s11 = src + 704;
+    __ubuf__ float *g11 = grad + 704;
+    __VEC_SCOPE__ {
+        vector_bool all = pset_b32(PAT_ALL);
+        vector_align state;
+        vector_f32 vs0, vs1, vs2, vs3, vs4, vs5, vs6, vs7, vs8, vs9, vs10, vs11, vg0, vg1, vg2, vg3, vg4, vg5, vg6, vg7, vg8, vg9, vg10, vg11, mul0, mul1, mul2, mul3, mul4, mul5, mul6, mul7, mul8, mul9, mul10, mul11, add0, add1, add2, add3, add4, add5, add6, add7, add8, add9, add10, sum;
+        #pragma unroll(1)
+        for (int row = 0; row < 8; ++row) {
+            vlds(vs0, s0, 768, NORM, POST_UPDATE);
+            vlds(vg0, g0, 768, NORM, POST_UPDATE);
+            vlds(vs1, s1, 768, NORM, POST_UPDATE);
+            vlds(vg1, g1, 768, NORM, POST_UPDATE);
+            vlds(vs2, s2, 768, NORM, POST_UPDATE);
+            vlds(vg2, g2, 768, NORM, POST_UPDATE);
+            vlds(vs3, s3, 768, NORM, POST_UPDATE);
+            vlds(vg3, g3, 768, NORM, POST_UPDATE);
+            vlds(vs4, s4, 768, NORM, POST_UPDATE);
+            vlds(vg4, g4, 768, NORM, POST_UPDATE);
+            vlds(vs5, s5, 768, NORM, POST_UPDATE);
+            vlds(vg5, g5, 768, NORM, POST_UPDATE);
+            vlds(vs6, s6, 768, NORM, POST_UPDATE);
+            vlds(vg6, g6, 768, NORM, POST_UPDATE);
+            vlds(vs7, s7, 768, NORM, POST_UPDATE);
+            vlds(vg7, g7, 768, NORM, POST_UPDATE);
+            vlds(vs8, s8, 768, NORM, POST_UPDATE);
+            vlds(vg8, g8, 768, NORM, POST_UPDATE);
+            vlds(vs9, s9, 768, NORM, POST_UPDATE);
+            vlds(vg9, g9, 768, NORM, POST_UPDATE);
+            vlds(vs10, s10, 768, NORM, POST_UPDATE);
+            vlds(vg10, g10, 768, NORM, POST_UPDATE);
+            vlds(vs11, s11, 768, NORM, POST_UPDATE);
+            vlds(vg11, g11, 768, NORM, POST_UPDATE);
+            vmul(mul0, vg0, vs0, all, MODE_ZEROING);
+            vmul(mul1, vg1, vs1, all, MODE_ZEROING);
+            vmul(mul2, vg2, vs2, all, MODE_ZEROING);
+            vmul(mul3, vg3, vs3, all, MODE_ZEROING);
+            vmul(mul4, vg4, vs4, all, MODE_ZEROING);
+            vmul(mul5, vg5, vs5, all, MODE_ZEROING);
+            vmul(mul6, vg6, vs6, all, MODE_ZEROING);
+            vmul(mul7, vg7, vs7, all, MODE_ZEROING);
+            vmul(mul8, vg8, vs8, all, MODE_ZEROING);
+            vmul(mul9, vg9, vs9, all, MODE_ZEROING);
+            vmul(mul10, vg10, vs10, all, MODE_ZEROING);
+            vmul(mul11, vg11, vs11, all, MODE_ZEROING);
+            vadd(add0, mul0, mul11, all, MODE_ZEROING);
+            vadd(add1, mul1, mul10, all, MODE_ZEROING);
+            vadd(add2, mul2, mul9, all, MODE_ZEROING);
+            vadd(add3, mul3, mul8, all, MODE_ZEROING);
+            vadd(add4, mul4, mul7, all, MODE_ZEROING);
+            vadd(add5, mul5, mul6, all, MODE_ZEROING);
+            vadd(add6, add0, add5, all, MODE_ZEROING);
+            vadd(add7, add1, add4, all, MODE_ZEROING);
+            vadd(add8, add2, add3, all, MODE_ZEROING);
+            vadd(add9, add6, add8, all, MODE_ZEROING);
+            vadd(add10, add9, add7, all, MODE_ZEROING);
+            vcadd(sum, add10, all, MODE_ZEROING);
+            vstus(state, 1, sum, dst, POST_UPDATE);
+        }
+        vstas(state, dst, 0, POST_UPDATE);
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ float *input, __gm__ float *output) {
+    __ubuf__ float *src = (__ubuf__ float *)get_imm(0);
+    __ubuf__ float *grad = (__ubuf__ float *)get_imm(0x8000);
+    __ubuf__ float *dst = (__ubuf__ float *)get_imm(0x10000);
+    copy_gm_to_ubuf_align_v2(src, input, 0, 1, 24576, 0, 0, 0, 0, 0, 0);
+    copy_gm_to_ubuf_align_v2(grad, input + 6144, 0, 1, 24576, 0, 0, 0, 0, 0, 0);
+    copy_gm_to_ubuf_align_v2(dst, input + 12288, 0, 1, 64, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(src, grad, dst);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output, dst, 0, 1, 64, 0, 0, 0);
+}

@@ -12,6 +12,7 @@
   let chart;
   let selected;
   let overlay = false;
+  document.querySelector('.archive-badge').textContent = `${data.cases.length} 个 case · ${data.cases.reduce((n,c)=>n+c.variants.length,0)} 个版本`;
 
   Chart.defaults.font.family = 'system-ui, "Microsoft YaHei", sans-serif';
   Chart.defaults.font.size = 12;
@@ -46,32 +47,50 @@
       <div class="stats"><div class="stat"><label>实验 case</label><strong>${data.cases.length}</strong><small>阶段同步 / 向量 spill / 谓词 spill / 循环切分</small></div><div class="stat"><label>有效源码版本</label><strong>${variants.length}</strong><small>均包含 CCE 和两份 CAModel 原始日志</small></div><div class="stat"><label>数值校验</label><strong>全部通过</strong><small>来自原实验的 golden 或独立验证记录</small></div><div class="stat green"><label>Softmax 模型内收益</label><strong>1.22x</strong><small>638 → 524 cycle，同一动态指令流</small></div></div>
       <section class="section"><div class="section-head"><h2>代表版本时间对比</h2><a href="comparison.csv" download>下载全部版本</a></div><div class="table-scroll"><table class="overview-table"><thead><tr><th>Case / 版本</th><th class="num">CAModel</th><th class="num">全局预测</th><th class="num">局部预测</th><th class="num">全局精度</th><th class="num">模型内加速</th></tr></thead><tbody>${rows}</tbody></table></div></section>
       <section class="section"><div class="section-head"><h2>代表版本周期</h2><button class="text-link" id="export-plot">导出图表 PNG</button></div><div class="plot-surface"><div class="plot overview-plot"><canvas id="ipc-chart" aria-label="代表版本周期对比图" role="img"></canvas></div></div></section>
-      <div class="note"><p>寄存器溢出的 7 个版本均已提供 <strong>hardware_equivalent.cce</strong>：这是根据实际硬件日志还原的 VF 执行指令流的等效 CCE，已补齐编译器插入的保存、重载和 mem_bar。<a href="metadata/hardware_equivalent_index.json">查看等效代码清单</a>。</p><p>GeLU Poly、SwiGLU Grad、AdamApplyOne 的 spill 收益采用编译后 PC 回放进行同流 A/B；GeLU Grad 保留显式 spill 实验源码及按对应日志还原的代码。原始算法源码仍单独保留。</p></div>`;
+      <div class="note"><p>寄存器溢出的 ${variants.filter(v=>v.hardware_equivalent).length} 个版本均已提供 <strong>hardware_equivalent.cce</strong>：这是根据实际硬件日志还原的 VF 执行指令流的等效 CCE，已补齐编译器插入的保存、重载和 mem_bar。<a href="metadata/hardware_equivalent_index.json">查看等效代码清单</a>。</p><p>GeLU Poly、SwiGLU Grad、AdamApplyOne 与 FlashAttention Grad 前段的 spill 收益采用编译后 PC 回放进行同流 A/B；GeLU Grad 保留显式 spill 实验源码及按对应日志还原的代码。原始算法源码仍单独保留。</p></div>`;
     draw([{label:'CAModel 实测',color:'#344251',values:data.cases.map(c=>defaultVariant(c).camodel)},
       {label:'VfSim 全局同步',color:'#2376b8',values:data.cases.map(c=>defaultVariant(c).global_cycles)},
       {label:'VfSim 局部依赖',color:'#18846d',values:data.cases.map(c=>defaultVariant(c).local_cycles)}],true);
     bindExport('membar_overview');
   }
 
-  function tableRow(v) {
-    return `<tr class="${v.id===selected.id ? 'selected' : ''}" data-variant="${v.id}"><td><button class="table-link" data-select="${v.id}">${escape(v.label)}</button></td><td class="num">${number(v.camodel)}</td><td class="num">${number(v.source_cycles)}</td><td class="num">${number(v.global_cycles)}</td><td class="num">${number(v.local_cycles)}</td><td class="num">${percent(v.accuracy)}</td><td class="num">${v.speedup ? v.speedup.toFixed(2)+'x' : '—'}</td><td class="num">${v.vector_store}/${v.vector_load}</td><td class="num">${v.predicate_store}/${v.predicate_load}</td><td class="num">${v.membars}</td></tr>`;
+  function tableRow(v, columns) {
+    return `<tr class="${v.id===selected.id ? 'selected' : ''}" data-variant="${v.id}"><td><button class="table-link" data-select="${v.id}">${escape(v.label)}</button></td><td class="num">${number(v.camodel)}</td><td class="num">${number(v.source_cycles)}</td><td class="num">${number(v.global_cycles)}</td><td class="num">${number(v.local_cycles)}</td><td class="num">${percent(v.accuracy)}</td><td class="num">${v.speedup ? v.speedup.toFixed(2)+'x' : '—'}</td><td class="num">${v.vector_store}/${v.vector_load}</td><td class="num">${v.predicate_store}/${v.predicate_load}</td><td class="num">${v.membars}</td>${columns.map(c=>`<td class="num">${number(v[c.key])}</td>`).join('')}</tr>`;
+  }
+
+  function variantTable(item) {
+    const columns=item.metrics_columns||[];
+    return `<section class="section"><div class="section-head"><h2>各版本结果</h2><a href="${item.id}/summary.json">结果与来源</a></div><div class="table-scroll"><table class="result-table"><thead><tr><th>版本</th><th class="num">CAModel</th><th class="num">源码预测</th><th class="num">全局预测</th><th class="num">局部预测</th><th class="num">全局精度</th><th class="num">模型内加速</th><th class="num">Vector 写/读</th><th class="num">Predicate 写/读</th><th class="num">Membar</th>${columns.map(c=>`<th class="num">${escape(c.label)}</th>`).join('')}</tr></thead><tbody>${item.variants.map(v=>tableRow(v,columns)).join('')}</tbody></table></div><p class="plot-caption">spill 与 Membar 数量均为动态次数。全局预测优先采用含 spill 的回放；未 spill 档位使用源码或等效指令流输入。源码预测缺失 spill 的档位不计算全局精度。</p></section>`;
+  }
+
+  function comparisonSection(item) {
+    if(!item.comparison)return '';
+    const comparison=item.comparison;
+    return `<section class="section"><h2>${escape(comparison.title)}</h2><div class="table-scroll"><table><thead><tr><th>方案</th><th class="num">Cycle</th><th>口径</th></tr></thead><tbody>${comparison.rows.map(r=>`<tr><td>${escape(r.label)}</td><td class="num">${number(r.cycles)}</td><td>${escape(r.basis)}</td></tr>`).join('')}</tbody></table></div><div class="note"><p>${escape(comparison.note)}</p></div></section>`;
+  }
+
+  function overlayFigureLink(item) {
+    if(!item.overlay)return '';
+    const path=item.overlay_figure||'gelu_grad_three_stage/figures/camodel_u1_u4_three_stage.png';
+    const label=item.overlay_figure_label||'U1 / U4 / 三段循环实测叠图';
+    return `<li><a href="${path}">${escape(label)} · PNG</a></li>`;
   }
 
   function renderCase(item, variant = defaultVariant(item)) {
     selected=variant;
     title.textContent=item.title;
     const v=selected;
-    const hardware=v.hardware_equivalent ? `<section class="hardware-code"><h2>实际底层硬件执行指令流 · 等效 CCE</h2><p><a class="hardware-file" href="${v.hardware_equivalent.path}">hardware_equivalent.cce</a><a href="${v.hardware_equivalent.mapping}">PC 与指令数量核对</a></p><p>这份代码对应本版本 CAModel 日志中实际执行的 VF 计算、UB 读写及同步序列，已补入溢出后编译器插入的 VLDS/VSTS、${v.predicate_store ? 'PLDS/PSTS、' : ''}mem_bar，保留指令顺序、寄存器复用和循环次数。</p><p class="muted">标量地址计算效果已折入指针及立即数；原始标量指令仍见日志。表中预测时间沿用原实验的预测输入，新归档的等效代码未重新编译或重新预测。</p></section>` : '';
+    const hardwareTiming=v.hardware_equivalent?.prediction_used ? '表中预测使用此等效指令流，已核对动态指令、寄存器依赖和访存地址。' : '表中预测时间沿用原实验的预测输入，新归档的等效代码未重新编译或重新预测。';
+    const hardware=v.hardware_equivalent ? `<section class="hardware-code"><h2>实际底层硬件执行指令流 · 等效 CCE</h2><p><a class="hardware-file" href="${v.hardware_equivalent.path}">hardware_equivalent.cce</a><a href="${v.hardware_equivalent.mapping}">PC 与指令数量核对</a></p><p>这份代码对应本版本 CAModel 日志中实际执行的 VF 计算、UB 读写及同步序列，已补入溢出后编译器插入的 VLDS/VSTS、${v.predicate_store ? 'PLDS/PSTS、' : ''}mem_bar，保留指令顺序、寄存器复用和循环次数。</p><p class="muted">标量地址计算效果已折入指针及立即数；原始标量指令仍见日志。${escape(hardwareTiming)}</p></section>` : '';
     view.innerHTML=`<p class="lede">${escape(item.headline)}</p><p class="shape">${escape(item.shape)}</p>
       <div class="stats"><div class="stat"><label>CAModel 实测</label><strong>${number(v.camodel)}</strong><small>${escape(v.label)}</small></div><div class="stat"><label>VfSim 全局同步</label><strong>${number(v.global_cycles)}</strong><small>${v.accuracy==null ? '该源码预测缺少编译器 spill' : '精度 '+percent(v.accuracy)}</small></div><div class="stat green"><label>VfSim 局部依赖</label><strong>${number(v.local_cycles)}</strong><small>${v.speedup ? '模型内加速 '+v.speedup.toFixed(2)+'x' : '此版本没有同流局部 A/B 记录'}</small></div><div class="stat"><label>数值校验</label><strong>通过</strong><small>原实验 golden / 独立核查</small></div></div>
-      ${hardware}
-      <section class="section"><div class="section-head"><h2>各版本结果</h2><a href="${item.id}/summary.json">结果与来源</a></div><div class="table-scroll"><table class="result-table"><thead><tr><th>版本</th><th class="num">CAModel</th><th class="num">源码预测</th><th class="num">全局预测</th><th class="num">局部预测</th><th class="num">全局精度</th><th class="num">加速</th><th class="num">Vector 写/读</th><th class="num">Predicate 写/读</th><th class="num">Membar</th></tr></thead><tbody>${item.variants.map(tableRow).join('')}</tbody></table></div><p class="plot-caption">spill 与 Membar 数量均为动态次数。全局预测优先采用含 spill 的回放；未 spill 档位使用源码输入。源码预测缺失 spill 的档位不计算全局精度。</p></section>
+      ${hardware}${comparisonSection(item)}${variantTable(item)}
       <section class="section"><div class="section-head"><h2>计算完成 IPC</h2><div class="toolbar"><label for="variant-select" class="muted">版本</label><select id="variant-select">${item.variants.map(x=>`<option value="${x.id}" ${x.id===v.id ? 'selected' : ''}>${escape(x.label)}</option>`).join('')}</select></div></div>
-      <div class="section-head">${item.overlay ? `<div class="mode-picker"><label><input type="radio" name="plot-mode" value="single" ${!overlay?'checked':''}>本版本模式对比</label><label><input type="radio" name="plot-mode" value="overlay" ${overlay?'checked':''}>循环切分实测对比</label></div>` : '<span></span>'}<button class="text-link" id="export-plot">导出图表 PNG</button></div>
+      <div class="section-head">${item.overlay ? `<div class="mode-picker"><label><input type="radio" name="plot-mode" value="single" ${!overlay?'checked':''}>本版本模式对比</label><label><input type="radio" name="plot-mode" value="overlay" ${overlay?'checked':''}>${escape(item.overlay_label||'循环切分实测对比')}</label></div>` : '<span></span>'}<button class="text-link" id="export-plot">导出图表 PNG</button></div>
       <div class="plot-surface"><div class="plot"><canvas id="ipc-chart" role="img" aria-label="${escape(item.title)} 计算完成 IPC"></canvas></div><p class="plot-caption">${escape(data.ipc_method)} 共用时间标尺保留不同阶段间的空泡。</p></div></section>
       <div class="chips"><span>Vector spill：<strong>${v.vector_store} 写 / ${v.vector_load} 读</strong></span><span>Predicate spill：<strong>${v.predicate_store} 写 / ${v.predicate_load} 读</strong></span><span>动态 Membar：<strong>${v.membars}</strong></span></div>
       <div class="note"><p>${escape(v.note)}</p>${item.notes.map(n=>`<p>${escape(n)}</p>`).join('')}</div>
-      <section class="section"><h2>源码与 CAModel 日志</h2><div class="files"><div><h3>CCE 与结果</h3><ul class="file-list">${v.sources.map(s=>`<li><a href="${s.path}">${escape(s.label)} · ${escape(s.path.split('/').pop())}</a></li>`).join('')}<li><a href="${item.id}/${v.id}/figures/ipc.png">本版本 IPC 图 · PNG</a></li>${item.overlay ? '<li><a href="gelu_grad_three_stage/figures/camodel_u1_u4_three_stage.png">U1 / U4 / 三段循环实测叠图 · PNG</a></li>' : ''}</ul><a href="${item.id}/${v.id}/result.json">本版本元数据与 IPC 数据</a></div><div><h3>原始日志</h3><ul class="file-list">${v.logs.map(p=>`<li><a href="${p}">${escape(p.split('/').pop())}</a></li>`).join('')}</ul><details><summary>校验与实验记录</summary><ul class="file-list">${v.evidence.map(p=>`<li><a href="${p}">${escape(p.split('/').pop())}</a></li>`).join('')}</ul></details></div></div></section>`;
+      <section class="section"><h2>源码与 CAModel 日志</h2><div class="files"><div><h3>CCE 与结果</h3><ul class="file-list">${v.sources.map(s=>`<li><a href="${s.path}">${escape(s.label)} · ${escape(s.path.split('/').pop())}</a></li>`).join('')}<li><a href="${item.id}/${v.id}/figures/ipc.png">本版本 IPC 图 · PNG</a></li>${overlayFigureLink(item)}</ul><a href="${item.id}/${v.id}/result.json">本版本元数据与 IPC 数据</a></div><div><h3>原始日志</h3><ul class="file-list">${v.logs.map(p=>`<li><a href="${p}">${escape(p.split('/').pop())}</a></li>`).join('')}</ul><details><summary>校验与实验记录</summary><ul class="file-list">${v.evidence.map(p=>`<li><a href="${p}">${escape(p.split('/').pop())}</a></li>`).join('')}</ul></details></div></div></section>`;
     updateCasePlot(item);
     view.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',()=>renderCase(item,item.variants.find(x=>x.id===b.dataset.select))));
     document.getElementById('variant-select').addEventListener('change',e=>renderCase(item,item.variants.find(x=>x.id===e.target.value)));
@@ -83,7 +102,8 @@
     let series=selected.series;
     if(item.overlay && overlay) {
       const colors=['#344251','#2376b8','#18846d'];
-      series=item.variants.map((v,i)=>({...v.series.find(s=>s.key==='camodel'),label:v.label,color:colors[i]}));
+      const variants=item.overlay_variant_ids ? item.overlay_variant_ids.map(id=>item.variants.find(v=>v.id===id)) : item.variants;
+      series=variants.map((v,i)=>({...v.series.find(s=>s.key==='camodel'),label:v.label,color:colors[i%colors.length]}));
     }
     draw(series);
   }
@@ -101,7 +121,7 @@
     const id=location.hash.slice(1)||'overview';
     const item=data.cases.find(c=>c.id===id);
     nav.querySelectorAll('a').forEach(a=>{const active=a.dataset.case===(item ? id : 'overview');a.classList.toggle('active',active);active ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current');});
-    overlay=!!item?.overlay;
+    overlay=!!item?.overlay && item?.overlay_default!==false;
     item ? renderCase(item) : overview();
   }
   window.addEventListener('hashchange',route);

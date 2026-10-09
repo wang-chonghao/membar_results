@@ -1,0 +1,997 @@
+[info] 1154 Icache create a req, pc:0x13b4c200, Id:1, warpId:0, setIdx:4, tagAddr:0x13b4c, type:3, vfId:104
+[info] 1155 Icache create a req, pc:0x13b4c280, Id:2, warpId:0, setIdx:5, tagAddr:0x13b4c, type:3, vfId:104
+[info] 1156 Icache create a req, pc:0x13b4c300, Id:3, warpId:0, setIdx:6, tagAddr:0x13b4c, type:3, vfId:104
+[info] 1156 prefetch MISS req send to misq, pc:0x13b4c200,id:1, setIdx:4, allocate:1
+[info] 1157 prefetch MISS req send to misq, pc:0x13b4c280,id:2, setIdx:5, allocate:1
+[info] 1157 Update missInfoBuf, pc:0x13b4c200, misqEntry:0, id:1
+[info] 1157 Allocate new Misq entry, pc:0x13b4c200, entryId:0, id:1, send to tagArb:1
+[info] 1158 Icache InvalidHitInfoBuf, req_addr:0x13b4c200, hitInfoAddr:0x0, tag_addr:0x0, setIdx:4, wayId:0
+[info] 1158 linefill update tagRam, pc:0x13b4c200, setIdx:4, wayId:0, pending:1, instrId:1, vfId:104
+[info] 1158 prefetch MISS req send to misq, pc:0x13b4c300,id:3, setIdx:6, allocate:1
+[info] 1158 Update missInfoBuf, pc:0x13b4c280, misqEntry:1, id:2
+[info] 1158 Allocate new Misq entry, pc:0x13b4c280, entryId:1, id:2, send to tagArb:1
+[info] 1158 send Read biu Req, addr:0x13b4c200, misqId:0, gid: 556
+[info] 1159 Icache InvalidHitInfoBuf, req_addr:0x13b4c280, hitInfoAddr:0x0, tag_addr:0x0, setIdx:5, wayId:0
+[info] 1159 linefill update tagRam, pc:0x13b4c280, setIdx:5, wayId:0, pending:1, instrId:2, vfId:104
+[info] 1159 Update missInfoBuf, pc:0x13b4c300, misqEntry:2, id:3
+[info] 1159 Allocate new Misq entry, pc:0x13b4c300, entryId:2, id:3, send to tagArb:1
+[info] 1159 send Read biu Req, addr:0x13b4c280, misqId:1, gid: 558
+[info] 1160 Icache InvalidHitInfoBuf, req_addr:0x13b4c300, hitInfoAddr:0x0, tag_addr:0x0, setIdx:6, wayId:0
+[info] 1160 linefill update tagRam, pc:0x13b4c300, setIdx:6, wayId:0, pending:1, instrId:3, vfId:104
+[info] 1160 send Read biu Req, addr:0x13b4c300, misqId:2, gid: 560
+[info] 1933 recv Read biu Rsp, addr:0x13b4c280, misqId:1, gid: 558
+[info] 1933 rsp send to dataArb:1, req pc:0x13b4c280,type:1
+[info] 1934 finish linefill, req pc:0x13b4c280, setIdx:5, wayId:0, pend:0, misqId:1
+[info] 1938 recv Read biu Rsp, addr:0x13b4c200, misqId:0, gid: 556
+[info] 1938 rsp send to dataArb:1, req pc:0x13b4c200,type:1
+[info] 1939 finish linefill, req pc:0x13b4c200, setIdx:4, wayId:0, pend:0, misqId:0
+[info] 2101 recv Read biu Rsp, addr:0x13b4c300, misqId:2, gid: 560
+[info] 2101 flush missInfoBuf, pc:0x13b4c300
+[info] 2101 rsp send to dataArb:1, req pc:0x13b4c300,type:1
+[info] 2102 finish linefill, req pc:0x13b4c300, setIdx:6, wayId:0, pend:0, misqId:2
+[info] 4025 Icache create a req, pc:0x13b4c200, Id:4, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4026 Icache create a req, pc:0x13b4c220, Id:5, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4027 instr req lookup tag HIT, req pc:0x13b4c200, id:4, setIdx:4, wayId:0, vfId:0
+[info] 4027 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4027 match hit info buffer, id:6, pc:0x13b4c240, wayIdx:0
+[info] 4027 Icache create a req, pc:0x13b4c240, Id:6, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4028 instr req lookup tag HIT, req pc:0x13b4c220, id:5, setIdx:4, wayId:0, vfId:0
+[info] 4028 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4028 match hit info buffer, id:7, pc:0x13b4c260, wayIdx:0
+[info] 4028 Icache create a req, pc:0x13b4c260, Id:7, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4028 send req back to ifu, pc:0x13b4c200, id:4.
+[info] 4029 Icache create a req, pc:0x13b4c280, Id:8, warpId:0, setIdx:5, tagAddr:0x13b4c, type:3, vfId:0
+[info] 4029 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:6, setIdx:4, wayId:0, vfId:0
+[info] 4029 send req back to ifu, pc:0x13b4c220, id:5.
+[info] 4030 Icache create a req, pc:0x13b4c300, Id:9, warpId:0, setIdx:6, tagAddr:0x13b4c, type:3, vfId:0
+[info] 4030 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:7, setIdx:4, wayId:0, vfId:0
+[info] 4030 send req back to ifu, pc:0x13b4c240, id:6.
+[info] 4031 prefetch HIT req , pc:0x13b4c280,id:8, setIdx:5, wayId:0, vfId:0
+[info] 4031 send req back to ifu, pc:0x13b4c260, id:7.
+[info] 4032 prefetch HIT req , pc:0x13b4c300,id:9, setIdx:6, wayId:0, vfId:0
+[info] 4033 Icache create a req, pc:0x13b4c280, Id:10, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4035 instr req lookup tag HIT, req pc:0x13b4c280, id:10, setIdx:5, wayId:0, vfId:0
+[info] 4035 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4035 match hit info buffer, id:11, pc:0x13b4c2a0, wayIdx:0
+[info] 4035 Icache create a req, pc:0x13b4c2a0, Id:11, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4036 match hit info buffer, id:12, pc:0x13b4c2c0, wayIdx:0
+[info] 4036 Icache create a req, pc:0x13b4c2c0, Id:12, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4036 send req back to ifu, pc:0x13b4c280, id:10.
+[info] 4037 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:11, setIdx:5, wayId:0, vfId:0
+[info] 4038 match hit info buffer, id:13, pc:0x13b4c2e0, wayIdx:0
+[info] 4038 Icache create a req, pc:0x13b4c2e0, Id:13, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4038 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:12, setIdx:5, wayId:0, vfId:0
+[info] 4038 send req back to ifu, pc:0x13b4c2a0, id:11.
+[info] 4039 send req back to ifu, pc:0x13b4c2c0, id:12.
+[info] 4040 Icache create a req, pc:0x13b4c300, Id:14, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4040 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:13, setIdx:5, wayId:0, vfId:0
+[info] 4041 send req back to ifu, pc:0x13b4c2e0, id:13.
+[info] 4042 instr req lookup tag HIT, req pc:0x13b4c300, id:14, setIdx:6, wayId:0, vfId:0
+[info] 4042 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4042 match hit info buffer, id:15, pc:0x13b4c320, wayIdx:0
+[info] 4042 Icache create a req, pc:0x13b4c320, Id:15, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4043 send req back to ifu, pc:0x13b4c300, id:14.
+[info] 4044 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:15, setIdx:6, wayId:0, vfId:0
+[info] 4045 send req back to ifu, pc:0x13b4c320, id:15.
+[info] 4049 Icache create a req, pc:0x13b4c200, Id:16, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4050 Icache create a req, pc:0x13b4c220, Id:17, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4051 instr req lookup tag HIT, req pc:0x13b4c200, id:16, setIdx:4, wayId:0, vfId:0
+[info] 4051 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4051 match hit info buffer, id:18, pc:0x13b4c240, wayIdx:0
+[info] 4051 Icache create a req, pc:0x13b4c240, Id:18, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4052 instr req lookup tag HIT, req pc:0x13b4c220, id:17, setIdx:4, wayId:0, vfId:0
+[info] 4052 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4052 match hit info buffer, id:19, pc:0x13b4c260, wayIdx:0
+[info] 4052 Icache create a req, pc:0x13b4c260, Id:19, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4052 send req back to ifu, pc:0x13b4c200, id:16.
+[info] 4053 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:18, setIdx:4, wayId:0, vfId:0
+[info] 4053 send req back to ifu, pc:0x13b4c220, id:17.
+[info] 4054 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:19, setIdx:4, wayId:0, vfId:0
+[info] 4054 send req back to ifu, pc:0x13b4c240, id:18.
+[info] 4055 Icache create a req, pc:0x13b4c280, Id:20, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4055 send req back to ifu, pc:0x13b4c260, id:19.
+[info] 4057 instr req lookup tag HIT, req pc:0x13b4c280, id:20, setIdx:5, wayId:0, vfId:0
+[info] 4057 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4057 match hit info buffer, id:21, pc:0x13b4c2a0, wayIdx:0
+[info] 4057 Icache create a req, pc:0x13b4c2a0, Id:21, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4058 send req back to ifu, pc:0x13b4c280, id:20.
+[info] 4059 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:21, setIdx:5, wayId:0, vfId:0
+[info] 4060 send req back to ifu, pc:0x13b4c2a0, id:21.
+[info] 4068 match hit info buffer, id:22, pc:0x13b4c2c0, wayIdx:0
+[info] 4068 Icache create a req, pc:0x13b4c2c0, Id:22, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4070 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:22, setIdx:5, wayId:0, vfId:0
+[info] 4071 send req back to ifu, pc:0x13b4c2c0, id:22.
+[info] 4089 match hit info buffer, id:23, pc:0x13b4c2e0, wayIdx:0
+[info] 4089 Icache create a req, pc:0x13b4c2e0, Id:23, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4091 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:23, setIdx:5, wayId:0, vfId:0
+[info] 4092 send req back to ifu, pc:0x13b4c2e0, id:23.
+[info] 4096 Icache create a req, pc:0x13b4c300, Id:24, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4098 instr req lookup tag HIT, req pc:0x13b4c300, id:24, setIdx:6, wayId:0, vfId:0
+[info] 4098 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4098 match hit info buffer, id:25, pc:0x13b4c320, wayIdx:0
+[info] 4098 Icache create a req, pc:0x13b4c320, Id:25, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4099 send req back to ifu, pc:0x13b4c300, id:24.
+[info] 4100 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:25, setIdx:6, wayId:0, vfId:0
+[info] 4101 send req back to ifu, pc:0x13b4c320, id:25.
+[info] 4110 Icache create a req, pc:0x13b4c200, Id:26, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4111 Icache create a req, pc:0x13b4c220, Id:27, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4112 instr req lookup tag HIT, req pc:0x13b4c200, id:26, setIdx:4, wayId:0, vfId:0
+[info] 4112 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4112 match hit info buffer, id:28, pc:0x13b4c240, wayIdx:0
+[info] 4112 Icache create a req, pc:0x13b4c240, Id:28, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4113 instr req lookup tag HIT, req pc:0x13b4c220, id:27, setIdx:4, wayId:0, vfId:0
+[info] 4113 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4113 match hit info buffer, id:29, pc:0x13b4c260, wayIdx:0
+[info] 4113 Icache create a req, pc:0x13b4c260, Id:29, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4113 send req back to ifu, pc:0x13b4c200, id:26.
+[info] 4114 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:28, setIdx:4, wayId:0, vfId:0
+[info] 4114 send req back to ifu, pc:0x13b4c220, id:27.
+[info] 4115 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:29, setIdx:4, wayId:0, vfId:0
+[info] 4115 send req back to ifu, pc:0x13b4c240, id:28.
+[info] 4116 Icache create a req, pc:0x13b4c280, Id:30, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4116 send req back to ifu, pc:0x13b4c260, id:29.
+[info] 4118 instr req lookup tag HIT, req pc:0x13b4c280, id:30, setIdx:5, wayId:0, vfId:0
+[info] 4118 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4118 match hit info buffer, id:31, pc:0x13b4c2a0, wayIdx:0
+[info] 4118 Icache create a req, pc:0x13b4c2a0, Id:31, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4119 match hit info buffer, id:32, pc:0x13b4c2c0, wayIdx:0
+[info] 4119 Icache create a req, pc:0x13b4c2c0, Id:32, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4119 send req back to ifu, pc:0x13b4c280, id:30.
+[info] 4120 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:31, setIdx:5, wayId:0, vfId:0
+[info] 4121 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:32, setIdx:5, wayId:0, vfId:0
+[info] 4121 send req back to ifu, pc:0x13b4c2a0, id:31.
+[info] 4122 send req back to ifu, pc:0x13b4c2c0, id:32.
+[info] 4132 match hit info buffer, id:33, pc:0x13b4c2e0, wayIdx:0
+[info] 4132 Icache create a req, pc:0x13b4c2e0, Id:33, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4134 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:33, setIdx:5, wayId:0, vfId:0
+[info] 4135 send req back to ifu, pc:0x13b4c2e0, id:33.
+[info] 4140 Icache create a req, pc:0x13b4c300, Id:34, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4142 instr req lookup tag HIT, req pc:0x13b4c300, id:34, setIdx:6, wayId:0, vfId:0
+[info] 4142 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4143 send req back to ifu, pc:0x13b4c300, id:34.
+[info] 4146 match hit info buffer, id:35, pc:0x13b4c320, wayIdx:0
+[info] 4146 Icache create a req, pc:0x13b4c320, Id:35, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4148 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:35, setIdx:6, wayId:0, vfId:0
+[info] 4149 send req back to ifu, pc:0x13b4c320, id:35.
+[info] 4159 Icache create a req, pc:0x13b4c200, Id:36, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4160 Icache create a req, pc:0x13b4c220, Id:37, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4161 instr req lookup tag HIT, req pc:0x13b4c200, id:36, setIdx:4, wayId:0, vfId:0
+[info] 4161 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4161 match hit info buffer, id:38, pc:0x13b4c240, wayIdx:0
+[info] 4161 Icache create a req, pc:0x13b4c240, Id:38, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4162 instr req lookup tag HIT, req pc:0x13b4c220, id:37, setIdx:4, wayId:0, vfId:0
+[info] 4162 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4162 match hit info buffer, id:39, pc:0x13b4c260, wayIdx:0
+[info] 4162 Icache create a req, pc:0x13b4c260, Id:39, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4162 send req back to ifu, pc:0x13b4c200, id:36.
+[info] 4163 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:38, setIdx:4, wayId:0, vfId:0
+[info] 4163 send req back to ifu, pc:0x13b4c220, id:37.
+[info] 4164 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:39, setIdx:4, wayId:0, vfId:0
+[info] 4164 send req back to ifu, pc:0x13b4c240, id:38.
+[info] 4165 Icache create a req, pc:0x13b4c280, Id:40, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4165 send req back to ifu, pc:0x13b4c260, id:39.
+[info] 4167 instr req lookup tag HIT, req pc:0x13b4c280, id:40, setIdx:5, wayId:0, vfId:0
+[info] 4167 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4167 match hit info buffer, id:41, pc:0x13b4c2a0, wayIdx:0
+[info] 4167 Icache create a req, pc:0x13b4c2a0, Id:41, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4168 match hit info buffer, id:42, pc:0x13b4c2c0, wayIdx:0
+[info] 4168 Icache create a req, pc:0x13b4c2c0, Id:42, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4168 send req back to ifu, pc:0x13b4c280, id:40.
+[info] 4169 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:41, setIdx:5, wayId:0, vfId:0
+[info] 4170 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:42, setIdx:5, wayId:0, vfId:0
+[info] 4170 send req back to ifu, pc:0x13b4c2a0, id:41.
+[info] 4171 send req back to ifu, pc:0x13b4c2c0, id:42.
+[info] 4182 match hit info buffer, id:43, pc:0x13b4c2e0, wayIdx:0
+[info] 4182 Icache create a req, pc:0x13b4c2e0, Id:43, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4184 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:43, setIdx:5, wayId:0, vfId:0
+[info] 4185 send req back to ifu, pc:0x13b4c2e0, id:43.
+[info] 4191 Icache create a req, pc:0x13b4c300, Id:44, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4193 instr req lookup tag HIT, req pc:0x13b4c300, id:44, setIdx:6, wayId:0, vfId:0
+[info] 4193 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4194 send req back to ifu, pc:0x13b4c300, id:44.
+[info] 4197 match hit info buffer, id:45, pc:0x13b4c320, wayIdx:0
+[info] 4197 Icache create a req, pc:0x13b4c320, Id:45, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4199 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:45, setIdx:6, wayId:0, vfId:0
+[info] 4200 send req back to ifu, pc:0x13b4c320, id:45.
+[info] 4209 Icache create a req, pc:0x13b4c200, Id:46, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4210 Icache create a req, pc:0x13b4c220, Id:47, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4211 instr req lookup tag HIT, req pc:0x13b4c200, id:46, setIdx:4, wayId:0, vfId:0
+[info] 4211 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4211 match hit info buffer, id:48, pc:0x13b4c240, wayIdx:0
+[info] 4211 Icache create a req, pc:0x13b4c240, Id:48, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4212 instr req lookup tag HIT, req pc:0x13b4c220, id:47, setIdx:4, wayId:0, vfId:0
+[info] 4212 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4212 match hit info buffer, id:49, pc:0x13b4c260, wayIdx:0
+[info] 4212 Icache create a req, pc:0x13b4c260, Id:49, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4212 send req back to ifu, pc:0x13b4c200, id:46.
+[info] 4213 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:48, setIdx:4, wayId:0, vfId:0
+[info] 4213 send req back to ifu, pc:0x13b4c220, id:47.
+[info] 4214 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:49, setIdx:4, wayId:0, vfId:0
+[info] 4214 send req back to ifu, pc:0x13b4c240, id:48.
+[info] 4215 Icache create a req, pc:0x13b4c280, Id:50, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4215 send req back to ifu, pc:0x13b4c260, id:49.
+[info] 4217 instr req lookup tag HIT, req pc:0x13b4c280, id:50, setIdx:5, wayId:0, vfId:0
+[info] 4217 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4217 match hit info buffer, id:51, pc:0x13b4c2a0, wayIdx:0
+[info] 4217 Icache create a req, pc:0x13b4c2a0, Id:51, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4218 match hit info buffer, id:52, pc:0x13b4c2c0, wayIdx:0
+[info] 4218 Icache create a req, pc:0x13b4c2c0, Id:52, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4218 send req back to ifu, pc:0x13b4c280, id:50.
+[info] 4219 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:51, setIdx:5, wayId:0, vfId:0
+[info] 4220 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:52, setIdx:5, wayId:0, vfId:0
+[info] 4220 send req back to ifu, pc:0x13b4c2a0, id:51.
+[info] 4221 send req back to ifu, pc:0x13b4c2c0, id:52.
+[info] 4233 match hit info buffer, id:53, pc:0x13b4c2e0, wayIdx:0
+[info] 4233 Icache create a req, pc:0x13b4c2e0, Id:53, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4235 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:53, setIdx:5, wayId:0, vfId:0
+[info] 4236 send req back to ifu, pc:0x13b4c2e0, id:53.
+[info] 4241 Icache create a req, pc:0x13b4c300, Id:54, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4243 instr req lookup tag HIT, req pc:0x13b4c300, id:54, setIdx:6, wayId:0, vfId:0
+[info] 4243 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4244 send req back to ifu, pc:0x13b4c300, id:54.
+[info] 4245 match hit info buffer, id:55, pc:0x13b4c320, wayIdx:0
+[info] 4245 Icache create a req, pc:0x13b4c320, Id:55, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4247 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:55, setIdx:6, wayId:0, vfId:0
+[info] 4248 send req back to ifu, pc:0x13b4c320, id:55.
+[info] 4256 Icache create a req, pc:0x13b4c200, Id:56, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4257 Icache create a req, pc:0x13b4c220, Id:57, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4258 instr req lookup tag HIT, req pc:0x13b4c200, id:56, setIdx:4, wayId:0, vfId:0
+[info] 4258 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4258 match hit info buffer, id:58, pc:0x13b4c240, wayIdx:0
+[info] 4258 Icache create a req, pc:0x13b4c240, Id:58, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4259 instr req lookup tag HIT, req pc:0x13b4c220, id:57, setIdx:4, wayId:0, vfId:0
+[info] 4259 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4259 match hit info buffer, id:59, pc:0x13b4c260, wayIdx:0
+[info] 4259 Icache create a req, pc:0x13b4c260, Id:59, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4259 send req back to ifu, pc:0x13b4c200, id:56.
+[info] 4260 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:58, setIdx:4, wayId:0, vfId:0
+[info] 4260 send req back to ifu, pc:0x13b4c220, id:57.
+[info] 4261 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:59, setIdx:4, wayId:0, vfId:0
+[info] 4261 send req back to ifu, pc:0x13b4c240, id:58.
+[info] 4262 Icache create a req, pc:0x13b4c280, Id:60, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4262 send req back to ifu, pc:0x13b4c260, id:59.
+[info] 4264 instr req lookup tag HIT, req pc:0x13b4c280, id:60, setIdx:5, wayId:0, vfId:0
+[info] 4264 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4264 match hit info buffer, id:61, pc:0x13b4c2a0, wayIdx:0
+[info] 4264 Icache create a req, pc:0x13b4c2a0, Id:61, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4265 match hit info buffer, id:62, pc:0x13b4c2c0, wayIdx:0
+[info] 4265 Icache create a req, pc:0x13b4c2c0, Id:62, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4265 send req back to ifu, pc:0x13b4c280, id:60.
+[info] 4266 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:61, setIdx:5, wayId:0, vfId:0
+[info] 4267 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:62, setIdx:5, wayId:0, vfId:0
+[info] 4267 send req back to ifu, pc:0x13b4c2a0, id:61.
+[info] 4268 send req back to ifu, pc:0x13b4c2c0, id:62.
+[info] 4285 match hit info buffer, id:63, pc:0x13b4c2e0, wayIdx:0
+[info] 4285 Icache create a req, pc:0x13b4c2e0, Id:63, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4287 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:63, setIdx:5, wayId:0, vfId:0
+[info] 4288 send req back to ifu, pc:0x13b4c2e0, id:63.
+[info] 4292 Icache create a req, pc:0x13b4c300, Id:64, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4294 instr req lookup tag HIT, req pc:0x13b4c300, id:64, setIdx:6, wayId:0, vfId:0
+[info] 4294 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4294 match hit info buffer, id:65, pc:0x13b4c320, wayIdx:0
+[info] 4294 Icache create a req, pc:0x13b4c320, Id:65, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4295 send req back to ifu, pc:0x13b4c300, id:64.
+[info] 4296 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:65, setIdx:6, wayId:0, vfId:0
+[info] 4297 send req back to ifu, pc:0x13b4c320, id:65.
+[info] 4306 Icache create a req, pc:0x13b4c200, Id:66, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4307 Icache create a req, pc:0x13b4c220, Id:67, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4308 instr req lookup tag HIT, req pc:0x13b4c200, id:66, setIdx:4, wayId:0, vfId:0
+[info] 4308 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4308 match hit info buffer, id:68, pc:0x13b4c240, wayIdx:0
+[info] 4308 Icache create a req, pc:0x13b4c240, Id:68, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4309 instr req lookup tag HIT, req pc:0x13b4c220, id:67, setIdx:4, wayId:0, vfId:0
+[info] 4309 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4309 match hit info buffer, id:69, pc:0x13b4c260, wayIdx:0
+[info] 4309 Icache create a req, pc:0x13b4c260, Id:69, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4309 send req back to ifu, pc:0x13b4c200, id:66.
+[info] 4310 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:68, setIdx:4, wayId:0, vfId:0
+[info] 4310 send req back to ifu, pc:0x13b4c220, id:67.
+[info] 4311 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:69, setIdx:4, wayId:0, vfId:0
+[info] 4311 send req back to ifu, pc:0x13b4c240, id:68.
+[info] 4312 Icache create a req, pc:0x13b4c280, Id:70, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4312 send req back to ifu, pc:0x13b4c260, id:69.
+[info] 4314 instr req lookup tag HIT, req pc:0x13b4c280, id:70, setIdx:5, wayId:0, vfId:0
+[info] 4314 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4314 match hit info buffer, id:71, pc:0x13b4c2a0, wayIdx:0
+[info] 4314 Icache create a req, pc:0x13b4c2a0, Id:71, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4315 match hit info buffer, id:72, pc:0x13b4c2c0, wayIdx:0
+[info] 4315 Icache create a req, pc:0x13b4c2c0, Id:72, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4315 send req back to ifu, pc:0x13b4c280, id:70.
+[info] 4316 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:71, setIdx:5, wayId:0, vfId:0
+[info] 4317 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:72, setIdx:5, wayId:0, vfId:0
+[info] 4317 send req back to ifu, pc:0x13b4c2a0, id:71.
+[info] 4318 send req back to ifu, pc:0x13b4c2c0, id:72.
+[info] 4328 match hit info buffer, id:73, pc:0x13b4c2e0, wayIdx:0
+[info] 4328 Icache create a req, pc:0x13b4c2e0, Id:73, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4330 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:73, setIdx:5, wayId:0, vfId:0
+[info] 4331 send req back to ifu, pc:0x13b4c2e0, id:73.
+[info] 4336 Icache create a req, pc:0x13b4c300, Id:74, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4338 instr req lookup tag HIT, req pc:0x13b4c300, id:74, setIdx:6, wayId:0, vfId:0
+[info] 4338 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4339 send req back to ifu, pc:0x13b4c300, id:74.
+[info] 4342 match hit info buffer, id:75, pc:0x13b4c320, wayIdx:0
+[info] 4342 Icache create a req, pc:0x13b4c320, Id:75, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4344 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:75, setIdx:6, wayId:0, vfId:0
+[info] 4345 send req back to ifu, pc:0x13b4c320, id:75.
+[info] 4355 Icache create a req, pc:0x13b4c200, Id:76, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4356 Icache create a req, pc:0x13b4c220, Id:77, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4357 instr req lookup tag HIT, req pc:0x13b4c200, id:76, setIdx:4, wayId:0, vfId:0
+[info] 4357 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4357 match hit info buffer, id:78, pc:0x13b4c240, wayIdx:0
+[info] 4357 Icache create a req, pc:0x13b4c240, Id:78, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4358 instr req lookup tag HIT, req pc:0x13b4c220, id:77, setIdx:4, wayId:0, vfId:0
+[info] 4358 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4358 match hit info buffer, id:79, pc:0x13b4c260, wayIdx:0
+[info] 4358 Icache create a req, pc:0x13b4c260, Id:79, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4358 send req back to ifu, pc:0x13b4c200, id:76.
+[info] 4359 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:78, setIdx:4, wayId:0, vfId:0
+[info] 4359 send req back to ifu, pc:0x13b4c220, id:77.
+[info] 4360 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:79, setIdx:4, wayId:0, vfId:0
+[info] 4360 send req back to ifu, pc:0x13b4c240, id:78.
+[info] 4361 Icache create a req, pc:0x13b4c280, Id:80, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4361 send req back to ifu, pc:0x13b4c260, id:79.
+[info] 4363 instr req lookup tag HIT, req pc:0x13b4c280, id:80, setIdx:5, wayId:0, vfId:0
+[info] 4363 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4363 match hit info buffer, id:81, pc:0x13b4c2a0, wayIdx:0
+[info] 4363 Icache create a req, pc:0x13b4c2a0, Id:81, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4364 match hit info buffer, id:82, pc:0x13b4c2c0, wayIdx:0
+[info] 4364 Icache create a req, pc:0x13b4c2c0, Id:82, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4364 send req back to ifu, pc:0x13b4c280, id:80.
+[info] 4365 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:81, setIdx:5, wayId:0, vfId:0
+[info] 4366 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:82, setIdx:5, wayId:0, vfId:0
+[info] 4366 send req back to ifu, pc:0x13b4c2a0, id:81.
+[info] 4367 send req back to ifu, pc:0x13b4c2c0, id:82.
+[info] 4378 match hit info buffer, id:83, pc:0x13b4c2e0, wayIdx:0
+[info] 4378 Icache create a req, pc:0x13b4c2e0, Id:83, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4380 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:83, setIdx:5, wayId:0, vfId:0
+[info] 4381 send req back to ifu, pc:0x13b4c2e0, id:83.
+[info] 4387 Icache create a req, pc:0x13b4c300, Id:84, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4389 instr req lookup tag HIT, req pc:0x13b4c300, id:84, setIdx:6, wayId:0, vfId:0
+[info] 4389 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4390 send req back to ifu, pc:0x13b4c300, id:84.
+[info] 4393 match hit info buffer, id:85, pc:0x13b4c320, wayIdx:0
+[info] 4393 Icache create a req, pc:0x13b4c320, Id:85, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4395 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:85, setIdx:6, wayId:0, vfId:0
+[info] 4396 send req back to ifu, pc:0x13b4c320, id:85.
+[info] 4405 Icache create a req, pc:0x13b4c200, Id:86, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4406 Icache create a req, pc:0x13b4c220, Id:87, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4407 instr req lookup tag HIT, req pc:0x13b4c200, id:86, setIdx:4, wayId:0, vfId:0
+[info] 4407 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4407 match hit info buffer, id:88, pc:0x13b4c240, wayIdx:0
+[info] 4407 Icache create a req, pc:0x13b4c240, Id:88, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4408 instr req lookup tag HIT, req pc:0x13b4c220, id:87, setIdx:4, wayId:0, vfId:0
+[info] 4408 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4408 match hit info buffer, id:89, pc:0x13b4c260, wayIdx:0
+[info] 4408 Icache create a req, pc:0x13b4c260, Id:89, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4408 send req back to ifu, pc:0x13b4c200, id:86.
+[info] 4409 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:88, setIdx:4, wayId:0, vfId:0
+[info] 4409 send req back to ifu, pc:0x13b4c220, id:87.
+[info] 4410 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:89, setIdx:4, wayId:0, vfId:0
+[info] 4410 send req back to ifu, pc:0x13b4c240, id:88.
+[info] 4411 Icache create a req, pc:0x13b4c280, Id:90, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4411 send req back to ifu, pc:0x13b4c260, id:89.
+[info] 4413 instr req lookup tag HIT, req pc:0x13b4c280, id:90, setIdx:5, wayId:0, vfId:0
+[info] 4413 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4413 match hit info buffer, id:91, pc:0x13b4c2a0, wayIdx:0
+[info] 4413 Icache create a req, pc:0x13b4c2a0, Id:91, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4414 match hit info buffer, id:92, pc:0x13b4c2c0, wayIdx:0
+[info] 4414 Icache create a req, pc:0x13b4c2c0, Id:92, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4414 send req back to ifu, pc:0x13b4c280, id:90.
+[info] 4415 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:91, setIdx:5, wayId:0, vfId:0
+[info] 4416 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:92, setIdx:5, wayId:0, vfId:0
+[info] 4416 send req back to ifu, pc:0x13b4c2a0, id:91.
+[info] 4417 send req back to ifu, pc:0x13b4c2c0, id:92.
+[info] 4429 match hit info buffer, id:93, pc:0x13b4c2e0, wayIdx:0
+[info] 4429 Icache create a req, pc:0x13b4c2e0, Id:93, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4431 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:93, setIdx:5, wayId:0, vfId:0
+[info] 4432 send req back to ifu, pc:0x13b4c2e0, id:93.
+[info] 4437 Icache create a req, pc:0x13b4c300, Id:94, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4439 instr req lookup tag HIT, req pc:0x13b4c300, id:94, setIdx:6, wayId:0, vfId:0
+[info] 4439 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4440 send req back to ifu, pc:0x13b4c300, id:94.
+[info] 4441 match hit info buffer, id:95, pc:0x13b4c320, wayIdx:0
+[info] 4441 Icache create a req, pc:0x13b4c320, Id:95, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4443 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:95, setIdx:6, wayId:0, vfId:0
+[info] 4444 send req back to ifu, pc:0x13b4c320, id:95.
+[info] 4452 Icache create a req, pc:0x13b4c200, Id:96, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4453 Icache create a req, pc:0x13b4c220, Id:97, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4454 instr req lookup tag HIT, req pc:0x13b4c200, id:96, setIdx:4, wayId:0, vfId:0
+[info] 4454 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4454 match hit info buffer, id:98, pc:0x13b4c240, wayIdx:0
+[info] 4454 Icache create a req, pc:0x13b4c240, Id:98, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4455 instr req lookup tag HIT, req pc:0x13b4c220, id:97, setIdx:4, wayId:0, vfId:0
+[info] 4455 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4455 match hit info buffer, id:99, pc:0x13b4c260, wayIdx:0
+[info] 4455 Icache create a req, pc:0x13b4c260, Id:99, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4455 send req back to ifu, pc:0x13b4c200, id:96.
+[info] 4456 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:98, setIdx:4, wayId:0, vfId:0
+[info] 4456 send req back to ifu, pc:0x13b4c220, id:97.
+[info] 4457 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:99, setIdx:4, wayId:0, vfId:0
+[info] 4457 send req back to ifu, pc:0x13b4c240, id:98.
+[info] 4458 Icache create a req, pc:0x13b4c280, Id:100, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4458 send req back to ifu, pc:0x13b4c260, id:99.
+[info] 4460 instr req lookup tag HIT, req pc:0x13b4c280, id:100, setIdx:5, wayId:0, vfId:0
+[info] 4460 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4460 match hit info buffer, id:101, pc:0x13b4c2a0, wayIdx:0
+[info] 4460 Icache create a req, pc:0x13b4c2a0, Id:101, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4461 match hit info buffer, id:102, pc:0x13b4c2c0, wayIdx:0
+[info] 4461 Icache create a req, pc:0x13b4c2c0, Id:102, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4461 send req back to ifu, pc:0x13b4c280, id:100.
+[info] 4462 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:101, setIdx:5, wayId:0, vfId:0
+[info] 4463 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:102, setIdx:5, wayId:0, vfId:0
+[info] 4463 send req back to ifu, pc:0x13b4c2a0, id:101.
+[info] 4464 send req back to ifu, pc:0x13b4c2c0, id:102.
+[info] 4481 match hit info buffer, id:103, pc:0x13b4c2e0, wayIdx:0
+[info] 4481 Icache create a req, pc:0x13b4c2e0, Id:103, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4483 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:103, setIdx:5, wayId:0, vfId:0
+[info] 4484 send req back to ifu, pc:0x13b4c2e0, id:103.
+[info] 4488 Icache create a req, pc:0x13b4c300, Id:104, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4490 instr req lookup tag HIT, req pc:0x13b4c300, id:104, setIdx:6, wayId:0, vfId:0
+[info] 4490 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4490 match hit info buffer, id:105, pc:0x13b4c320, wayIdx:0
+[info] 4490 Icache create a req, pc:0x13b4c320, Id:105, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4491 send req back to ifu, pc:0x13b4c300, id:104.
+[info] 4492 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:105, setIdx:6, wayId:0, vfId:0
+[info] 4493 send req back to ifu, pc:0x13b4c320, id:105.
+[info] 4502 Icache create a req, pc:0x13b4c200, Id:106, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4503 Icache create a req, pc:0x13b4c220, Id:107, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4504 instr req lookup tag HIT, req pc:0x13b4c200, id:106, setIdx:4, wayId:0, vfId:0
+[info] 4504 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4504 match hit info buffer, id:108, pc:0x13b4c240, wayIdx:0
+[info] 4504 Icache create a req, pc:0x13b4c240, Id:108, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4505 instr req lookup tag HIT, req pc:0x13b4c220, id:107, setIdx:4, wayId:0, vfId:0
+[info] 4505 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4505 match hit info buffer, id:109, pc:0x13b4c260, wayIdx:0
+[info] 4505 Icache create a req, pc:0x13b4c260, Id:109, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4505 send req back to ifu, pc:0x13b4c200, id:106.
+[info] 4506 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:108, setIdx:4, wayId:0, vfId:0
+[info] 4506 send req back to ifu, pc:0x13b4c220, id:107.
+[info] 4507 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:109, setIdx:4, wayId:0, vfId:0
+[info] 4507 send req back to ifu, pc:0x13b4c240, id:108.
+[info] 4508 Icache create a req, pc:0x13b4c280, Id:110, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4508 send req back to ifu, pc:0x13b4c260, id:109.
+[info] 4510 instr req lookup tag HIT, req pc:0x13b4c280, id:110, setIdx:5, wayId:0, vfId:0
+[info] 4510 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4510 match hit info buffer, id:111, pc:0x13b4c2a0, wayIdx:0
+[info] 4510 Icache create a req, pc:0x13b4c2a0, Id:111, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4511 match hit info buffer, id:112, pc:0x13b4c2c0, wayIdx:0
+[info] 4511 Icache create a req, pc:0x13b4c2c0, Id:112, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4511 send req back to ifu, pc:0x13b4c280, id:110.
+[info] 4512 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:111, setIdx:5, wayId:0, vfId:0
+[info] 4513 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:112, setIdx:5, wayId:0, vfId:0
+[info] 4513 send req back to ifu, pc:0x13b4c2a0, id:111.
+[info] 4514 send req back to ifu, pc:0x13b4c2c0, id:112.
+[info] 4524 match hit info buffer, id:113, pc:0x13b4c2e0, wayIdx:0
+[info] 4524 Icache create a req, pc:0x13b4c2e0, Id:113, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4526 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:113, setIdx:5, wayId:0, vfId:0
+[info] 4527 send req back to ifu, pc:0x13b4c2e0, id:113.
+[info] 4532 Icache create a req, pc:0x13b4c300, Id:114, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4534 instr req lookup tag HIT, req pc:0x13b4c300, id:114, setIdx:6, wayId:0, vfId:0
+[info] 4534 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4535 send req back to ifu, pc:0x13b4c300, id:114.
+[info] 4538 match hit info buffer, id:115, pc:0x13b4c320, wayIdx:0
+[info] 4538 Icache create a req, pc:0x13b4c320, Id:115, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4540 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:115, setIdx:6, wayId:0, vfId:0
+[info] 4541 send req back to ifu, pc:0x13b4c320, id:115.
+[info] 4551 Icache create a req, pc:0x13b4c200, Id:116, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4552 Icache create a req, pc:0x13b4c220, Id:117, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4553 instr req lookup tag HIT, req pc:0x13b4c200, id:116, setIdx:4, wayId:0, vfId:0
+[info] 4553 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4553 match hit info buffer, id:118, pc:0x13b4c240, wayIdx:0
+[info] 4553 Icache create a req, pc:0x13b4c240, Id:118, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4554 instr req lookup tag HIT, req pc:0x13b4c220, id:117, setIdx:4, wayId:0, vfId:0
+[info] 4554 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4554 match hit info buffer, id:119, pc:0x13b4c260, wayIdx:0
+[info] 4554 Icache create a req, pc:0x13b4c260, Id:119, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4554 send req back to ifu, pc:0x13b4c200, id:116.
+[info] 4555 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:118, setIdx:4, wayId:0, vfId:0
+[info] 4555 send req back to ifu, pc:0x13b4c220, id:117.
+[info] 4556 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:119, setIdx:4, wayId:0, vfId:0
+[info] 4556 send req back to ifu, pc:0x13b4c240, id:118.
+[info] 4557 Icache create a req, pc:0x13b4c280, Id:120, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4557 send req back to ifu, pc:0x13b4c260, id:119.
+[info] 4559 instr req lookup tag HIT, req pc:0x13b4c280, id:120, setIdx:5, wayId:0, vfId:0
+[info] 4559 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4559 match hit info buffer, id:121, pc:0x13b4c2a0, wayIdx:0
+[info] 4559 Icache create a req, pc:0x13b4c2a0, Id:121, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4560 match hit info buffer, id:122, pc:0x13b4c2c0, wayIdx:0
+[info] 4560 Icache create a req, pc:0x13b4c2c0, Id:122, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4560 send req back to ifu, pc:0x13b4c280, id:120.
+[info] 4561 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:121, setIdx:5, wayId:0, vfId:0
+[info] 4562 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:122, setIdx:5, wayId:0, vfId:0
+[info] 4562 send req back to ifu, pc:0x13b4c2a0, id:121.
+[info] 4563 send req back to ifu, pc:0x13b4c2c0, id:122.
+[info] 4574 match hit info buffer, id:123, pc:0x13b4c2e0, wayIdx:0
+[info] 4574 Icache create a req, pc:0x13b4c2e0, Id:123, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4576 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:123, setIdx:5, wayId:0, vfId:0
+[info] 4577 send req back to ifu, pc:0x13b4c2e0, id:123.
+[info] 4583 Icache create a req, pc:0x13b4c300, Id:124, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4585 instr req lookup tag HIT, req pc:0x13b4c300, id:124, setIdx:6, wayId:0, vfId:0
+[info] 4585 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4586 send req back to ifu, pc:0x13b4c300, id:124.
+[info] 4589 match hit info buffer, id:125, pc:0x13b4c320, wayIdx:0
+[info] 4589 Icache create a req, pc:0x13b4c320, Id:125, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4591 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:125, setIdx:6, wayId:0, vfId:0
+[info] 4592 send req back to ifu, pc:0x13b4c320, id:125.
+[info] 4601 Icache create a req, pc:0x13b4c200, Id:126, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4602 Icache create a req, pc:0x13b4c220, Id:127, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4603 instr req lookup tag HIT, req pc:0x13b4c200, id:126, setIdx:4, wayId:0, vfId:0
+[info] 4603 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4603 match hit info buffer, id:128, pc:0x13b4c240, wayIdx:0
+[info] 4603 Icache create a req, pc:0x13b4c240, Id:128, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4604 instr req lookup tag HIT, req pc:0x13b4c220, id:127, setIdx:4, wayId:0, vfId:0
+[info] 4604 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4604 match hit info buffer, id:129, pc:0x13b4c260, wayIdx:0
+[info] 4604 Icache create a req, pc:0x13b4c260, Id:129, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4604 send req back to ifu, pc:0x13b4c200, id:126.
+[info] 4605 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:128, setIdx:4, wayId:0, vfId:0
+[info] 4605 send req back to ifu, pc:0x13b4c220, id:127.
+[info] 4606 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:129, setIdx:4, wayId:0, vfId:0
+[info] 4606 send req back to ifu, pc:0x13b4c240, id:128.
+[info] 4607 Icache create a req, pc:0x13b4c280, Id:130, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4607 send req back to ifu, pc:0x13b4c260, id:129.
+[info] 4609 instr req lookup tag HIT, req pc:0x13b4c280, id:130, setIdx:5, wayId:0, vfId:0
+[info] 4609 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4609 match hit info buffer, id:131, pc:0x13b4c2a0, wayIdx:0
+[info] 4609 Icache create a req, pc:0x13b4c2a0, Id:131, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4610 match hit info buffer, id:132, pc:0x13b4c2c0, wayIdx:0
+[info] 4610 Icache create a req, pc:0x13b4c2c0, Id:132, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4610 send req back to ifu, pc:0x13b4c280, id:130.
+[info] 4611 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:131, setIdx:5, wayId:0, vfId:0
+[info] 4612 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:132, setIdx:5, wayId:0, vfId:0
+[info] 4612 send req back to ifu, pc:0x13b4c2a0, id:131.
+[info] 4613 send req back to ifu, pc:0x13b4c2c0, id:132.
+[info] 4625 match hit info buffer, id:133, pc:0x13b4c2e0, wayIdx:0
+[info] 4625 Icache create a req, pc:0x13b4c2e0, Id:133, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4627 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:133, setIdx:5, wayId:0, vfId:0
+[info] 4628 send req back to ifu, pc:0x13b4c2e0, id:133.
+[info] 4633 Icache create a req, pc:0x13b4c300, Id:134, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4635 instr req lookup tag HIT, req pc:0x13b4c300, id:134, setIdx:6, wayId:0, vfId:0
+[info] 4635 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4636 send req back to ifu, pc:0x13b4c300, id:134.
+[info] 4637 match hit info buffer, id:135, pc:0x13b4c320, wayIdx:0
+[info] 4637 Icache create a req, pc:0x13b4c320, Id:135, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4639 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:135, setIdx:6, wayId:0, vfId:0
+[info] 4640 send req back to ifu, pc:0x13b4c320, id:135.
+[info] 4648 Icache create a req, pc:0x13b4c200, Id:136, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4649 Icache create a req, pc:0x13b4c220, Id:137, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4650 instr req lookup tag HIT, req pc:0x13b4c200, id:136, setIdx:4, wayId:0, vfId:0
+[info] 4650 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4650 match hit info buffer, id:138, pc:0x13b4c240, wayIdx:0
+[info] 4650 Icache create a req, pc:0x13b4c240, Id:138, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4651 instr req lookup tag HIT, req pc:0x13b4c220, id:137, setIdx:4, wayId:0, vfId:0
+[info] 4651 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4651 match hit info buffer, id:139, pc:0x13b4c260, wayIdx:0
+[info] 4651 Icache create a req, pc:0x13b4c260, Id:139, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4651 send req back to ifu, pc:0x13b4c200, id:136.
+[info] 4652 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:138, setIdx:4, wayId:0, vfId:0
+[info] 4652 send req back to ifu, pc:0x13b4c220, id:137.
+[info] 4653 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:139, setIdx:4, wayId:0, vfId:0
+[info] 4653 send req back to ifu, pc:0x13b4c240, id:138.
+[info] 4654 Icache create a req, pc:0x13b4c280, Id:140, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4654 send req back to ifu, pc:0x13b4c260, id:139.
+[info] 4656 instr req lookup tag HIT, req pc:0x13b4c280, id:140, setIdx:5, wayId:0, vfId:0
+[info] 4656 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4656 match hit info buffer, id:141, pc:0x13b4c2a0, wayIdx:0
+[info] 4656 Icache create a req, pc:0x13b4c2a0, Id:141, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4657 match hit info buffer, id:142, pc:0x13b4c2c0, wayIdx:0
+[info] 4657 Icache create a req, pc:0x13b4c2c0, Id:142, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4657 send req back to ifu, pc:0x13b4c280, id:140.
+[info] 4658 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:141, setIdx:5, wayId:0, vfId:0
+[info] 4659 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:142, setIdx:5, wayId:0, vfId:0
+[info] 4659 send req back to ifu, pc:0x13b4c2a0, id:141.
+[info] 4660 send req back to ifu, pc:0x13b4c2c0, id:142.
+[info] 4677 match hit info buffer, id:143, pc:0x13b4c2e0, wayIdx:0
+[info] 4677 Icache create a req, pc:0x13b4c2e0, Id:143, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4679 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:143, setIdx:5, wayId:0, vfId:0
+[info] 4680 send req back to ifu, pc:0x13b4c2e0, id:143.
+[info] 4684 Icache create a req, pc:0x13b4c300, Id:144, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4686 instr req lookup tag HIT, req pc:0x13b4c300, id:144, setIdx:6, wayId:0, vfId:0
+[info] 4686 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4686 match hit info buffer, id:145, pc:0x13b4c320, wayIdx:0
+[info] 4686 Icache create a req, pc:0x13b4c320, Id:145, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4687 send req back to ifu, pc:0x13b4c300, id:144.
+[info] 4688 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:145, setIdx:6, wayId:0, vfId:0
+[info] 4689 send req back to ifu, pc:0x13b4c320, id:145.
+[info] 4698 Icache create a req, pc:0x13b4c200, Id:146, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4699 Icache create a req, pc:0x13b4c220, Id:147, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4700 instr req lookup tag HIT, req pc:0x13b4c200, id:146, setIdx:4, wayId:0, vfId:0
+[info] 4700 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4700 match hit info buffer, id:148, pc:0x13b4c240, wayIdx:0
+[info] 4700 Icache create a req, pc:0x13b4c240, Id:148, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4701 instr req lookup tag HIT, req pc:0x13b4c220, id:147, setIdx:4, wayId:0, vfId:0
+[info] 4701 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4701 match hit info buffer, id:149, pc:0x13b4c260, wayIdx:0
+[info] 4701 Icache create a req, pc:0x13b4c260, Id:149, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4701 send req back to ifu, pc:0x13b4c200, id:146.
+[info] 4702 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:148, setIdx:4, wayId:0, vfId:0
+[info] 4702 send req back to ifu, pc:0x13b4c220, id:147.
+[info] 4703 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:149, setIdx:4, wayId:0, vfId:0
+[info] 4703 send req back to ifu, pc:0x13b4c240, id:148.
+[info] 4704 Icache create a req, pc:0x13b4c280, Id:150, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4704 send req back to ifu, pc:0x13b4c260, id:149.
+[info] 4706 instr req lookup tag HIT, req pc:0x13b4c280, id:150, setIdx:5, wayId:0, vfId:0
+[info] 4706 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4706 match hit info buffer, id:151, pc:0x13b4c2a0, wayIdx:0
+[info] 4706 Icache create a req, pc:0x13b4c2a0, Id:151, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4707 match hit info buffer, id:152, pc:0x13b4c2c0, wayIdx:0
+[info] 4707 Icache create a req, pc:0x13b4c2c0, Id:152, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4707 send req back to ifu, pc:0x13b4c280, id:150.
+[info] 4708 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:151, setIdx:5, wayId:0, vfId:0
+[info] 4709 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:152, setIdx:5, wayId:0, vfId:0
+[info] 4709 send req back to ifu, pc:0x13b4c2a0, id:151.
+[info] 4710 send req back to ifu, pc:0x13b4c2c0, id:152.
+[info] 4720 match hit info buffer, id:153, pc:0x13b4c2e0, wayIdx:0
+[info] 4720 Icache create a req, pc:0x13b4c2e0, Id:153, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4722 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:153, setIdx:5, wayId:0, vfId:0
+[info] 4723 send req back to ifu, pc:0x13b4c2e0, id:153.
+[info] 4728 Icache create a req, pc:0x13b4c300, Id:154, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4730 instr req lookup tag HIT, req pc:0x13b4c300, id:154, setIdx:6, wayId:0, vfId:0
+[info] 4730 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4731 send req back to ifu, pc:0x13b4c300, id:154.
+[info] 4734 match hit info buffer, id:155, pc:0x13b4c320, wayIdx:0
+[info] 4734 Icache create a req, pc:0x13b4c320, Id:155, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4736 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:155, setIdx:6, wayId:0, vfId:0
+[info] 4737 send req back to ifu, pc:0x13b4c320, id:155.
+[info] 4747 Icache create a req, pc:0x13b4c200, Id:156, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4748 Icache create a req, pc:0x13b4c220, Id:157, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4749 instr req lookup tag HIT, req pc:0x13b4c200, id:156, setIdx:4, wayId:0, vfId:0
+[info] 4749 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4749 match hit info buffer, id:158, pc:0x13b4c240, wayIdx:0
+[info] 4749 Icache create a req, pc:0x13b4c240, Id:158, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4750 instr req lookup tag HIT, req pc:0x13b4c220, id:157, setIdx:4, wayId:0, vfId:0
+[info] 4750 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4750 match hit info buffer, id:159, pc:0x13b4c260, wayIdx:0
+[info] 4750 Icache create a req, pc:0x13b4c260, Id:159, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4750 send req back to ifu, pc:0x13b4c200, id:156.
+[info] 4751 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:158, setIdx:4, wayId:0, vfId:0
+[info] 4751 send req back to ifu, pc:0x13b4c220, id:157.
+[info] 4752 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:159, setIdx:4, wayId:0, vfId:0
+[info] 4752 send req back to ifu, pc:0x13b4c240, id:158.
+[info] 4753 Icache create a req, pc:0x13b4c280, Id:160, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4753 send req back to ifu, pc:0x13b4c260, id:159.
+[info] 4755 instr req lookup tag HIT, req pc:0x13b4c280, id:160, setIdx:5, wayId:0, vfId:0
+[info] 4755 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4755 match hit info buffer, id:161, pc:0x13b4c2a0, wayIdx:0
+[info] 4755 Icache create a req, pc:0x13b4c2a0, Id:161, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4756 match hit info buffer, id:162, pc:0x13b4c2c0, wayIdx:0
+[info] 4756 Icache create a req, pc:0x13b4c2c0, Id:162, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4756 send req back to ifu, pc:0x13b4c280, id:160.
+[info] 4757 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:161, setIdx:5, wayId:0, vfId:0
+[info] 4758 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:162, setIdx:5, wayId:0, vfId:0
+[info] 4758 send req back to ifu, pc:0x13b4c2a0, id:161.
+[info] 4759 send req back to ifu, pc:0x13b4c2c0, id:162.
+[info] 4770 match hit info buffer, id:163, pc:0x13b4c2e0, wayIdx:0
+[info] 4770 Icache create a req, pc:0x13b4c2e0, Id:163, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4772 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:163, setIdx:5, wayId:0, vfId:0
+[info] 4773 send req back to ifu, pc:0x13b4c2e0, id:163.
+[info] 4779 Icache create a req, pc:0x13b4c300, Id:164, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4781 instr req lookup tag HIT, req pc:0x13b4c300, id:164, setIdx:6, wayId:0, vfId:0
+[info] 4781 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4782 send req back to ifu, pc:0x13b4c300, id:164.
+[info] 4785 match hit info buffer, id:165, pc:0x13b4c320, wayIdx:0
+[info] 4785 Icache create a req, pc:0x13b4c320, Id:165, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4787 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:165, setIdx:6, wayId:0, vfId:0
+[info] 4788 send req back to ifu, pc:0x13b4c320, id:165.
+[info] 4797 Icache create a req, pc:0x13b4c200, Id:166, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4798 Icache create a req, pc:0x13b4c220, Id:167, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4799 instr req lookup tag HIT, req pc:0x13b4c200, id:166, setIdx:4, wayId:0, vfId:0
+[info] 4799 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4799 match hit info buffer, id:168, pc:0x13b4c240, wayIdx:0
+[info] 4799 Icache create a req, pc:0x13b4c240, Id:168, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4800 instr req lookup tag HIT, req pc:0x13b4c220, id:167, setIdx:4, wayId:0, vfId:0
+[info] 4800 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4800 match hit info buffer, id:169, pc:0x13b4c260, wayIdx:0
+[info] 4800 Icache create a req, pc:0x13b4c260, Id:169, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4800 send req back to ifu, pc:0x13b4c200, id:166.
+[info] 4801 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:168, setIdx:4, wayId:0, vfId:0
+[info] 4801 send req back to ifu, pc:0x13b4c220, id:167.
+[info] 4802 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:169, setIdx:4, wayId:0, vfId:0
+[info] 4802 send req back to ifu, pc:0x13b4c240, id:168.
+[info] 4803 Icache create a req, pc:0x13b4c280, Id:170, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4803 send req back to ifu, pc:0x13b4c260, id:169.
+[info] 4805 instr req lookup tag HIT, req pc:0x13b4c280, id:170, setIdx:5, wayId:0, vfId:0
+[info] 4805 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4805 match hit info buffer, id:171, pc:0x13b4c2a0, wayIdx:0
+[info] 4805 Icache create a req, pc:0x13b4c2a0, Id:171, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4806 match hit info buffer, id:172, pc:0x13b4c2c0, wayIdx:0
+[info] 4806 Icache create a req, pc:0x13b4c2c0, Id:172, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4806 send req back to ifu, pc:0x13b4c280, id:170.
+[info] 4807 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:171, setIdx:5, wayId:0, vfId:0
+[info] 4808 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:172, setIdx:5, wayId:0, vfId:0
+[info] 4808 send req back to ifu, pc:0x13b4c2a0, id:171.
+[info] 4809 send req back to ifu, pc:0x13b4c2c0, id:172.
+[info] 4821 match hit info buffer, id:173, pc:0x13b4c2e0, wayIdx:0
+[info] 4821 Icache create a req, pc:0x13b4c2e0, Id:173, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4823 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:173, setIdx:5, wayId:0, vfId:0
+[info] 4824 send req back to ifu, pc:0x13b4c2e0, id:173.
+[info] 4829 Icache create a req, pc:0x13b4c300, Id:174, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4831 instr req lookup tag HIT, req pc:0x13b4c300, id:174, setIdx:6, wayId:0, vfId:0
+[info] 4831 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4832 send req back to ifu, pc:0x13b4c300, id:174.
+[info] 4833 match hit info buffer, id:175, pc:0x13b4c320, wayIdx:0
+[info] 4833 Icache create a req, pc:0x13b4c320, Id:175, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4835 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:175, setIdx:6, wayId:0, vfId:0
+[info] 4836 send req back to ifu, pc:0x13b4c320, id:175.
+[info] 4844 Icache create a req, pc:0x13b4c200, Id:176, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4845 Icache create a req, pc:0x13b4c220, Id:177, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4846 instr req lookup tag HIT, req pc:0x13b4c200, id:176, setIdx:4, wayId:0, vfId:0
+[info] 4846 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4846 match hit info buffer, id:178, pc:0x13b4c240, wayIdx:0
+[info] 4846 Icache create a req, pc:0x13b4c240, Id:178, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4847 instr req lookup tag HIT, req pc:0x13b4c220, id:177, setIdx:4, wayId:0, vfId:0
+[info] 4847 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4847 match hit info buffer, id:179, pc:0x13b4c260, wayIdx:0
+[info] 4847 Icache create a req, pc:0x13b4c260, Id:179, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4847 send req back to ifu, pc:0x13b4c200, id:176.
+[info] 4848 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:178, setIdx:4, wayId:0, vfId:0
+[info] 4848 send req back to ifu, pc:0x13b4c220, id:177.
+[info] 4849 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:179, setIdx:4, wayId:0, vfId:0
+[info] 4849 send req back to ifu, pc:0x13b4c240, id:178.
+[info] 4850 Icache create a req, pc:0x13b4c280, Id:180, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4850 send req back to ifu, pc:0x13b4c260, id:179.
+[info] 4852 instr req lookup tag HIT, req pc:0x13b4c280, id:180, setIdx:5, wayId:0, vfId:0
+[info] 4852 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4852 match hit info buffer, id:181, pc:0x13b4c2a0, wayIdx:0
+[info] 4852 Icache create a req, pc:0x13b4c2a0, Id:181, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4853 match hit info buffer, id:182, pc:0x13b4c2c0, wayIdx:0
+[info] 4853 Icache create a req, pc:0x13b4c2c0, Id:182, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4853 send req back to ifu, pc:0x13b4c280, id:180.
+[info] 4854 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:181, setIdx:5, wayId:0, vfId:0
+[info] 4855 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:182, setIdx:5, wayId:0, vfId:0
+[info] 4855 send req back to ifu, pc:0x13b4c2a0, id:181.
+[info] 4856 send req back to ifu, pc:0x13b4c2c0, id:182.
+[info] 4873 match hit info buffer, id:183, pc:0x13b4c2e0, wayIdx:0
+[info] 4873 Icache create a req, pc:0x13b4c2e0, Id:183, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4875 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:183, setIdx:5, wayId:0, vfId:0
+[info] 4876 send req back to ifu, pc:0x13b4c2e0, id:183.
+[info] 4880 Icache create a req, pc:0x13b4c300, Id:184, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4882 instr req lookup tag HIT, req pc:0x13b4c300, id:184, setIdx:6, wayId:0, vfId:0
+[info] 4882 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4882 match hit info buffer, id:185, pc:0x13b4c320, wayIdx:0
+[info] 4882 Icache create a req, pc:0x13b4c320, Id:185, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4883 send req back to ifu, pc:0x13b4c300, id:184.
+[info] 4884 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:185, setIdx:6, wayId:0, vfId:0
+[info] 4885 send req back to ifu, pc:0x13b4c320, id:185.
+[info] 4894 Icache create a req, pc:0x13b4c200, Id:186, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4895 Icache create a req, pc:0x13b4c220, Id:187, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4896 instr req lookup tag HIT, req pc:0x13b4c200, id:186, setIdx:4, wayId:0, vfId:0
+[info] 4896 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4896 match hit info buffer, id:188, pc:0x13b4c240, wayIdx:0
+[info] 4896 Icache create a req, pc:0x13b4c240, Id:188, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4897 instr req lookup tag HIT, req pc:0x13b4c220, id:187, setIdx:4, wayId:0, vfId:0
+[info] 4897 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4897 match hit info buffer, id:189, pc:0x13b4c260, wayIdx:0
+[info] 4897 Icache create a req, pc:0x13b4c260, Id:189, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4897 send req back to ifu, pc:0x13b4c200, id:186.
+[info] 4898 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:188, setIdx:4, wayId:0, vfId:0
+[info] 4898 send req back to ifu, pc:0x13b4c220, id:187.
+[info] 4899 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:189, setIdx:4, wayId:0, vfId:0
+[info] 4899 send req back to ifu, pc:0x13b4c240, id:188.
+[info] 4900 Icache create a req, pc:0x13b4c280, Id:190, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4900 send req back to ifu, pc:0x13b4c260, id:189.
+[info] 4902 instr req lookup tag HIT, req pc:0x13b4c280, id:190, setIdx:5, wayId:0, vfId:0
+[info] 4902 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4902 match hit info buffer, id:191, pc:0x13b4c2a0, wayIdx:0
+[info] 4902 Icache create a req, pc:0x13b4c2a0, Id:191, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4903 match hit info buffer, id:192, pc:0x13b4c2c0, wayIdx:0
+[info] 4903 Icache create a req, pc:0x13b4c2c0, Id:192, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4903 send req back to ifu, pc:0x13b4c280, id:190.
+[info] 4904 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:191, setIdx:5, wayId:0, vfId:0
+[info] 4905 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:192, setIdx:5, wayId:0, vfId:0
+[info] 4905 send req back to ifu, pc:0x13b4c2a0, id:191.
+[info] 4906 send req back to ifu, pc:0x13b4c2c0, id:192.
+[info] 4916 match hit info buffer, id:193, pc:0x13b4c2e0, wayIdx:0
+[info] 4916 Icache create a req, pc:0x13b4c2e0, Id:193, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4918 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:193, setIdx:5, wayId:0, vfId:0
+[info] 4919 send req back to ifu, pc:0x13b4c2e0, id:193.
+[info] 4924 Icache create a req, pc:0x13b4c300, Id:194, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4926 instr req lookup tag HIT, req pc:0x13b4c300, id:194, setIdx:6, wayId:0, vfId:0
+[info] 4926 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4927 send req back to ifu, pc:0x13b4c300, id:194.
+[info] 4930 match hit info buffer, id:195, pc:0x13b4c320, wayIdx:0
+[info] 4930 Icache create a req, pc:0x13b4c320, Id:195, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4932 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:195, setIdx:6, wayId:0, vfId:0
+[info] 4933 send req back to ifu, pc:0x13b4c320, id:195.
+[info] 4943 Icache create a req, pc:0x13b4c200, Id:196, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4944 Icache create a req, pc:0x13b4c220, Id:197, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4945 instr req lookup tag HIT, req pc:0x13b4c200, id:196, setIdx:4, wayId:0, vfId:0
+[info] 4945 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4945 match hit info buffer, id:198, pc:0x13b4c240, wayIdx:0
+[info] 4945 Icache create a req, pc:0x13b4c240, Id:198, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4946 instr req lookup tag HIT, req pc:0x13b4c220, id:197, setIdx:4, wayId:0, vfId:0
+[info] 4946 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4946 match hit info buffer, id:199, pc:0x13b4c260, wayIdx:0
+[info] 4946 Icache create a req, pc:0x13b4c260, Id:199, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4946 send req back to ifu, pc:0x13b4c200, id:196.
+[info] 4947 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:198, setIdx:4, wayId:0, vfId:0
+[info] 4947 send req back to ifu, pc:0x13b4c220, id:197.
+[info] 4948 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:199, setIdx:4, wayId:0, vfId:0
+[info] 4948 send req back to ifu, pc:0x13b4c240, id:198.
+[info] 4949 Icache create a req, pc:0x13b4c280, Id:200, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4949 send req back to ifu, pc:0x13b4c260, id:199.
+[info] 4951 instr req lookup tag HIT, req pc:0x13b4c280, id:200, setIdx:5, wayId:0, vfId:0
+[info] 4951 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 4951 match hit info buffer, id:201, pc:0x13b4c2a0, wayIdx:0
+[info] 4951 Icache create a req, pc:0x13b4c2a0, Id:201, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4952 match hit info buffer, id:202, pc:0x13b4c2c0, wayIdx:0
+[info] 4952 Icache create a req, pc:0x13b4c2c0, Id:202, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4952 send req back to ifu, pc:0x13b4c280, id:200.
+[info] 4953 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:201, setIdx:5, wayId:0, vfId:0
+[info] 4954 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:202, setIdx:5, wayId:0, vfId:0
+[info] 4954 send req back to ifu, pc:0x13b4c2a0, id:201.
+[info] 4955 send req back to ifu, pc:0x13b4c2c0, id:202.
+[info] 4966 match hit info buffer, id:203, pc:0x13b4c2e0, wayIdx:0
+[info] 4966 Icache create a req, pc:0x13b4c2e0, Id:203, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4968 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:203, setIdx:5, wayId:0, vfId:0
+[info] 4969 send req back to ifu, pc:0x13b4c2e0, id:203.
+[info] 4975 Icache create a req, pc:0x13b4c300, Id:204, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4977 instr req lookup tag HIT, req pc:0x13b4c300, id:204, setIdx:6, wayId:0, vfId:0
+[info] 4977 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 4978 send req back to ifu, pc:0x13b4c300, id:204.
+[info] 4981 match hit info buffer, id:205, pc:0x13b4c320, wayIdx:0
+[info] 4981 Icache create a req, pc:0x13b4c320, Id:205, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4983 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:205, setIdx:6, wayId:0, vfId:0
+[info] 4984 send req back to ifu, pc:0x13b4c320, id:205.
+[info] 4993 Icache create a req, pc:0x13b4c200, Id:206, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4994 Icache create a req, pc:0x13b4c220, Id:207, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4995 instr req lookup tag HIT, req pc:0x13b4c200, id:206, setIdx:4, wayId:0, vfId:0
+[info] 4995 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 4995 match hit info buffer, id:208, pc:0x13b4c240, wayIdx:0
+[info] 4995 Icache create a req, pc:0x13b4c240, Id:208, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4996 instr req lookup tag HIT, req pc:0x13b4c220, id:207, setIdx:4, wayId:0, vfId:0
+[info] 4996 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 4996 match hit info buffer, id:209, pc:0x13b4c260, wayIdx:0
+[info] 4996 Icache create a req, pc:0x13b4c260, Id:209, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4996 send req back to ifu, pc:0x13b4c200, id:206.
+[info] 4997 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:208, setIdx:4, wayId:0, vfId:0
+[info] 4997 send req back to ifu, pc:0x13b4c220, id:207.
+[info] 4998 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:209, setIdx:4, wayId:0, vfId:0
+[info] 4998 send req back to ifu, pc:0x13b4c240, id:208.
+[info] 4999 Icache create a req, pc:0x13b4c280, Id:210, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 4999 send req back to ifu, pc:0x13b4c260, id:209.
+[info] 5001 instr req lookup tag HIT, req pc:0x13b4c280, id:210, setIdx:5, wayId:0, vfId:0
+[info] 5001 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 5001 match hit info buffer, id:211, pc:0x13b4c2a0, wayIdx:0
+[info] 5001 Icache create a req, pc:0x13b4c2a0, Id:211, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5002 match hit info buffer, id:212, pc:0x13b4c2c0, wayIdx:0
+[info] 5002 Icache create a req, pc:0x13b4c2c0, Id:212, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5002 send req back to ifu, pc:0x13b4c280, id:210.
+[info] 5003 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:211, setIdx:5, wayId:0, vfId:0
+[info] 5004 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:212, setIdx:5, wayId:0, vfId:0
+[info] 5004 send req back to ifu, pc:0x13b4c2a0, id:211.
+[info] 5005 send req back to ifu, pc:0x13b4c2c0, id:212.
+[info] 5017 match hit info buffer, id:213, pc:0x13b4c2e0, wayIdx:0
+[info] 5017 Icache create a req, pc:0x13b4c2e0, Id:213, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5019 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:213, setIdx:5, wayId:0, vfId:0
+[info] 5020 send req back to ifu, pc:0x13b4c2e0, id:213.
+[info] 5025 Icache create a req, pc:0x13b4c300, Id:214, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5027 instr req lookup tag HIT, req pc:0x13b4c300, id:214, setIdx:6, wayId:0, vfId:0
+[info] 5027 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 5028 send req back to ifu, pc:0x13b4c300, id:214.
+[info] 5029 match hit info buffer, id:215, pc:0x13b4c320, wayIdx:0
+[info] 5029 Icache create a req, pc:0x13b4c320, Id:215, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5031 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:215, setIdx:6, wayId:0, vfId:0
+[info] 5032 send req back to ifu, pc:0x13b4c320, id:215.
+[info] 5040 Icache create a req, pc:0x13b4c200, Id:216, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5041 Icache create a req, pc:0x13b4c220, Id:217, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5042 instr req lookup tag HIT, req pc:0x13b4c200, id:216, setIdx:4, wayId:0, vfId:0
+[info] 5042 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 5042 match hit info buffer, id:218, pc:0x13b4c240, wayIdx:0
+[info] 5042 Icache create a req, pc:0x13b4c240, Id:218, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5043 instr req lookup tag HIT, req pc:0x13b4c220, id:217, setIdx:4, wayId:0, vfId:0
+[info] 5043 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 5043 match hit info buffer, id:219, pc:0x13b4c260, wayIdx:0
+[info] 5043 Icache create a req, pc:0x13b4c260, Id:219, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5043 send req back to ifu, pc:0x13b4c200, id:216.
+[info] 5044 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:218, setIdx:4, wayId:0, vfId:0
+[info] 5044 send req back to ifu, pc:0x13b4c220, id:217.
+[info] 5045 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:219, setIdx:4, wayId:0, vfId:0
+[info] 5045 send req back to ifu, pc:0x13b4c240, id:218.
+[info] 5046 Icache create a req, pc:0x13b4c280, Id:220, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5046 send req back to ifu, pc:0x13b4c260, id:219.
+[info] 5048 instr req lookup tag HIT, req pc:0x13b4c280, id:220, setIdx:5, wayId:0, vfId:0
+[info] 5048 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 5048 match hit info buffer, id:221, pc:0x13b4c2a0, wayIdx:0
+[info] 5048 Icache create a req, pc:0x13b4c2a0, Id:221, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5049 match hit info buffer, id:222, pc:0x13b4c2c0, wayIdx:0
+[info] 5049 Icache create a req, pc:0x13b4c2c0, Id:222, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5049 send req back to ifu, pc:0x13b4c280, id:220.
+[info] 5050 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:221, setIdx:5, wayId:0, vfId:0
+[info] 5051 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:222, setIdx:5, wayId:0, vfId:0
+[info] 5051 send req back to ifu, pc:0x13b4c2a0, id:221.
+[info] 5052 send req back to ifu, pc:0x13b4c2c0, id:222.
+[info] 5069 match hit info buffer, id:223, pc:0x13b4c2e0, wayIdx:0
+[info] 5069 Icache create a req, pc:0x13b4c2e0, Id:223, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5071 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:223, setIdx:5, wayId:0, vfId:0
+[info] 5072 send req back to ifu, pc:0x13b4c2e0, id:223.
+[info] 5076 Icache create a req, pc:0x13b4c300, Id:224, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5078 instr req lookup tag HIT, req pc:0x13b4c300, id:224, setIdx:6, wayId:0, vfId:0
+[info] 5078 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 5078 match hit info buffer, id:225, pc:0x13b4c320, wayIdx:0
+[info] 5078 Icache create a req, pc:0x13b4c320, Id:225, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5079 send req back to ifu, pc:0x13b4c300, id:224.
+[info] 5080 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:225, setIdx:6, wayId:0, vfId:0
+[info] 5081 send req back to ifu, pc:0x13b4c320, id:225.
+[info] 5090 Icache create a req, pc:0x13b4c200, Id:226, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5091 Icache create a req, pc:0x13b4c220, Id:227, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5092 instr req lookup tag HIT, req pc:0x13b4c200, id:226, setIdx:4, wayId:0, vfId:0
+[info] 5092 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 5092 match hit info buffer, id:228, pc:0x13b4c240, wayIdx:0
+[info] 5092 Icache create a req, pc:0x13b4c240, Id:228, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5093 instr req lookup tag HIT, req pc:0x13b4c220, id:227, setIdx:4, wayId:0, vfId:0
+[info] 5093 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 5093 match hit info buffer, id:229, pc:0x13b4c260, wayIdx:0
+[info] 5093 Icache create a req, pc:0x13b4c260, Id:229, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5093 send req back to ifu, pc:0x13b4c200, id:226.
+[info] 5094 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:228, setIdx:4, wayId:0, vfId:0
+[info] 5094 send req back to ifu, pc:0x13b4c220, id:227.
+[info] 5095 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:229, setIdx:4, wayId:0, vfId:0
+[info] 5095 send req back to ifu, pc:0x13b4c240, id:228.
+[info] 5096 Icache create a req, pc:0x13b4c280, Id:230, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5096 send req back to ifu, pc:0x13b4c260, id:229.
+[info] 5098 instr req lookup tag HIT, req pc:0x13b4c280, id:230, setIdx:5, wayId:0, vfId:0
+[info] 5098 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 5098 match hit info buffer, id:231, pc:0x13b4c2a0, wayIdx:0
+[info] 5098 Icache create a req, pc:0x13b4c2a0, Id:231, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5099 match hit info buffer, id:232, pc:0x13b4c2c0, wayIdx:0
+[info] 5099 Icache create a req, pc:0x13b4c2c0, Id:232, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5099 send req back to ifu, pc:0x13b4c280, id:230.
+[info] 5100 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:231, setIdx:5, wayId:0, vfId:0
+[info] 5101 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:232, setIdx:5, wayId:0, vfId:0
+[info] 5101 send req back to ifu, pc:0x13b4c2a0, id:231.
+[info] 5102 send req back to ifu, pc:0x13b4c2c0, id:232.
+[info] 5112 match hit info buffer, id:233, pc:0x13b4c2e0, wayIdx:0
+[info] 5112 Icache create a req, pc:0x13b4c2e0, Id:233, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5114 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:233, setIdx:5, wayId:0, vfId:0
+[info] 5115 send req back to ifu, pc:0x13b4c2e0, id:233.
+[info] 5120 Icache create a req, pc:0x13b4c300, Id:234, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5122 instr req lookup tag HIT, req pc:0x13b4c300, id:234, setIdx:6, wayId:0, vfId:0
+[info] 5122 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 5123 send req back to ifu, pc:0x13b4c300, id:234.
+[info] 5126 match hit info buffer, id:235, pc:0x13b4c320, wayIdx:0
+[info] 5126 Icache create a req, pc:0x13b4c320, Id:235, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5128 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:235, setIdx:6, wayId:0, vfId:0
+[info] 5129 send req back to ifu, pc:0x13b4c320, id:235.
+[info] 5139 Icache create a req, pc:0x13b4c200, Id:236, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5140 Icache create a req, pc:0x13b4c220, Id:237, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5141 instr req lookup tag HIT, req pc:0x13b4c200, id:236, setIdx:4, wayId:0, vfId:0
+[info] 5141 update hit info buffer, pc:0x13b4c200, setIdx:4, wayId:0
+[info] 5141 match hit info buffer, id:238, pc:0x13b4c240, wayIdx:0
+[info] 5141 Icache create a req, pc:0x13b4c240, Id:238, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5142 instr req lookup tag HIT, req pc:0x13b4c220, id:237, setIdx:4, wayId:0, vfId:0
+[info] 5142 update hit info buffer, pc:0x13b4c220, setIdx:4, wayId:0
+[info] 5142 match hit info buffer, id:239, pc:0x13b4c260, wayIdx:0
+[info] 5142 Icache create a req, pc:0x13b4c260, Id:239, warpId:0, setIdx:4, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5142 send req back to ifu, pc:0x13b4c200, id:236.
+[info] 5143 instr req HIT hitInfoBuffer, req pc:0x13b4c240, id:238, setIdx:4, wayId:0, vfId:0
+[info] 5143 send req back to ifu, pc:0x13b4c220, id:237.
+[info] 5144 instr req HIT hitInfoBuffer, req pc:0x13b4c260, id:239, setIdx:4, wayId:0, vfId:0
+[info] 5144 send req back to ifu, pc:0x13b4c240, id:238.
+[info] 5145 Icache create a req, pc:0x13b4c280, Id:240, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5145 send req back to ifu, pc:0x13b4c260, id:239.
+[info] 5147 instr req lookup tag HIT, req pc:0x13b4c280, id:240, setIdx:5, wayId:0, vfId:0
+[info] 5147 update hit info buffer, pc:0x13b4c280, setIdx:5, wayId:0
+[info] 5147 match hit info buffer, id:241, pc:0x13b4c2a0, wayIdx:0
+[info] 5147 Icache create a req, pc:0x13b4c2a0, Id:241, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5148 match hit info buffer, id:242, pc:0x13b4c2c0, wayIdx:0
+[info] 5148 Icache create a req, pc:0x13b4c2c0, Id:242, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5148 send req back to ifu, pc:0x13b4c280, id:240.
+[info] 5149 instr req HIT hitInfoBuffer, req pc:0x13b4c2a0, id:241, setIdx:5, wayId:0, vfId:0
+[info] 5150 instr req HIT hitInfoBuffer, req pc:0x13b4c2c0, id:242, setIdx:5, wayId:0, vfId:0
+[info] 5150 send req back to ifu, pc:0x13b4c2a0, id:241.
+[info] 5151 send req back to ifu, pc:0x13b4c2c0, id:242.
+[info] 5162 match hit info buffer, id:243, pc:0x13b4c2e0, wayIdx:0
+[info] 5162 Icache create a req, pc:0x13b4c2e0, Id:243, warpId:0, setIdx:5, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5164 instr req HIT hitInfoBuffer, req pc:0x13b4c2e0, id:243, setIdx:5, wayId:0, vfId:0
+[info] 5165 send req back to ifu, pc:0x13b4c2e0, id:243.
+[info] 5171 Icache create a req, pc:0x13b4c300, Id:244, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5173 instr req lookup tag HIT, req pc:0x13b4c300, id:244, setIdx:6, wayId:0, vfId:0
+[info] 5173 update hit info buffer, pc:0x13b4c300, setIdx:6, wayId:0
+[info] 5174 send req back to ifu, pc:0x13b4c300, id:244.
+[info] 5177 match hit info buffer, id:245, pc:0x13b4c320, wayIdx:0
+[info] 5177 Icache create a req, pc:0x13b4c320, Id:245, warpId:0, setIdx:6, tagAddr:0x13b4c, type:2, vfId:0
+[info] 5179 instr req HIT hitInfoBuffer, req pc:0x13b4c320, id:245, setIdx:6, wayId:0, vfId:0
+[info] 5180 send req back to ifu, pc:0x13b4c320, id:245.
+[info] 5190 clear tagRam pendingBit!
+[info] ++++++++++++++++++++++core: 0, subcore: 1, start: 208, tick: 7271, kernelId: 0, blkID: 0, blkDim: 1, rtsqId: 1, streamId: 0, taskId: 0, subtaskId: 0, threadId: 0, done++++++++++++++++++++++.

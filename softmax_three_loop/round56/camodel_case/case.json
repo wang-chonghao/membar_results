@@ -1,0 +1,40 @@
+{
+  "case": "softmax_three_loop",
+  "variant": "round56",
+  "kernel_name": "attention_softmax_kernel",
+  "kernel_source": "source/attention_softmax_round56_vdup_vsts.cce",
+  "host_args": [
+    "2",
+    "1",
+    "8192"
+  ],
+  "host_defines": [],
+  "input_files": [],
+  "golden_pairs": [],
+  "atol": 1e-06,
+  "rtol": 0.001,
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "npu_type": "Ascend950PR_9599",
+  "expected_vf_cycles": 654,
+  "original_run_dir": null,
+  "source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/softmax_round56_vdup_vsts/archive/before_reciprocal_vdup_removal/attention_softmax_round56_vdup_vsts.cce",
+  "logs_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/softmax_round56_vdup_vsts/archive/before_reciprocal_vdup_removal/camodel",
+  "host_source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/gelu_poly_i96_unroll_spill_20260911/scripts/native_runtime_softmax_main.cpp",
+  "archived_binaries": [],
+  "original_run_dir_available": false,
+  "archived_golden_available": false,
+  "rerun_performed": false,
+  "archived_source_equals_report": true
+}

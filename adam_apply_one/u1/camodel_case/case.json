@@ -1,0 +1,55 @@
+{
+  "case": "adam_apply_one",
+  "variant": "u1",
+  "kernel_name": "adam_kernel",
+  "kernel_source": "source/adam_i48_u1.cce",
+  "host_args": [
+    "10",
+    "3",
+    "3072"
+  ],
+  "host_defines": [],
+  "input_files": [],
+  "golden_pairs": [
+    [
+      "golden0.bin",
+      "output0.bin"
+    ],
+    [
+      "golden1.bin",
+      "output1.bin"
+    ],
+    [
+      "golden2.bin",
+      "output2.bin"
+    ]
+  ],
+  "atol": 1e-06,
+  "rtol": 0.001,
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "npu_type": "Ascend950PR_9599",
+  "expected_vf_cycles": 516,
+  "original_run_dir": null,
+  "source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/adam_apply_one_fused_i48_unroll/u1/source/adam_i48_u1.cce",
+  "logs_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/adam_apply_one_fused_i48_unroll/u1/camodel",
+  "host_source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/adam_apply_one_fused_i48_unroll/scripts/native_runtime_adam_main.cpp",
+  "archived_binaries": [
+    "kernel.o"
+  ],
+  "original_run_dir_available": false,
+  "archived_golden_available": true,
+  "rerun_performed": false,
+  "archived_source_equals_report": true
+}

@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 import shutil
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -238,9 +239,12 @@ def collect():
                            "每段实际 U1，不把历史 pragma U8 误写为硬件展开 8 次。额外 scratch 增加 UB 占用。"],
                   "variants":comparison+[three_v], "overlay":True})
 
+    if (ROOT/'results/flash_attention_grad_front_unroll2/bank_aware_u2/summary.json').is_file():
+        from add_flash_attention_grad_front import collect_case
+        cases.append(collect_case(sys.modules[__name__],ROOT))
     for case in cases:
         (DEST/case["id"] / "summary.json").write_text(json.dumps(case,ensure_ascii=False,indent=2), encoding="utf-8")
-    data={"generated":"2026-10-08", "soc":"A5 / DV100 / dav-3510", "window":10,
+    data={"generated":"2026-10-09", "soc":"A5 / DV100 / dav-3510", "window":10,
           "ipc_method":"向量计算指令完成事件，10-cycle trailing window，各曲线以首条计算完成为 cycle 0；不含 LSU、Membar、PSET、scalar。",
           "cases":cases}
     METADATA.mkdir(exist_ok=True)

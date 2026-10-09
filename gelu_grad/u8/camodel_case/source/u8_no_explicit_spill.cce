@@ -1,0 +1,52 @@
+#define __aicore__ [aicore]
+
+__attribute__((always_inline)) inline [aicore] void gelu_grad_vf(
+    __ubuf__ float *dy, __ubuf__ float *x, __ubuf__ float *out) {
+    __VEC_SCOPE__ {
+        vector_bool p1 = pset_b32(PAT_ALL);
+        vector_bool p2;
+        vector_f32 v0, v1, v2, v3, v4, v5, v6, v7, v8;
+        vdup(v0, 1.0f, p1, MODE_ZEROING);
+        vdup(v1, 0.0f, p1, MODE_ZEROING);
+        vdup(v2, -1.595769121605730711759f, p1, MODE_ZEROING);
+        vdup(v3, 1.595769121605730711759f, p1, MODE_ZEROING);
+        #pragma unroll(8)
+        for (int i = 0; i < 64; ++i) {
+            // Explicit-copy variant; compiled layout must be checked separately.
+            vlds(v4, dy, 64*i, NORM);
+            vlds(v5, x, 64*i, NORM);
+            vmul(v6, v5, v5, p1, MODE_ZEROING);
+            vmov(v7, v2);
+            vaxpy(v7, v6, -0.0713548162726002527220f, p1, MODE_ZEROING);
+            vmul(v7, v7, v5, p1, MODE_ZEROING);
+            vexp(v7, v7, p1, MODE_ZEROING);
+            vmov(v8, v3);
+            vaxpy(v8, v6, 0.2140644488178007f, p1, MODE_ZEROING);
+            vmul(v5, v8, v5, p1, MODE_ZEROING);
+            vadds(v6, v7, 1.0f, p1, MODE_ZEROING);
+            vdiv(v6, v0, v6, p1, MODE_ZEROING);
+            vmul(v7, v7, v6, p1, MODE_ZEROING);
+            vmul(v5, v7, v5, p1, MODE_ZEROING);
+            vmul(v5, v5, v6, p1, MODE_ZEROING);
+            vcmp_eq(p2, v5, v5, p1);
+            vsel(v5, v5, v1, p2);
+            vadd(v5, v5, v6, p1, MODE_ZEROING);
+            vmul(v4, v4, v5, p1, MODE_ZEROING);
+            vsts(v4, out, 64*i, NORM_B32, p1);
+        }
+    }
+}
+
+extern "C" __global__ __aicore__ void gelu_grad_fp32(
+    __gm__ float *input, __gm__ float *output) {
+    __ubuf__ float *dy = (__ubuf__ float *)get_imm(0);
+    __ubuf__ float *x = (__ubuf__ float *)get_imm(0x4000);
+    __ubuf__ float *out = (__ubuf__ float *)get_imm(0x8000);
+    copy_gm_to_ubuf_align_v2(dy, input, 0, 1, 32768, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    gelu_grad_vf(dy, x, out);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output, out, 0, 1, 16384, 0, 0, 0);
+}

@@ -1,0 +1,41 @@
+{
+  "case": "flash_attention_grad_front",
+  "variant": "u2_bank_window3",
+  "kernel_name": "candidate_kernel",
+  "kernel_source": "run_output/kernel.cce",
+  "host_args": [],
+  "host_defines": [
+    "-DPROBE_INPUT_BYTES=49216",
+    "-DPROBE_OUTPUT_BYTES=64"
+  ],
+  "input_files": [
+    "input.bin"
+  ],
+  "golden_pairs": [
+    [
+      "golden.bin",
+      "output.bin"
+    ]
+  ],
+  "atol": 2e-06,
+  "rtol": 2e-05,
+  "ccec_flags": [
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "npu_type": "Ascend950PR_9599",
+  "expected_vf_cycles": 234,
+  "original_run_dir": "/tmp/fa-u2-bank-window3-20261008/flash_attention_grad_front",
+  "source_origin": "/mnt/e/vfsimulator/results/flash_attention_grad_front_unroll2/bank_aware_u2/bank_window_3/flash_attention_grad_front/source/kernel.cce",
+  "logs_origin": "/mnt/e/vfsimulator/results/flash_attention_grad_front_unroll2/bank_aware_u2/bank_window_3/flash_attention_grad_front/camodel",
+  "host_source_origin": "/tmp/fa-u2-bank-window3-20261008/flash_attention_grad_front/host.cpp",
+  "archived_binaries": [
+    "kernel.o",
+    "kernel_aiv.o"
+  ],
+  "original_run_dir_available": true,
+  "archived_golden_available": true,
+  "rerun_performed": false,
+  "archived_source_equals_report": true
+}

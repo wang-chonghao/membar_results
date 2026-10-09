@@ -1,0 +1,45 @@
+{
+  "case": "gelu_poly",
+  "variant": "u1",
+  "kernel_name": "foo_add",
+  "kernel_source": "source/gelu_poly_i96_u1.cce",
+  "host_args": [
+    "2",
+    "1",
+    "6144"
+  ],
+  "host_defines": [],
+  "input_files": [],
+  "golden_pairs": [
+    [
+      "golden.bin",
+      "output0.bin"
+    ]
+  ],
+  "atol": 1e-06,
+  "rtol": 0.001,
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "npu_type": "Ascend950PR_9599",
+  "expected_vf_cycles": 2245,
+  "original_run_dir": null,
+  "source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/gelu_poly_i96_unroll_spill_20260911/u1/source/gelu_poly_i96_u1.cce",
+  "logs_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/gelu_poly_i96_unroll_spill_20260911/u1/camodel",
+  "host_source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/gelu_poly_i96_unroll_spill_20260911/scripts/native_runtime_softmax_main.cpp",
+  "archived_binaries": [],
+  "original_run_dir_available": false,
+  "archived_golden_available": true,
+  "rerun_performed": false,
+  "archived_source_equals_report": true
+}

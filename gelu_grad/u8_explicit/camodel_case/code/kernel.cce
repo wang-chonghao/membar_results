@@ -1,0 +1,252 @@
+#define __aicore__ [aicore]
+
+// Reconstructed from u8 static PC order, including explicit spill traffic.
+__attribute__((always_inline)) inline [aicore] void gelu_grad_vf(
+    __ubuf__ float *dy, __ubuf__ float *x, __ubuf__ float *out, int stride) {
+    __ubuf__ float *dy0 = dy + 0;
+    __ubuf__ float *dy1 = dy + 64;
+    __ubuf__ float *dy2 = dy + 128;
+    __ubuf__ float *dy3 = dy + 192;
+    __ubuf__ float *dy4 = dy + 256;
+    __ubuf__ float *dy5 = dy + 320;
+    __ubuf__ float *dy6 = dy + 384;
+    __ubuf__ float *dy7 = dy + 448;
+    __ubuf__ float *x0 = x + 0;
+    __ubuf__ float *x1 = x + 64;
+    __ubuf__ float *x2 = x + 128;
+    __ubuf__ float *x3 = x + 192;
+    __ubuf__ float *x4 = x + 256;
+    __ubuf__ float *x5 = x + 320;
+    __ubuf__ float *x6 = x + 384;
+    __ubuf__ float *x7 = x + 448;
+    __ubuf__ float *out0 = out + 0;
+    __ubuf__ float *out1 = out + 64;
+    __ubuf__ float *out2 = out + 128;
+    __ubuf__ float *out3 = out + 192;
+    __ubuf__ float *out4 = out + 256;
+    __ubuf__ float *out5 = out + 320;
+    __ubuf__ float *out6 = out + 384;
+    __ubuf__ float *out7 = out + 448;
+    __ubuf__ unsigned int *spill = (__ubuf__ unsigned int *)get_imm(0x40000);
+    __VEC_SCOPE__ {
+        vector_bool p0 = pset_b8(PAT_ALL);
+        vector_bool p1 = pset_b32(PAT_ALL);
+        vector_bool p2, p3, p4, p5, p6, p7;
+        vector_f32 v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31;
+        vdup(v0, 1.0f, p1, MODE_ZEROING);
+        vdup(v1, 0.0f, p1, MODE_ZEROING);
+        vdup(v2, -1.595769121605730711759f, p1, MODE_ZEROING);
+        vdup(v3, 1.595769121605730711759f, p1, MODE_ZEROING);
+        vmov(v7, v2);
+        vmov(v8, v3);
+        #pragma unroll(1)
+        for (int batch = 0; batch < 8; ++batch) {
+            vlds(v2, dy0, stride, NORM, POST_UPDATE); // 0x13b3a2ac
+            mem_bar(VLD_VST); // 0x13b3a2b0
+            vsts((vector_u8 &)v2, (__ubuf__ unsigned char *)spill, -288, NORM_B8, p0); // 0x13b3a2b4
+            vlds(v2, dy1, stride, NORM, POST_UPDATE); // 0x13b3a2b8
+            mem_bar(VLD_VST); // 0x13b3a2bc
+            vsts((vector_u8 &)v2, (__ubuf__ unsigned char *)spill, -544, NORM_B8, p0); // 0x13b3a2c0
+            vlds(v2, dy2, stride, NORM, POST_UPDATE); // 0x13b3a2c4
+            mem_bar(VLD_VST); // 0x13b3a2c8
+            vsts((vector_u8 &)v2, (__ubuf__ unsigned char *)spill, -800, NORM_B8, p0); // 0x13b3a2cc
+            vlds(v2, dy3, stride, NORM, POST_UPDATE); // 0x13b3a2d0
+            mem_bar(VLD_VST); // 0x13b3a2d4
+            vsts((vector_u8 &)v2, (__ubuf__ unsigned char *)spill, -1056, NORM_B8, p0); // 0x13b3a2d8
+            vlds(v2, dy4, stride, NORM, POST_UPDATE); // 0x13b3a2dc
+            mem_bar(VLD_VST); // 0x13b3a2e0
+            vsts((vector_u8 &)v2, (__ubuf__ unsigned char *)spill, -1312, NORM_B8, p0); // 0x13b3a2e4
+            vlds(v9, dy5, stride, NORM, POST_UPDATE); // 0x13b3a2e8
+            vlds(v10, dy6, stride, NORM, POST_UPDATE); // 0x13b3a2ec
+            vlds(v11, dy7, stride, NORM, POST_UPDATE); // 0x13b3a2f0
+            vlds(v12, x0, stride, NORM, POST_UPDATE); // 0x13b3a2f4
+            vlds(v13, x1, stride, NORM, POST_UPDATE); // 0x13b3a2f8
+            vlds(v14, x2, stride, NORM, POST_UPDATE); // 0x13b3a2fc
+            vlds(v15, x3, stride, NORM, POST_UPDATE); // 0x13b3a300
+            vlds(v16, x4, stride, NORM, POST_UPDATE); // 0x13b3a304
+            vlds(v17, x5, stride, NORM, POST_UPDATE); // 0x13b3a308
+            vlds(v18, x6, stride, NORM, POST_UPDATE); // 0x13b3a30c
+            vlds(v19, x7, stride, NORM, POST_UPDATE); // 0x13b3a310
+            vmul(v20, v12, v12, p1, MODE_ZEROING); // 0x13b3a314
+            vmul(v21, v13, v13, p1, MODE_ZEROING); // 0x13b3a318
+            vmul(v22, v14, v14, p1, MODE_ZEROING); // 0x13b3a31c
+            vmul(v23, v15, v15, p1, MODE_ZEROING); // 0x13b3a320
+            vmul(v24, v16, v16, p1, MODE_ZEROING); // 0x13b3a324
+            vmul(v25, v17, v17, p1, MODE_ZEROING); // 0x13b3a328
+            vmul(v26, v18, v18, p1, MODE_ZEROING); // 0x13b3a32c
+            vmul(v27, v19, v19, p1, MODE_ZEROING); // 0x13b3a330
+            vmov(v28, v7); // 0x13b3a334
+            vaxpy(v28, v20, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a338
+            vmov(v29, v7); // 0x13b3a33c
+            vaxpy(v29, v21, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a340
+            vmov(v30, v7); // 0x13b3a344
+            vaxpy(v30, v22, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a348
+            vmov(v31, v7); // 0x13b3a34c
+            vaxpy(v31, v23, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a350
+            vmov(v2, v7); // 0x13b3a354
+            vaxpy(v2, v24, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a358
+            vmov(v4, v7); // 0x13b3a35c
+            vaxpy(v4, v25, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a360
+            vmov(v5, v7); // 0x13b3a364
+            vaxpy(v5, v26, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a368
+            vmov(v6, v7); // 0x13b3a36c
+            vaxpy(v6, v27, -0.0713548162726002527220f, p1, MODE_ZEROING); // 0x13b3a370
+            vmul(v28, v28, v12, p1, MODE_ZEROING); // 0x13b3a374
+            vmul(v29, v29, v13, p1, MODE_ZEROING); // 0x13b3a378
+            vmul(v30, v30, v14, p1, MODE_ZEROING); // 0x13b3a37c
+            vmul(v31, v31, v15, p1, MODE_ZEROING); // 0x13b3a380
+            vmul(v2, v2, v16, p1, MODE_ZEROING); // 0x13b3a384
+            vmul(v4, v4, v17, p1, MODE_ZEROING); // 0x13b3a388
+            vmul(v5, v5, v18, p1, MODE_ZEROING); // 0x13b3a38c
+            vmul(v6, v6, v19, p1, MODE_ZEROING); // 0x13b3a390
+            vexp(v28, v28, p1, MODE_ZEROING); // 0x13b3a394
+            vexp(v29, v29, p1, MODE_ZEROING); // 0x13b3a398
+            vexp(v30, v30, p1, MODE_ZEROING); // 0x13b3a39c
+            vexp(v31, v31, p1, MODE_ZEROING); // 0x13b3a3a0
+            vexp(v2, v2, p1, MODE_ZEROING); // 0x13b3a3a4
+            vexp(v4, v4, p1, MODE_ZEROING); // 0x13b3a3a8
+            vexp(v5, v5, p1, MODE_ZEROING); // 0x13b3a3ac
+            vexp(v6, v6, p1, MODE_ZEROING); // 0x13b3a3b0
+            vmov(v3, v8); // 0x13b3a3b4
+            vaxpy(v3, v20, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3b8
+            vmov(v20, v8); // 0x13b3a3bc
+            vaxpy(v20, v21, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3c0
+            vmov(v21, v8); // 0x13b3a3c4
+            vaxpy(v21, v22, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3c8
+            vmov(v22, v8); // 0x13b3a3cc
+            vaxpy(v22, v23, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3d0
+            vmov(v23, v8); // 0x13b3a3d4
+            vaxpy(v23, v24, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3d8
+            vmov(v24, v8); // 0x13b3a3dc
+            vaxpy(v24, v25, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3e0
+            vmov(v25, v8); // 0x13b3a3e4
+            vaxpy(v25, v26, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3e8
+            vmov(v26, v8); // 0x13b3a3ec
+            vaxpy(v26, v27, 0.2140644488178007f, p1, MODE_ZEROING); // 0x13b3a3f0
+            vmul(v3, v3, v12, p1, MODE_ZEROING); // 0x13b3a3f4
+            vmul(v12, v20, v13, p1, MODE_ZEROING); // 0x13b3a3f8
+            vmul(v13, v21, v14, p1, MODE_ZEROING); // 0x13b3a3fc
+            vmul(v14, v22, v15, p1, MODE_ZEROING); // 0x13b3a400
+            vmul(v15, v23, v16, p1, MODE_ZEROING); // 0x13b3a404
+            vmul(v16, v24, v17, p1, MODE_ZEROING); // 0x13b3a408
+            vmul(v17, v25, v18, p1, MODE_ZEROING); // 0x13b3a40c
+            vmul(v18, v26, v19, p1, MODE_ZEROING); // 0x13b3a410
+            vadds(v19, v28, 1.0f, p1, MODE_ZEROING); // 0x13b3a414
+            vadds(v20, v29, 1.0f, p1, MODE_ZEROING); // 0x13b3a418
+            vadds(v21, v30, 1.0f, p1, MODE_ZEROING); // 0x13b3a41c
+            vadds(v22, v31, 1.0f, p1, MODE_ZEROING); // 0x13b3a420
+            vadds(v23, v2, 1.0f, p1, MODE_ZEROING); // 0x13b3a424
+            vadds(v24, v4, 1.0f, p1, MODE_ZEROING); // 0x13b3a428
+            vadds(v25, v5, 1.0f, p1, MODE_ZEROING); // 0x13b3a42c
+            vadds(v26, v6, 1.0f, p1, MODE_ZEROING); // 0x13b3a430
+            vdiv(v19, v0, v19, p1, MODE_ZEROING); // 0x13b3a434
+            vdiv(v20, v0, v20, p1, MODE_ZEROING); // 0x13b3a438
+            vdiv(v21, v0, v21, p1, MODE_ZEROING); // 0x13b3a43c
+            vdiv(v22, v0, v22, p1, MODE_ZEROING); // 0x13b3a440
+            vdiv(v23, v0, v23, p1, MODE_ZEROING); // 0x13b3a444
+            vdiv(v24, v0, v24, p1, MODE_ZEROING); // 0x13b3a448
+            vdiv(v25, v0, v25, p1, MODE_ZEROING); // 0x13b3a44c
+            vdiv(v26, v0, v26, p1, MODE_ZEROING); // 0x13b3a450
+            vmul(v27, v28, v19, p1, MODE_ZEROING); // 0x13b3a454
+            vmul(v28, v29, v20, p1, MODE_ZEROING); // 0x13b3a458
+            vmul(v29, v30, v21, p1, MODE_ZEROING); // 0x13b3a45c
+            vmul(v30, v31, v22, p1, MODE_ZEROING); // 0x13b3a460
+            vmul(v2, v2, v23, p1, MODE_ZEROING); // 0x13b3a464
+            vmul(v4, v4, v24, p1, MODE_ZEROING); // 0x13b3a468
+            vmul(v5, v5, v25, p1, MODE_ZEROING); // 0x13b3a46c
+            vmul(v6, v6, v26, p1, MODE_ZEROING); // 0x13b3a470
+            vmul(v3, v27, v3, p1, MODE_ZEROING); // 0x13b3a474
+            vmul(v12, v28, v12, p1, MODE_ZEROING); // 0x13b3a478
+            vmul(v13, v29, v13, p1, MODE_ZEROING); // 0x13b3a47c
+            vmul(v14, v30, v14, p1, MODE_ZEROING); // 0x13b3a480
+            vmul(v2, v2, v15, p1, MODE_ZEROING); // 0x13b3a484
+            vmul(v4, v4, v16, p1, MODE_ZEROING); // 0x13b3a488
+            vmul(v5, v5, v17, p1, MODE_ZEROING); // 0x13b3a48c
+            vmul(v6, v6, v18, p1, MODE_ZEROING); // 0x13b3a490
+            vmul(v3, v3, v19, p1, MODE_ZEROING); // 0x13b3a494
+            vmul(v12, v12, v20, p1, MODE_ZEROING); // 0x13b3a498
+            vmul(v13, v13, v21, p1, MODE_ZEROING); // 0x13b3a49c
+            vmul(v14, v14, v22, p1, MODE_ZEROING); // 0x13b3a4a0
+            vmul(v2, v2, v23, p1, MODE_ZEROING); // 0x13b3a4a4
+            vmul(v4, v4, v24, p1, MODE_ZEROING); // 0x13b3a4a8
+            vmul(v5, v5, v25, p1, MODE_ZEROING); // 0x13b3a4ac
+            vmul(v6, v6, v26, p1, MODE_ZEROING); // 0x13b3a4b0
+            vcmp_eq(p2, v3, v3, p1); // 0x13b3a4b4
+            mem_bar(VLD_VST); // 0x13b3a4b8
+            psts(p2, spill, -1376, NORM); // 0x13b3a4bc
+            vcmp_eq(p3, v12, v12, p1); // 0x13b3a4c0
+            vcmp_eq(p4, v13, v13, p1); // 0x13b3a4c4
+            vcmp_eq(p5, v14, v14, p1); // 0x13b3a4c8
+            vcmp_eq(p6, v2, v2, p1); // 0x13b3a4cc
+            vcmp_eq(p7, v4, v4, p1); // 0x13b3a4d0
+            vcmp_eq(p2, v5, v5, p1); // 0x13b3a4d4
+            mem_bar(VLD_VST); // 0x13b3a4d8
+            psts(p2, spill, -1344, NORM); // 0x13b3a4dc
+            vcmp_eq(p2, v6, v6, p1); // 0x13b3a4e0
+            mem_bar(VLD_VST); // 0x13b3a4e4
+            psts(p2, spill, -1408, NORM); // 0x13b3a4e8
+            mem_bar(VST_VLD); // 0x13b3a4ec
+            plds(p2, spill, -1376, NORM); // 0x13b3a4f0
+            vsel(v3, v3, v1, p2); // 0x13b3a4f4
+            vsel(v12, v12, v1, p3); // 0x13b3a4f8
+            vsel(v13, v13, v1, p4); // 0x13b3a4fc
+            vsel(v14, v14, v1, p5); // 0x13b3a500
+            vsel(v2, v2, v1, p6); // 0x13b3a504
+            vsel(v4, v4, v1, p7); // 0x13b3a508
+            mem_bar(VST_VLD); // 0x13b3a50c
+            plds(p2, spill, -1344, NORM); // 0x13b3a510
+            vsel(v5, v5, v1, p2); // 0x13b3a514
+            mem_bar(VST_VLD); // 0x13b3a518
+            plds(p2, spill, -1408, NORM); // 0x13b3a51c
+            vsel(v6, v6, v1, p2); // 0x13b3a520
+            vadd(v3, v3, v19, p1, MODE_ZEROING); // 0x13b3a524
+            vadd(v12, v12, v20, p1, MODE_ZEROING); // 0x13b3a528
+            vadd(v13, v13, v21, p1, MODE_ZEROING); // 0x13b3a52c
+            vadd(v14, v14, v22, p1, MODE_ZEROING); // 0x13b3a530
+            vadd(v2, v2, v23, p1, MODE_ZEROING); // 0x13b3a534
+            vadd(v4, v4, v24, p1, MODE_ZEROING); // 0x13b3a538
+            vadd(v5, v5, v25, p1, MODE_ZEROING); // 0x13b3a53c
+            vadd(v6, v6, v26, p1, MODE_ZEROING); // 0x13b3a540
+            mem_bar(VST_VLD); // 0x13b3a544
+            vlds(v15, (__ubuf__ float *)spill, -72, NORM); // 0x13b3a548
+            vmul(v3, v15, v3, p1, MODE_ZEROING); // 0x13b3a54c
+            mem_bar(VST_VLD); // 0x13b3a550
+            vlds(v15, (__ubuf__ float *)spill, -136, NORM); // 0x13b3a554
+            vmul(v12, v15, v12, p1, MODE_ZEROING); // 0x13b3a558
+            mem_bar(VST_VLD); // 0x13b3a55c
+            vlds(v15, (__ubuf__ float *)spill, -200, NORM); // 0x13b3a560
+            vmul(v13, v15, v13, p1, MODE_ZEROING); // 0x13b3a564
+            mem_bar(VST_VLD); // 0x13b3a568
+            vlds(v15, (__ubuf__ float *)spill, -264, NORM); // 0x13b3a56c
+            vmul(v14, v15, v14, p1, MODE_ZEROING); // 0x13b3a570
+            mem_bar(VST_VLD); // 0x13b3a574
+            vlds(v15, (__ubuf__ float *)spill, -328, NORM); // 0x13b3a578
+            vmul(v2, v15, v2, p1, MODE_ZEROING); // 0x13b3a57c
+            vmul(v4, v9, v4, p1, MODE_ZEROING); // 0x13b3a580
+            vmul(v5, v10, v5, p1, MODE_ZEROING); // 0x13b3a584
+            vmul(v6, v11, v6, p1, MODE_ZEROING); // 0x13b3a588
+            vsts(v3, out0, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a58c
+            vsts(v12, out1, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a590
+            vsts(v13, out2, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a594
+            vsts(v14, out3, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a598
+            vsts(v2, out4, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a59c
+            vsts(v4, out5, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a5a0
+            vsts(v5, out6, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a5a4
+            vsts(v6, out7, stride, NORM_B32, p1, POST_UPDATE); // 0x13b3a5a8
+        }
+    }
+}
+
+extern "C" __global__ __aicore__ void gelu_grad_fp32(
+    __gm__ float *input, __gm__ float *output) {
+    __ubuf__ float *dy = (__ubuf__ float *)get_imm(0);
+    __ubuf__ float *x = (__ubuf__ float *)get_imm(0x4000);
+    __ubuf__ float *out = (__ubuf__ float *)get_imm(0x8000);
+    copy_gm_to_ubuf_align_v2(dy, input, 0, 1, 32768, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    gelu_grad_vf(dy, x, out, get_imm(512));
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output, out, 0, 1, 16384, 0, 0, 0);
+}

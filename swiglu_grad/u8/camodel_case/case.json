@@ -1,0 +1,49 @@
+{
+  "case": "swiglu_grad",
+  "variant": "u8",
+  "kernel_name": "swiglu_grad_kernel",
+  "kernel_source": "source/swiglu_grad_fp32_i96_u8.cce",
+  "host_args": [
+    "3",
+    "2",
+    "6144"
+  ],
+  "host_defines": [],
+  "input_files": [],
+  "golden_pairs": [
+    [
+      "golden0.bin",
+      "output0.bin"
+    ],
+    [
+      "golden1.bin",
+      "output1.bin"
+    ]
+  ],
+  "atol": 1e-06,
+  "rtol": 0.001,
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "npu_type": "Ascend950PR_9599",
+  "expected_vf_cycles": 8243,
+  "original_run_dir": null,
+  "source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/swiglu_grad_fp32_i96/unroll_scan_20260914/u8/source/swiglu_grad_fp32_i96_u8.cce",
+  "logs_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/swiglu_grad_fp32_i96/unroll_scan_20260914/u8/camodel",
+  "host_source_origin": "/mnt/e/vfsimulator/results/ub_address_dependency_experiment/swiglu_grad_fp32_i96/unroll_scan_20260914/scripts/native_runtime_swiglu_grad_main.cpp",
+  "archived_binaries": [],
+  "original_run_dir_available": false,
+  "archived_golden_available": true,
+  "rerun_performed": false,
+  "archived_source_equals_report": true
+}

@@ -1,0 +1,237 @@
+// Recorded hardware VF vector/LSU/membar stream; scalar address effects folded.
+__attribute__((always_inline)) inline [aicore] void hardware_vf(
+    __ubuf__ float *src, __ubuf__ float *grad, __ubuf__ float *dst, __ubuf__ float *spill) {
+    __ubuf__ float *load_13b3a26c = src + 0;
+    __ubuf__ float *load_13b3a270 = src + 704;
+    __ubuf__ float *load_13b3a274 = src + 384;
+    __ubuf__ float *load_13b3a278 = src + 320;
+    __ubuf__ float *load_13b3a27c = grad + 0;
+    __ubuf__ float *load_13b3a280 = grad + 704;
+    __ubuf__ float *load_13b3a284 = grad + 384;
+    __ubuf__ float *load_13b3a288 = grad + 320;
+    __ubuf__ float *load_13b3a2e4 = src + 128;
+    __ubuf__ float *load_13b3a2e8 = src + 576;
+    __ubuf__ float *load_13b3a2ec = src + 512;
+    __ubuf__ float *load_13b3a2f0 = src + 192;
+    __ubuf__ float *load_13b3a2f4 = grad + 128;
+    __ubuf__ float *load_13b3a2f8 = grad + 576;
+    __ubuf__ float *load_13b3a2fc = grad + 512;
+    __ubuf__ float *load_13b3a300 = grad + 192;
+    __ubuf__ float *load_13b3a364 = src + 640;
+    __ubuf__ float *load_13b3a368 = src + 64;
+    __ubuf__ float *load_13b3a36c = src + 256;
+    __ubuf__ float *load_13b3a370 = src + 448;
+    __ubuf__ float *load_13b3a374 = grad + 640;
+    __ubuf__ float *load_13b3a378 = grad + 64;
+    __ubuf__ float *load_13b3a37c = grad + 256;
+    __ubuf__ float *load_13b3a380 = grad + 448;
+    __ubuf__ float *store_0_0 = dst + 0;
+    __VEC_SCOPE__ {
+        vector_f32 r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31;
+        vector_bool p0, p1, p2, p3, p4, p5, p6, p7;
+        vector_align u0, u1, u2, u3;
+        // PC 0x13b3a200: RV_PSET
+        p1 = pset_b32(PAT_ALL);
+        #pragma unroll(1)
+        for (int iteration=0; iteration<4; ++iteration) {
+            // PC 0x13b3a26c: RV_VLDI
+            vlds(r0, load_13b3a26c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a270: RV_VLDI
+            vlds(r1, load_13b3a270, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a274: RV_VLDI
+            vlds(r2, load_13b3a274, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a278: RV_VLDI
+            vlds(r3, load_13b3a278, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a27c: RV_VLDI
+            vlds(r4, load_13b3a27c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a280: RV_VLDI
+            vlds(r5, load_13b3a280, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a284: RV_VLDI
+            vlds(r6, load_13b3a284, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a288: RV_VLDI
+            vlds(r7, load_13b3a288, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a28c: RV_VLDI
+            vlds(r8, load_13b3a26c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a290: RV_VLDI
+            vlds(r9, load_13b3a270, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a294: RV_VLDI
+            vlds(r10, load_13b3a274, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a298: RV_VLDI
+            vlds(r11, load_13b3a278, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a29c: RV_VLDI
+            vlds(r12, load_13b3a27c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2a0: RV_VLDI
+            vlds(r13, load_13b3a280, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2a4: RV_VLDI
+            vlds(r14, load_13b3a284, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2a8: RV_VLDI
+            vlds(r15, load_13b3a288, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2ac: RV_VMUL
+            vmul(r0, r4, r0, p1, MODE_ZEROING);
+            // PC 0x13b3a2b0: RV_VMUL
+            vmul(r1, r5, r1, p1, MODE_ZEROING);
+            // PC 0x13b3a2b4: RV_VADD
+            vadd(r0, r0, r1, p1, MODE_ZEROING);
+            // PC 0x13b3a2b8: RV_VMUL
+            vmul(r1, r12, r8, p1, MODE_ZEROING);
+            // PC 0x13b3a2bc: RV_VMUL
+            vmul(r4, r13, r9, p1, MODE_ZEROING);
+            // PC 0x13b3a2c0: RV_VADD
+            vadd(r1, r1, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a2c4: RV_VMUL
+            vmul(r3, r7, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a2c8: RV_VMUL
+            vmul(r2, r6, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a2cc: RV_VADD
+            vadd(r2, r3, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a2d0: RV_VMUL
+            vmul(r3, r15, r11, p1, MODE_ZEROING);
+            // PC 0x13b3a2d4: RV_VMUL
+            vmul(r4, r14, r10, p1, MODE_ZEROING);
+            // PC 0x13b3a2d8: RV_VADD
+            vadd(r3, r3, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a2dc: RV_VADD
+            vadd(r0, r0, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a2e0: RV_VADD
+            vadd(r1, r1, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a2e4: RV_VLDI
+            vlds(r2, load_13b3a2e4, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2e8: RV_VLDI
+            vlds(r3, load_13b3a2e8, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2ec: RV_VLDI
+            vlds(r4, load_13b3a2ec, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2f0: RV_VLDI
+            vlds(r5, load_13b3a2f0, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2f4: RV_VLDI
+            vlds(r6, load_13b3a2f4, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2f8: RV_VLDI
+            vlds(r7, load_13b3a2f8, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a2fc: RV_VLDI
+            vlds(r8, load_13b3a2fc, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a300: RV_VLDI
+            vlds(r9, load_13b3a300, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a304: RV_VLDI
+            vlds(r10, load_13b3a2e4, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a308: RV_VLDI
+            vlds(r11, load_13b3a2e8, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a30c: RV_VLDI
+            vlds(r12, load_13b3a2ec, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a310: RV_VLDI
+            vlds(r13, load_13b3a2f0, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a314: RV_VLDI
+            vlds(r14, load_13b3a2f4, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a318: RV_VLDI
+            vlds(r15, load_13b3a2f8, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a31c: RV_VLDI
+            vlds(r16, load_13b3a2fc, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a320: RV_VLDI
+            vlds(r17, load_13b3a300, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a324: RV_VMUL
+            vmul(r2, r6, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a328: RV_VMUL
+            vmul(r3, r7, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a32c: RV_VADD
+            vadd(r2, r2, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a330: RV_VMUL
+            vmul(r3, r14, r10, p1, MODE_ZEROING);
+            // PC 0x13b3a334: RV_VMUL
+            vmul(r6, r15, r11, p1, MODE_ZEROING);
+            // PC 0x13b3a338: RV_VADD
+            vadd(r3, r3, r6, p1, MODE_ZEROING);
+            // PC 0x13b3a33c: RV_VMUL
+            vmul(r5, r9, r5, p1, MODE_ZEROING);
+            // PC 0x13b3a340: RV_VMUL
+            vmul(r4, r8, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a344: RV_VADD
+            vadd(r4, r5, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a348: RV_VMUL
+            vmul(r5, r17, r13, p1, MODE_ZEROING);
+            // PC 0x13b3a34c: RV_VMUL
+            vmul(r6, r16, r12, p1, MODE_ZEROING);
+            // PC 0x13b3a350: RV_VADD
+            vadd(r5, r5, r6, p1, MODE_ZEROING);
+            // PC 0x13b3a354: RV_VADD
+            vadd(r2, r2, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a358: RV_VADD
+            vadd(r3, r3, r5, p1, MODE_ZEROING);
+            // PC 0x13b3a35c: RV_VADD
+            vadd(r0, r0, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a360: RV_VADD
+            vadd(r1, r1, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a364: RV_VLDI
+            vlds(r2, load_13b3a364, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a368: RV_VLDI
+            vlds(r3, load_13b3a368, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a36c: RV_VLDI
+            vlds(r4, load_13b3a36c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a370: RV_VLDI
+            vlds(r5, load_13b3a370, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a374: RV_VLDI
+            vlds(r6, load_13b3a374, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a378: RV_VLDI
+            vlds(r7, load_13b3a378, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a37c: RV_VLDI
+            vlds(r8, load_13b3a37c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a380: RV_VLDI
+            vlds(r9, load_13b3a380, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a384: RV_VLDI
+            vlds(r10, load_13b3a364, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a388: RV_VLDI
+            vlds(r11, load_13b3a368, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a38c: RV_VLDI
+            vlds(r12, load_13b3a36c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a390: RV_VLDI
+            vlds(r13, load_13b3a370, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a394: RV_VLDI
+            vlds(r14, load_13b3a374, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a398: RV_VLDI
+            vlds(r15, load_13b3a378, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a39c: RV_VLDI
+            vlds(r16, load_13b3a37c, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a3a0: RV_VLDI
+            vlds(r17, load_13b3a380, 768, NORM, POST_UPDATE);
+            // PC 0x13b3a3a4: RV_VMUL
+            vmul(r3, r7, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a3a8: RV_VMUL
+            vmul(r2, r6, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a3ac: RV_VADD
+            vadd(r2, r3, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a3b0: RV_VMUL
+            vmul(r3, r15, r11, p1, MODE_ZEROING);
+            // PC 0x13b3a3b4: RV_VMUL
+            vmul(r6, r14, r10, p1, MODE_ZEROING);
+            // PC 0x13b3a3b8: RV_VADD
+            vadd(r3, r3, r6, p1, MODE_ZEROING);
+            // PC 0x13b3a3bc: RV_VMUL
+            vmul(r4, r8, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a3c0: RV_VMUL
+            vmul(r5, r9, r5, p1, MODE_ZEROING);
+            // PC 0x13b3a3c4: RV_VADD
+            vadd(r4, r4, r5, p1, MODE_ZEROING);
+            // PC 0x13b3a3c8: RV_VMUL
+            vmul(r5, r16, r12, p1, MODE_ZEROING);
+            // PC 0x13b3a3cc: RV_VMUL
+            vmul(r6, r17, r13, p1, MODE_ZEROING);
+            // PC 0x13b3a3d0: RV_VADD
+            vadd(r5, r5, r6, p1, MODE_ZEROING);
+            // PC 0x13b3a3d4: RV_VADD
+            vadd(r2, r2, r4, p1, MODE_ZEROING);
+            // PC 0x13b3a3d8: RV_VADD
+            vadd(r3, r3, r5, p1, MODE_ZEROING);
+            // PC 0x13b3a3dc: RV_VADD
+            vadd(r0, r0, r2, p1, MODE_ZEROING);
+            // PC 0x13b3a3e0: RV_VADD
+            vadd(r1, r1, r3, p1, MODE_ZEROING);
+            // PC 0x13b3a3e4: RV_VCADD
+            vcadd(r0, r0, p1, MODE_ZEROING);
+            // PC 0x13b3a3e8: RV_VCADD
+            vcadd(r1, r1, p1, MODE_ZEROING);
+            // PC 0x13b3a3ec: RV_VSTUI
+            vstus(u0, 1, r0, store_0_0, POST_UPDATE);
+            // PC 0x13b3a3f0: RV_VSTUI
+            vstus(u0, 1, r1, store_0_0, POST_UPDATE);
+        }
+        // PC 0x13b3a3f4: RV_VSTAI
+        vstas(u0, store_0_0, 0, POST_UPDATE);
+    }
+}

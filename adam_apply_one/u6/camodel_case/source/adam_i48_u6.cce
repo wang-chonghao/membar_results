@@ -1,0 +1,91 @@
+#ifdef __CCE_KT_TEST__
+#define __aicore__
+#else
+#define __aicore__ [aicore]
+#endif
+
+// Single-tile FP32 AdamApplyOne, explicitly fused by hand (not a PC replay).
+// Each iteration: 4 vector loads, 12 arithmetic instructions, 3 stores.
+// Six runtime scalar tensors are broadcast once before the loop. No VDUP.
+__attribute__((always_inline)) inline [aicore] void adam_fused_vf(
+    __ubuf__ float *gMem, __ubuf__ float *vMem, __ubuf__ float *mMem, __ubuf__ float *pMem,
+    __ubuf__ float *lrMem, __ubuf__ float *c0Mem, __ubuf__ float *c1Mem,
+    __ubuf__ float *c2Mem, __ubuf__ float *c3Mem, __ubuf__ float *epsMem,
+    __ubuf__ float *outV, __ubuf__ float *outM, __ubuf__ float *outP)
+{
+    __VEC_SCOPE__ {
+        vector_bool mask = pset_b32(PAT_ALL);
+        vector_f32 g, v, m, p, lr, c0, c1, c2, c3, eps;
+        vector_f32 square, t0, t1, t2, t3, vn, mn, denom, update, scaled, pn;
+        vlds(lr, lrMem, 0, BRC_B32);
+        vlds(c0, c0Mem, 0, BRC_B32);
+        vlds(c1, c1Mem, 0, BRC_B32);
+        vlds(c2, c2Mem, 0, BRC_B32);
+        vlds(c3, c3Mem, 0, BRC_B32);
+        vlds(eps, epsMem, 0, BRC_B32);
+        #pragma unroll(6)
+        for (uint16_t i = 0; i < 48; ++i) {
+            vlds(g, gMem, 64*i, NORM);
+            vlds(v, vMem, 64*i, NORM);
+            vlds(m, mMem, 64*i, NORM);
+            vlds(p, pMem, 64*i, NORM);
+            vmul(square, g, g, mask);
+            vmul(t0, square, c3, mask);
+            vmul(t1, v, c2, mask);
+            vmul(t2, m, c0, mask);
+            vmul(t3, g, c1, mask);
+            vadd(vn, t0, t1, mask);
+            vadd(mn, t2, t3, mask);
+            vsqrt(denom, vn, mask);
+            vadd(denom, denom, eps, mask);
+            vdiv(update, mn, denom, mask);
+            vmul(scaled, update, lr, mask);
+            vsub(pn, p, scaled, mask);
+            vsts(vn, outV, 64*i, NORM_B32, mask);
+            vsts(mn, outM, 64*i, NORM_B32, mask);
+            vsts(pn, outP, 64*i, NORM_B32, mask);
+        }
+    }
+}
+
+// Launch one block. Four inputs and three outputs contain 3072 FP32 elements.
+// Scalar buffers hold one FP32 value, padded to 32 bytes for the DMA below.
+extern "C" __global__ __aicore__ void adam_kernel(
+    __gm__ float *g, __gm__ float *v, __gm__ float *m, __gm__ float *p,
+    __gm__ float *lr, __gm__ float *c0, __gm__ float *c1, __gm__ float *c2,
+    __gm__ float *c3, __gm__ float *eps,
+    __gm__ float *outV, __gm__ float *outM, __gm__ float *outP)
+{
+    // Seven non-overlapping 12288-byte vectors, then six 32-byte scalar slots.
+    __ubuf__ float *gU = (__ubuf__ float *)get_imm(0x0000);
+    __ubuf__ float *vU = (__ubuf__ float *)get_imm(0x3000);
+    __ubuf__ float *mU = (__ubuf__ float *)get_imm(0x6000);
+    __ubuf__ float *pU = (__ubuf__ float *)get_imm(0x9000);
+    __ubuf__ float *ovU = (__ubuf__ float *)get_imm(0xc000);
+    __ubuf__ float *omU = (__ubuf__ float *)get_imm(0xf000);
+    __ubuf__ float *opU = (__ubuf__ float *)get_imm(0x12000);
+    __ubuf__ float *lrU = (__ubuf__ float *)get_imm(0x15000);
+    __ubuf__ float *c0U = (__ubuf__ float *)get_imm(0x15020);
+    __ubuf__ float *c1U = (__ubuf__ float *)get_imm(0x15040);
+    __ubuf__ float *c2U = (__ubuf__ float *)get_imm(0x15060);
+    __ubuf__ float *c3U = (__ubuf__ float *)get_imm(0x15080);
+    __ubuf__ float *epsU = (__ubuf__ float *)get_imm(0x150a0);
+    copy_gm_to_ubuf_align_v2(gU,g,0,1,12288,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(vU,v,0,1,12288,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(mU,m,0,1,12288,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(pU,p,0,1,12288,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(lrU,lr,0,1,32,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(c0U,c0,0,1,32,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(c1U,c1,0,1,32,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(c2U,c2,0,1,32,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(c3U,c3,0,1,32,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(epsU,eps,0,1,32,0,0,0,0,0,0);
+    set_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    wait_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    adam_fused_vf(gU,vU,mU,pU,lrU,c0U,c1U,c2U,c3U,epsU,ovU,omU,opU);
+    pipe_barrier(PIPE_ALL);
+    copy_ubuf_to_gm_align_v2(outV,ovU,0,1,12288,0,0,0);
+    copy_ubuf_to_gm_align_v2(outM,omU,0,1,12288,0,0,0);
+    copy_ubuf_to_gm_align_v2(outP,opU,0,1,12288,0,0,0);
+    pipe_barrier(PIPE_ALL);
+}

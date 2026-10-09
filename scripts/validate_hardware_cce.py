@@ -18,7 +18,7 @@ def count(nodes,multiplier=1):
         elif isinstance(node,CanonicalInstruction):
             if not node.opcode.startswith('PSET'):result[node.opcode]+=multiplier
     return result
-aliases={'VLD':'VLDS','VLDI':'VLDS','VST':'VSTS','VSTI':'VSTS','PLDI':'PLDS','PSTI':'PSTS','VDUPS':'VDUP','SMEM_BAR':'MEMBAR'}
+aliases={'VLD':'VLDS','VLDI':'VLDS','VST':'VSTS','VSTI':'VSTS','VSTUI':'VSTUS','VSTAI':'VSTAS','PLDI':'PLDS','PSTI':'PSTS','VDUPS':'VDUP','SMEM_BAR':'MEMBAR'}
 for item in index:
     path=root/item['file']
     audit=json.loads((path.parent/'hardware_pc_mapping.json').read_text(encoding='utf-8'))
