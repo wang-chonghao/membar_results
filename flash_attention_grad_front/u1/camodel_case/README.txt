@@ -1,6 +1,6 @@
 FlashAttention Grad 前段 / 原始单循环 U1 的 CAModel 用例
 
-历史 VF 时间：240 cycles。归档方式：原临时运行目录完整复制。
+历史 VF 时间：240 cycles。归档方式：原临时运行目录复制（省略 VfSim 详细调试历史）。
 缺失材料：无。本次仅归档，没有重新运行 CAModel。
 
 目录：host.cpp 为 host 源码；run_output 为已保存的运行日志、数据及仍存在的编译产物；
@@ -16,3 +16,5 @@ case.json 记录实际运行源码、入口、编译参数与材料来源。原�
 重新运行的输出目录必须为空且位于本归档目录之外；run.py 会编译并执行，然后进行 golden 校验。
 没有历史 golden 的版本不支持 --check-archived，但生成式 host 会在重跑时生成并校验 golden。
 报告中的 kernel.cce 可能是后续等效改写；复现始终使用 case.json 中的实际历史运行源码。
+
+归档不保留 sim_history.json 或其压缩副本；CAModel 复现和 IPC 图不依赖这些详细调试历史。

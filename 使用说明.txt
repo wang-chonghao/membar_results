@@ -90,7 +90,7 @@ Windows E 盘上的当前目录，在 WSL 中可以直接运行：
 归档材料说明
 ------------
 每个版本的 camodel_case/README.txt 和 case.json 说明材料来源、运行入口和缺失项。
-FlashAttention Grad 的原临时目录仍在，已完整复制；较早实验从仓库保留材料恢复，
+FlashAttention Grad 的原临时目录仍在，已复制 CAModel 用例材料；较早实验从仓库保留材料恢复，
 原编译产物缺失时明确标记。Softmax 旧版本没有保存 input/output/golden 数据，
 其历史精度证据保留在原报告中；重跑时由 host 重新生成输入和 golden。
 run_output/ 保存历史运行材料；original_scripts/ 保留原实验脚本及历史路径。
@@ -102,10 +102,9 @@ run_output/ 保存历史运行材料；original_scripts/ 保留原实验脚本�
   python3 run.py --out-dir /tmp/自定义重跑目录
 本次补齐为材料归档，没有重新运行 CAModel，也没有刷新表中的周期或 IPC。
 metadata/camodel_cases.json 为各版本材料完整性清单。
-远程发布时，超过 GitHub 单文件限制的附带 VfSim 历史 JSON 以 .gz 无损压缩保存。
-metadata/manifest.json 记录压缩文件校验值及原始文件路径、原始 SHA-256。
-该文件不是 CAModel 运行或查看报告的依赖；需要原文件时可执行 gzip -dk <文件名>.gz。
-本机 E 盘原始文件保留，压缩处理仅用于远程发布副本。
+归档不保留 sim_history.json 或 sim_history.json.gz 这类 VfSim 详细调试历史。
+这些文件不是 CAModel 运行或 IPC 报告的依赖；本机归档与远程仓最新版本均已移除。
+CAModel 原始日志、输入输出、golden、源码与构建入口保留，IPC 使用的精简日志也保留。
 
 FlashAttention Grad 前段新增 7 个版本，包含集中加载 U2 的 compiler spill、
 原序直接 U2、生命周期重排与三个 bank-aware 预取窗口。

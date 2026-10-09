@@ -56,7 +56,8 @@ def main():
 
     def tree(source, target):
         for path in sorted(source.rglob("*")):
-            if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+            if (path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
+                    and path.name not in {"sim_history.json", "sim_history.json.gz"}):
                 copy(path, target / path.relative_to(source))
 
     for case in data["cases"]:
@@ -156,7 +157,7 @@ def main():
                           archived_golden_available=bool(pairs), rerun_performed=False,
                           archived_source_equals_report=(digest(target / kernel_source) == digest(folder / "source/kernel.cce")))
             (target / "case.json").write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
-            status = "原临时运行目录完整复制" if original_run else "从仓库保留材料恢复；原临时目录已不存在"
+            status = "原临时运行目录复制（省略 VfSim 详细调试历史）" if original_run else "从仓库保留材料恢复；原临时目录已不存在"
             missing = []
             if not original_run:
                 missing.append("原临时目录")
@@ -170,6 +171,7 @@ def main():
                     "目录：host.cpp 为 host 源码；run_output 为已保存的运行日志、数据及仍存在的编译产物；\n"
                     "source/code 为源码；evidence 为历史命令与精度记录；original_scripts 为原实验脚本。\n"
                     "case.json 记录实际运行源码、入口、编译参数与材料来源。原脚本可能包含历史绝对路径。\n\n"
+                    "归档不保留 sim_history.json 或其压缩副本；CAModel 复现和 IPC 图不依赖这些详细调试历史。\n\n"
                     "直接复现（Linux/WSL，安装对应 CANN）：\n"
                     "  source ../../../set_env.sh  # 首次使用前编辑结果根目录中的环境配置\n"
                     "  python3 run.py --dry-run\n"
