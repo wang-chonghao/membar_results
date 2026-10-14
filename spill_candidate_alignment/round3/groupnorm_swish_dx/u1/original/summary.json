@@ -1,0 +1,101 @@
+{
+  "case": "groupnorm_swish_dx",
+  "status": "passed",
+  "constants": {
+    "iterations": 48,
+    "elements": 6144,
+    "dtype": "fp32",
+    "original_vectors_per_iteration": 2
+  },
+  "engines": {
+    "ascendc": {
+      "vf_cycles": [
+        1645
+      ],
+      "total_vf_cycles": 1645,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 96,
+        "RV_SADDI": 1,
+        "RV_SEND": 1,
+        "RV_SMOVI": 2,
+        "RV_VADD": 192,
+        "RV_VADDS": 192,
+        "RV_VDIV": 192,
+        "RV_VEXP": 96,
+        "RV_VLD": 192,
+        "RV_VLDI": 5,
+        "RV_VLOOPv2": 1,
+        "RV_VMUL": 576,
+        "RV_VMULS": 192,
+        "RV_VST": 96,
+        "RV_VSUB": 192
+      }
+    },
+    "cce": {
+      "vf_cycles": [
+        1645
+      ],
+      "total_vf_cycles": 1645,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 96,
+        "RV_SADDI": 1,
+        "RV_SEND": 1,
+        "RV_SMOVI": 2,
+        "RV_VADD": 192,
+        "RV_VADDS": 192,
+        "RV_VDIV": 192,
+        "RV_VEXP": 96,
+        "RV_VLD": 192,
+        "RV_VLDI": 5,
+        "RV_VLOOPv2": 1,
+        "RV_VMUL": 576,
+        "RV_VMULS": 192,
+        "RV_VST": 96,
+        "RV_VSUB": 192
+      }
+    }
+  },
+  "validation": {
+    "bitwise_identical": true,
+    "guard_ok": true,
+    "cce_vs_ascendc": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "ascendc_vs_formula": {
+      "ok": true,
+      "max_abs_error": 1.8030963744308792e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "cce_vs_formula": {
+      "ok": true,
+      "max_abs_error": 1.8030963744308792e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  },
+  "stream": {
+    "vf_count": 1,
+    "static_vf_words": 53,
+    "vector_loads": 197,
+    "vector_stores": 96,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 5,
+      "NORAML": 4
+    },
+    "loops": [
+      {
+        "pc": "0x13b40224",
+        "detail": "Sn[66]=0x30, instr_num : 42, layer: 0001, last: 1,"
+      }
+    ]
+  }
+}

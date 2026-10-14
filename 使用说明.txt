@@ -2,8 +2,21 @@ A5 Membar 实验结果汇总
 
 查看结果
 --------
-完整克隆或下载本仓库后，用浏览器打开 membar_results_summary.html。
-左侧选择 case，页面展示周期、预测精度、IPC 曲线、等效 CCE 和原始日志。
+完整克隆或下载本仓库后，用浏览器打开 spill_candidate_alignment_summary.html。
+该页面统一展示原 CAModel、VfSim 全局/局部与软件优化结果，包含 32 个算子/子 VF 分组、92 行。
+主表保留 55 个含 Vector/Predicate/Scalar spill 的版本和 37 个无 spill 基线。
+全部 153 个成功原版本保存在 metadata/spill_candidate_all_versions.json。
+24 个 VF stack 超限版本单独记录，不进入表格、图表、CSV 和性能统计。
+39 个软件入选方案保留数值和无 compiler spill 验证；未预测或未优化项明确留空。
+页面顶部可筛选算子、来源、spill 状态；点击 Case 查看实际 CCE，点击证据查看详情。
+软件性能指同 shape、算术、名义 unroll 的软件改写方案在全局 Membar 下的 VfSim 预测性能，
+通过循环切分、指令重排降低活跃值并避免 compiler spill；不是 CAModel 或预测程序运行耗时。
+“Membar / 软件性能” = VfSim 软件优化全局周期 / VfSim 局部周期 × 100%；
+100% 持平，大于 100% 表示局部依赖更快，缺失数据不计算。无 spill 基线沿用原版本。
+spill_candidate_alignment_summary.md 包含统计口径、字段解释和与 HTML 一致的完整汇总表。
+本次整理不改变已归档周期、IPC 或预测参数。历史模型和跨版本比较限制在详情中保留。
+仅核验数据与文件 SHA256，不需要 CANN 或 VfSimulator：
+  python3 scripts/validate_spill_candidate_archive.py
 图表、数据、源码和日志均在仓库内，离线也能查看。
 Git 已禁用自动换行转换，以保留原始日志及源码的字节校验一致性。
 查看结果不需要安装 Python、CANN 或 VfSimulator，也不需要启动服务器。
@@ -12,7 +25,10 @@ GitHub 的文件页面显示 HTML 源码，下载后的 HTML 才是可交互报�
 
 目录说明
 --------
-membar_results_summary.html  结果汇总入口。
+spill_candidate_alignment_summary.html  统一汇总入口。
+spill_candidate_alignment_summary.md    实验总结、软件性能定义及完整表格。
+spill_candidate_alignment.csv           新候选实验的周期、精度与状态。
+spill_candidate_alignment/              新候选实验的原始/软件优化材料副本，不依赖项目外路径。
 comparison.csv              全部版本的周期、精度和 spill 数量，可用表格软件打开。
 assets/                     离线图表库、报告样式和交互代码。
 metadata/                   汇总数据、文件校验清单和验证记录。
@@ -112,6 +128,42 @@ FlashAttention Grad 前段新增 7 个版本，包含集中加载 U2 的 compile
 228/306 约为 74.51%，只是跨口径的耗时数值比较，不是已验证的硬件加速比。
 同指令流的模型内同步收益比较为全局 3208 / 局部 306，约 10.48 倍。
 
+MHC Sinkhorn 收录 8、36、64、128 矩阵共 19 个版本，目录及页面 ID 统一为 mhc_sinkhorn。
+历史结果保存在 metadata/data.json；在统一汇总页中按 MHC 算子及 shape 筛选。
+各形状包含 UB、驻留 U1/U2/U4 和 element-major；36 矩阵另有驻留 U6。
+hc_mult=4，4x4 FP32，20 轮；全部 CAModel 都通过数值与保护区校验。
+UB 全局/局部预测分别为 13202/5202、57050/22721、100898/40320，收益约 2.54/2.51/2.50 倍。
+驻留 U6 保留 457 条 spill store、570 条 spill load、1064 条动态 membar，预测为 29007/24349。
+U6 提供实际日志还原的硬件等效 CCE；预测使用对应 CanonicalVfInfo，并非重新编译这份说明用 CCE。
+8/36/64 的 element-major CAModel 为 2146/2425/2760；新校准预测 Python/C++ 均为 2586。
+精度分别为 79.50% / 93.36% / 93.70%，动态 PC 与寄存器依赖均核查通过。
+这三个版本无 mem_bar；已替代原未运行/无有效预测的页面记录。
+36 矩阵已补跑局部依赖预测：2586 cycle，与全局相同，模型内加速 1.00 倍。
+局部实验为 Python 32B RAW/WAR/WAW，49 条访存全部解析且核查通过；未移除任何屏障。
+8/64 矩阵局部结果仍未运行。C++ 只核对全局预测，局部不是优化硬件实测。
+当前固定 GSU 时序仍不随有效 lane 数变化，因此 8 矩阵偏差较大，并非指令遗漏。
+8/36/64 新 element-major 与 128 使用相同配置校验值，部分 forwarding/II 的 fallback warning 保留。
+128 矩阵 element-major U1：CAModel 4950，全局预测 5082，精度 97.33%，未跑局部预测。
+128 矩阵 element-major U2：CAModel 11446，全局预测 11118，精度 97.13%，局部预测 4145。
+128 矩阵 4+15 切分＋重排：CAModel 4600，全局预测 Python/C++ 4364，精度 94.87%，局部预测 4327。
+切分版无自动向量/谓词 spill，仅 1 条 mem_bar；显式 scratch 8KiB，保存/读回各 32 次。
+scratch 复用预留 result 空间，公共 UB 布局仍为 30976B；输出与原 U1 逐字节一致，保护区通过。
+全局与局部来自同一编译后日志输入，2946 条指令的 PC、寄存器依赖核查通过；162 条访存全部解析。
+局部只少 37 cycle，加速约 1.009 倍，为 Python 假设性硬件实验，不是 CAModel 实测。
+对应 CCE、两份 CAModel 日志、参数快照及预测日志已归档到 m128_element_major_split4_15。
+U2 同流局部模型内收益 2.68 倍，保留 234 次向量保存、234 次重载和原有 468 条 membar 的证据。
+局部预测用 32B RAW/WAR/WAW 替代全局 membar，550 条访存全部解析，依赖核查通过。
+U2 提供按实际日志还原、包含 spill 的等效 CCE；该说明代码未重新编译，预测使用对应 CanonicalVfInfo。
+128 两版本输入、golden、输出逐字节相同，2048 个有效输出及保护区校验通过。
+全局预测 Python/C++ 一致；局部为 Python 实验，未声称 C++ 已同步或优化硬件已经实测。
+Element-major 使用新校准的全 64 lane 稀疏 GSU 参数；历史 8/36/64 UB / 驻留版周期保持原样，不能混作同一参数版本。
+VGATHER2.b32 latency=35、GSU interval=16；VSCATTER.b32 latency=43、interval=32。
+公共 UB 布局均为 30976B（30.25KiB），不含 VF 栈；默认 IPC 仍为 8 矩阵 UB，100-cycle 窗口。
+MHC 的计算完成 IPC 已排除 Gather/Scatter 访存；修正统计口径，不改变周期或模型参数。
+64 矩阵 element-major 的原 AscendC 为 2797 cycle，对应 CCE 为 2760，并非周期完全对齐。
+8 矩阵为早期固定形状实现，36/64 为通用形状；输入样本跨形状不完全相同。
+这是提取 VF 的测试，不能称为完整 MHC 算子的时间；局部结果不是优化硬件的实测周期。
+
 发生 spill 的版本中的 source/hardware_equivalent.cce 是实际底层硬件 VF 计算、
 UB 访存及同步指令流的等效表达，已补入寄存器溢出引入的保存、重载和 mem_bar。
 源文件注释和 PC 映射记录给出了还原范围；标量地址计算效果折入指针及立即数。
@@ -127,9 +179,11 @@ UB 访存及同步指令流的等效表达，已补入寄存器溢出引入的�
   python scripts/verify_gelu_hardware_numerics.py --vfsim-root <VfSimulator路径>
   python scripts/build_archive.py --vfsim-root <VfSimulator路径>
   python scripts/add_flash_attention_grad_front.py --vfsim-root <VfSimulator路径>
+  python scripts/add_mhc_sinkhorn.py --vfsim-root <VfSimulator路径>
   python scripts/bundle_camodel_cases.py --vfsim-root <VfSimulator路径>
 
 add_flash_attention_grad_front.py 只更新该 case，不重建其余历史实验。
+add_mhc_sinkhorn.py 保留已有 UB / 驻留数据，增量更新新校准 element-major 结果并迁移旧 MHC 目录名。
 bundle_camodel_cases.py 按 manifest 的原始日志来源补齐用例目录，并核对材料与报告日志一致。
 
 build_archive.py 和数值核查需要原实验数据；这些数据不是打开报告的依赖。

@@ -1,0 +1,152 @@
+{
+  "plan": {
+    "unroll": 7,
+    "cuts": [],
+    "policy": "pressure",
+    "cohort": 1,
+    "pressure_weight": 2,
+    "stages": 1,
+    "scratch_bytes": 0,
+    "ub_high_water": 30720,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 11,
+          "PredicateRegister": 1
+        },
+        "lanes": 7
+      },
+      {
+        "stage": 0,
+        "section": 1,
+        "peaks": {
+          "Register": 10,
+          "PredicateRegister": 1
+        },
+        "lanes": 1
+      }
+    ],
+    "source_sha256": "8f115039ae872452fdb076ad3b0bbbdc5cae8ec2de64296e48fac23f92a0ffc1"
+  },
+  "status": "validated_no_spill",
+  "camodel_cycles": 298,
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.1324203175178127e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 227,
+    "vector_loads": 71,
+    "vector_stores": 48,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 7,
+      "NORAML": 32
+    },
+    "loops": [
+      {
+        "pc": "0x13b35294",
+        "detail": "Sn[7]=0x2, Sn2[8]=0x4000, instr_num : 156, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b3552c",
+        "detail": "Sn[7]=0x2, Sn2[8]=0x4000, instr_num : 22, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "spill_audit": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": []
+  },
+  "compiler_stack_instruction_count": 0,
+  "compiler_stack_opcodes": [],
+  "prediction": {
+    "case": "trial_00",
+    "title": "adam_decay",
+    "cce_source_sha256": "8f115039ae872452fdb076ad3b0bbbdc5cae8ec2de64296e48fac23f92a0ffc1",
+    "camodel_vf_cycles": [
+      298
+    ],
+    "camodel_vf_cycles_sum": 298,
+    "vfsim_cycles": 249,
+    "prediction_accuracy_percent": 83.55704697986577,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 298,
+        "expected_counts": {
+          "VLDS": 71,
+          "PLT": 16,
+          "VMUL": 112,
+          "VADD": 64,
+          "VSQRT": 16,
+          "VDIV": 16,
+          "VSTS": 48,
+          "VSUB": 16
+        },
+        "json_counts": {
+          "VLDS": 71,
+          "PLT": 16,
+          "VMUL": 112,
+          "VADD": 64,
+          "VSQRT": 16,
+          "VDIV": 16,
+          "VSTS": 48,
+          "VSUB": 16
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVI": 40,
+          "RV_SMOV": 1
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 249,
+        "camodel_cycles": 298
+      }
+    ],
+    "timing_warning_count": 24,
+    "timing_warning_kinds": [
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "global_cycles": 249,
+  "artifact_dir": "software_optimization/adam_decay/u7/trial_00",
+  "estimated_global_cycles": 249
+}

@@ -1,0 +1,184 @@
+{
+  "has_warning": true,
+  "vreg_capacity_warnings": [],
+  "instruction_fallback_warnings": [
+    {
+      "kind": "compatible_forwarding_pair_fallback",
+      "producer": "VDUP.b32",
+      "consumer": "VSTS.fp32",
+      "used_producer": "VDUP.fp32",
+      "used_consumer": "VSTS.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_forwarding_pair_fallback",
+      "producer": "VDUP.b32",
+      "consumer": "VMAX.fp32",
+      "used_producer": "VDUP.fp32",
+      "used_consumer": "VMAX.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_isa_form_fallback",
+      "op": "VDUP",
+      "requested_form": "b32",
+      "used_form": "fp32",
+      "count": 2
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VMOV.fp32",
+      "consumer": "VMAX.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VLDS.fp32",
+      "consumer": "VEXPDIF.fp32",
+      "producer_latency": 9,
+      "used_default": 6,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VMOV.fp32",
+      "consumer": "VADD.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VEXPDIF.fp32",
+      "consumer": "VSTS.fp32",
+      "producer_latency": 18,
+      "used_default": 15,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VADD.fp32",
+      "consumer": "VMOV.fp32",
+      "producer_latency": 7,
+      "used_default": 4,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PSET_B32.b32",
+      "cur": "VDUP.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDUP.b32",
+      "cur": "VDUP.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PSET_B8.b8",
+      "cur": "VMOV.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDUP.b32",
+      "cur": "VMOV.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMOV.fp32",
+      "cur": "VMAX.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMAX.fp32",
+      "cur": "VMOV.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMOV.fp32",
+      "cur": "VEXPDIF.fp32",
+      "prev_latency": 6,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMOV.fp32",
+      "cur": "VADD.fp32",
+      "prev_latency": 6,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VADD.fp32",
+      "cur": "VMOV.fp32",
+      "prev_latency": 7,
+      "cur_latency": 6,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VEXPDIF.fp32",
+      "cur": "VMOV.fp32",
+      "prev_latency": 18,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VEXPDIF.fp32",
+      "cur": "VDIV.fp32",
+      "prev_latency": 18,
+      "cur_latency": 17,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    }
+  ]
+}

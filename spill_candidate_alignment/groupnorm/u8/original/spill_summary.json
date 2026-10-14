@@ -1,0 +1,364 @@
+{
+  "case": "groupnorm",
+  "unroll": 8,
+  "method": "manual",
+  "selected_loop": "k",
+  "source_sha256": "f13757f36fab3fb7dda3d8db8c412e79b743800322db70572e5ca0d39cf7e8ad",
+  "baseline_source_sha256": "93f9e2b10364688eca209f36f864bb28c311bd21f5737f88cca9df3b881ecfbe",
+  "metrics": {
+    "vf_cycles": [
+      623
+    ],
+    "total_vf_cycles": 623,
+    "dynamic_rv_opcounts": {
+      "RV_PLDI": 34,
+      "RV_PLT": 16,
+      "RV_PSTI": 6,
+      "RV_SEND": 1,
+      "RV_SMEM_BAR": 40,
+      "RV_SMOVI": 12,
+      "RV_SMOVK": 3,
+      "RV_VADD": 16,
+      "RV_VADDS": 16,
+      "RV_VDIV": 16,
+      "RV_VEXP": 16,
+      "RV_VLD": 48,
+      "RV_VLDI": 2,
+      "RV_VLOOPv2": 1,
+      "RV_VMUL": 32,
+      "RV_VMULS": 16,
+      "RV_VST": 16,
+      "RV_VSUB": 16
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 164,
+    "vector_loads": 50,
+    "vector_stores": 16,
+    "predicate_loads": 34,
+    "predicate_stores": 6,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 40,
+    "static_load_pc_counts": {
+      "BRC_B32": 2,
+      "NORAML": 24
+    },
+    "loops": [
+      {
+        "pc": "0x13b32248",
+        "detail": "Sn[5]=0x2, Sn2[6]=0x3100, instr_num : 144, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 3.256802241224932e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": true,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": [
+      {
+        "pc": "0x13b3226c",
+        "opcode": "RV_PSTI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, "
+      },
+      {
+        "pc": "0x13b32278",
+        "opcode": "RV_PSTI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, "
+      },
+      {
+        "pc": "0x13b322e0",
+        "opcode": "RV_PSTI",
+        "detail": "Pd[2], Sn[95]=0x40000, #offset=252, #p=0, dist:NORAML, "
+      },
+      {
+        "pc": "0x13b32300",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3230c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32330",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3233c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32360",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3236c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32390",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3239c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323c0",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323cc",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323f0",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323fc",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32420",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3242c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32450",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[2], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32460",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=252, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32484",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3226c",
+        "opcode": "RV_PSTI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, "
+      },
+      {
+        "pc": "0x13b32278",
+        "opcode": "RV_PSTI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, "
+      },
+      {
+        "pc": "0x13b322e0",
+        "opcode": "RV_PSTI",
+        "detail": "Pd[2], Sn[95]=0x40000, #offset=252, #p=0, dist:NORAML, "
+      },
+      {
+        "pc": "0x13b32300",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3230c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32330",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3233c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32360",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3236c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32390",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3239c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323c0",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323cc",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323f0",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b323fc",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32420",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3242c",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32450",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[2], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32460",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=252, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b32484",
+        "opcode": "RV_PLDI",
+        "detail": "Pd[1], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, "
+      }
+    ]
+  },
+  "static_load_expansion_ratio": 8.0,
+  "elapsed_seconds": 38.55720405804459,
+  "camodel_speedup_percent": -229.62962962962962,
+  "prediction": {
+    "case": "u8",
+    "title": "groupnorm U8",
+    "cce_source_sha256": "f13757f36fab3fb7dda3d8db8c412e79b743800322db70572e5ca0d39cf7e8ad",
+    "camodel_vf_cycles": [
+      623
+    ],
+    "camodel_vf_cycles_sum": 623,
+    "vfsim_cycles": 599,
+    "prediction_accuracy_percent": 96.14767255216692,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 623,
+        "expected_counts": {
+          "VLDS": 50,
+          "PLT": 16,
+          "MEMBAR": 40,
+          "PSTS": 6,
+          "VSUB": 16,
+          "PLDS": 34,
+          "VMUL": 32,
+          "VADD": 16,
+          "VMULS": 16,
+          "VEXP": 16,
+          "VADDS": 16,
+          "VDIV": 16,
+          "VSTS": 16
+        },
+        "json_counts": {
+          "VLDS": 50,
+          "PLT": 16,
+          "MEMBAR": 40,
+          "PSTS": 6,
+          "VSUB": 16,
+          "PLDS": 34,
+          "VMUL": 32,
+          "VADD": 16,
+          "VMULS": 16,
+          "VEXP": 16,
+          "VADDS": 16,
+          "VDIV": 16,
+          "VSTS": 16
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVK": 3,
+          "RV_SMOVI": 11
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 599,
+        "camodel_cycles": 623
+      }
+    ],
+    "timing_warning_count": 21,
+    "timing_warning_kinds": [
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 144,
+    "average_compute_ipc": 0.23113964686998395,
+    "dual_issue_cycles": 49,
+    "peak_compute_issue_per_cycle": 2
+  },
+  "unroll_effective": true
+}

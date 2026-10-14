@@ -1,0 +1,154 @@
+/**
+ * Copyright (c) 2026 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+namespace AscendC {
+namespace Reg = MicroAPI;
+}
+using namespace AscendC;
+using namespace AscendC::MicroAPI;
+constexpr Reg::CastTrait CAST_X_TO_FP32_ZERO = {Reg::RegLayout::ZERO, Reg::SatMode::UNKNOWN,
+                                                Reg::MaskMergeMode::ZEROING,
+                                                AscendC::RoundMode::UNKNOWN};
+constexpr Reg::CastTrait CAST_FP32_TO_FP16_BF16 = {Reg::RegLayout::ZERO, Reg::SatMode::NO_SAT,
+                                                   Reg::MaskMergeMode::ZEROING,
+                                                   AscendC::RoundMode::CAST_RINT};
+__aicore__ inline void candidate_vf(__ubuf__ half* actAddr, __ubuf__ half* gateAddr,
+                                    __ubuf__ half* gradYAddr, __ubuf__ float* weightAddr,
+                                    __ubuf__ half* gradXAddr) {
+    constexpr uint32_t VF_LEN_FP32 = 64, DIGIT_TWO = 2;
+    uint32_t oneBlockCountB16_ = 16;
+    uint16_t dataLenAB = 1024, blockCount = 1;
+    uint32_t rowWidth = 2048;
+    float alpha_ = 1.702f, limit_ = 2.0f, bias_ = 1.0f;
+
+    const uint32_t alignDim1In =
+        ((dataLenAB + oneBlockCountB16_ - 1) / oneBlockCountB16_) * oneBlockCountB16_;
+    const uint16_t dim1VfTimes = static_cast<uint16_t>(dataLenAB / VF_LEN_FP32);
+    const uint32_t dim1Tail = dataLenAB % VF_LEN_FP32;
+    const uint16_t dim1TailTimes = dim1Tail > 0 ? 1 : 0;
+    const uint32_t validRowWidth = dataLenAB * DIGIT_TWO;
+    uint32_t paddingLen = rowWidth - validRowWidth;
+
+    __VEC_SCOPE__ {
+        Reg::RegTensor<half> regHalf;
+        Reg::RegTensor<float> regA;
+        Reg::RegTensor<float> regB;
+        Reg::RegTensor<float> regGrad;
+        Reg::RegTensor<float> regWeight;
+        Reg::RegTensor<float> regWeightInput;
+        Reg::RegTensor<float> regSig;
+        Reg::RegTensor<float> regTmp;
+        Reg::RegTensor<float> regDa;
+        Reg::RegTensor<float> regDb;
+        Reg::RegTensor<float> regOne;
+        Reg::RegTensor<float> regLimit;
+        Reg::RegTensor<float> regNegLimit;
+        Reg::RegTensor<float> regZero;
+        Reg::MaskReg mask;
+        Reg::MaskReg maskA;
+        Reg::MaskReg maskB;
+        Reg::MaskReg maskBn;
+
+        Reg::Duplicate(regLimit, limit_);
+        Reg::Duplicate(regNegLimit, -limit_);
+        Reg::Duplicate(regZero, 0.0f);
+
+        const uint16_t dim1LoopCount = static_cast<uint16_t>(dim1VfTimes + dim1TailTimes);
+        for (uint16_t row = 0; row < blockCount; ++row) {
+
+            Reg::LoadAlign<float, Reg::LoadDist::DIST_BRC_B32>(regWeight, weightAddr + row);
+
+            uint32_t length = dataLenAB;
+            for (uint16_t col = 0; col < dim1LoopCount; ++col) {
+                mask = Reg::UpdateMask<float>(length);
+                Reg::AddrReg inOffset =
+                    Reg::CreateAddrReg<half>(row, alignDim1In, col, VF_LEN_FP32);
+                Reg::DataCopy<half, Reg::LoadDist::DIST_UNPACK_B16>(regHalf, actAddr, inOffset);
+                Reg::Cast<float, half, CAST_X_TO_FP32_ZERO>(regA, regHalf, mask);
+                Reg::DataCopy<half, Reg::LoadDist::DIST_UNPACK_B16>(regHalf, gateAddr, inOffset);
+                Reg::Cast<float, half, CAST_X_TO_FP32_ZERO>(regB, regHalf, mask);
+                Reg::DataCopy<half, Reg::LoadDist::DIST_UNPACK_B16>(regHalf, gradYAddr, inOffset);
+                Reg::Cast<float, half, CAST_X_TO_FP32_ZERO>(regGrad, regHalf, mask);
+
+                Reg::Mul(regGrad, regGrad, regWeight, mask);
+
+                Reg::Compare<float, CMPMODE::LE>(maskA, regA, regLimit, mask);
+                Reg::Compare<float, CMPMODE::LE>(maskB, regB, regLimit, mask);
+                Reg::Compare<float, CMPMODE::GE>(maskBn, regB, regNegLimit, mask);
+                Reg::Mins(regA, regA, limit_, mask);
+
+                Reg::Muls(regSig, regA, -alpha_, mask);
+                Reg::Exp(regSig, regSig, mask);
+                Reg::Adds(regSig, regSig, 1.0f, mask);
+                Reg::Duplicate(regOne, 1.0f, mask);
+                Reg::Div(regSig, regOne, regSig, mask);
+
+                Reg::Mins(regB, regB, limit_, mask);
+                Reg::Maxs(regB, regB, -limit_, mask);
+
+                Reg::Adds(regB, regB, bias_, mask);
+
+                // Match the Ascend950 clipped_swiglu_grad order: gradY * A * sigmoid(A).
+                Reg::Mul(regDb, regGrad, regA, mask);
+                Reg::Mul(regDb, regDb, regSig, mask);
+
+                Reg::Select<float>(regDb, regDb, regZero, maskB);
+                Reg::Select<float>(regDb, regDb, regZero, maskBn);
+
+                Reg::Muls(regTmp, regSig, -1.0f, mask);
+                Reg::Adds(regTmp, regTmp, 1.0f, mask);
+                Reg::Mul(regTmp, regTmp, regA, mask);
+                Reg::Muls(regTmp, regTmp, alpha_, mask);
+                Reg::Adds(regTmp, regTmp, 1.0f, mask);
+                // clipped_swiglu_grad computes ((1 - sigmoid) * A * alpha + 1)
+                // * sigmoid * (B + bias) * upstream_grad in this order.
+                Reg::Mul(regTmp, regTmp, regSig, mask);
+                Reg::Mul(regTmp, regTmp, regB, mask);
+                Reg::Mul(regDa, regTmp, regGrad, mask);
+
+                Reg::Select<float>(regDa, regDa, regZero, maskA);
+
+                Reg::AddrReg outOffset = Reg::CreateAddrReg<half>(row, rowWidth, col, VF_LEN_FP32);
+                Reg::Cast<half, float, CAST_FP32_TO_FP16_BF16>(regHalf, regDa, mask);
+                Reg::DataCopy<half, Reg::StoreDist::DIST_PACK_B32>(gradXAddr, regHalf, outOffset,
+                                                                   mask);
+                Reg::Cast<half, float, CAST_FP32_TO_FP16_BF16>(regHalf, regDb, mask);
+                Reg::DataCopy<half, Reg::StoreDist::DIST_PACK_B32>(gradXAddr + dataLenAB, regHalf,
+                                                                   outOffset, mask);
+            }
+        }
+
+        if (paddingLen > 0) {
+            Reg::Duplicate(regHalf, static_cast<half>(0));
+            mask = Reg::UpdateMask<half>(paddingLen);
+            for (uint16_t row = 0; row < blockCount; ++row) {
+                Reg::AddrReg paddingOffset = Reg::CreateAddrReg<half>(row, rowWidth);
+                Reg::DataCopy<half>(gradXAddr + validRowWidth, regHalf, paddingOffset, mask);
+            }
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ half* actAddr = (__ubuf__ half*)get_imm(0);
+    __ubuf__ half* gateAddr = (__ubuf__ half*)get_imm(2048);
+    __ubuf__ half* gradYAddr = (__ubuf__ half*)get_imm(4096);
+    __ubuf__ float* weightAddr = (__ubuf__ float*)get_imm(6144);
+    __ubuf__ half* gradXAddr = (__ubuf__ half*)get_imm(6400);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 6400, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(actAddr, gateAddr, gradYAddr, weightAddr, gradXAddr);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)gradXAddr, 0, 1, 4096, 0, 0, 0);
+}

@@ -1,0 +1,722 @@
+/*
+ * 128 矩阵 element-major 优化实验：reordered_u1。
+ * hc_mult=4，FP32，初始化行 softmax+eps、列归一化；随后 19 轮行/列归一化。
+ * 保留 RMS 输入归一化和每个求和的加法结合顺序，不用倒数乘法替换 vdiv。
+ * scratch[element*rows+batch*64+lane] 为显式中间状态，不是编译器自动 spill。
+ */
+#include <type_traits>
+#define __aicore__ [aicore]
+inline[aicore] void candidate_vf(__ubuf__ float* mix, __ubuf__ float* rms, __ubuf__ float* base,
+                                 float scale, float eps, float norm_eps, uint16_t iters,
+                                 uint16_t rows) {
+    if (rows == 0 || rows % 128 != 0 || iters != 19)
+        return;
+    uint16_t loops = rows / 64;
+    __VEC_SCOPE__ {
+        vector_bool full_mask = pset_b32(PAT_ALL);
+        vector_u32 lane;
+        vci((vector_s32&)lane, 0, std::integral_constant<Order, static_cast<Order>(0)>());
+        vector_u32 input_index;
+        vmuls(input_index, lane, (uint32_t)24, full_mask, MODE_ZEROING);
+        vector_u32 output_index;
+        vmuls(output_index, lane, (uint32_t)16, full_mask, MODE_ZEROING);
+        uint32_t remaining = rows;
+        for (uint16_t batch = 0; batch < loops; batch += 2) {
+            {
+                uint16_t lane_batch = batch + 0;
+
+                vector_bool mask = plt_b32(remaining, POST_UPDATE);
+                vector_f32 inv, one, bias, maximum, tail, sum;
+                vector_f32 m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31,
+                    m32, m33;
+                vector_f32 total0, total1, total2, total3, tail0, tail1, tail2, tail3;
+                vgather2((vector_s32&)inv, (__ubuf__ int32_t*)(rms + (lane_batch) * 64), lane,
+                         mask);
+                vadds(inv, inv, norm_eps, mask, MODE_ZEROING);
+                vsqrt(inv, inv, mask, MODE_ZEROING);
+                vdup(one, 1.0f, mask, MODE_ZEROING);
+                vdiv(inv, one, inv, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m00,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 0, BRC_B32);
+                vmul(m00, m00, inv, mask, MODE_ZEROING);
+                vmuls(m00, m00, scale, mask, MODE_ZEROING);
+                vadd(m00, m00, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m01,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 1, BRC_B32);
+                vmul(m01, m01, inv, mask, MODE_ZEROING);
+                vmuls(m01, m01, scale, mask, MODE_ZEROING);
+                vadd(m01, m01, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m02,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 2, BRC_B32);
+                vmul(m02, m02, inv, mask, MODE_ZEROING);
+                vmuls(m02, m02, scale, mask, MODE_ZEROING);
+                vadd(m02, m02, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m03,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 3, BRC_B32);
+                vmul(m03, m03, inv, mask, MODE_ZEROING);
+                vmuls(m03, m03, scale, mask, MODE_ZEROING);
+                vadd(m03, m03, bias, mask, MODE_ZEROING);
+                vmax(maximum, m00, m01, mask, MODE_ZEROING);
+                vmax(tail, m02, m03, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m00, m00, maximum, mask, MODE_ZEROING);
+                vsub(m01, m01, maximum, mask, MODE_ZEROING);
+                vsub(m02, m02, maximum, mask, MODE_ZEROING);
+                vsub(m03, m03, maximum, mask, MODE_ZEROING);
+                vexp(m00, m00, mask, MODE_ZEROING);
+                vexp(m01, m01, mask, MODE_ZEROING);
+                vexp(m02, m02, mask, MODE_ZEROING);
+                vexp(m03, m03, mask, MODE_ZEROING);
+                vadd(sum, m00, m01, mask, MODE_ZEROING);
+                vadd(tail, m02, m03, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m00, m00, sum, mask, MODE_ZEROING);
+                vdiv(m01, m01, sum, mask, MODE_ZEROING);
+                vdiv(m02, m02, sum, mask, MODE_ZEROING);
+                vdiv(m03, m03, sum, mask, MODE_ZEROING);
+                vadds(m00, m00, eps, mask, MODE_ZEROING);
+                vadds(m01, m01, eps, mask, MODE_ZEROING);
+                vadds(m02, m02, eps, mask, MODE_ZEROING);
+                vadds(m03, m03, eps, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m10,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 0, BRC_B32);
+                vmul(m10, m10, inv, mask, MODE_ZEROING);
+                vmuls(m10, m10, scale, mask, MODE_ZEROING);
+                vadd(m10, m10, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m11,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 1, BRC_B32);
+                vmul(m11, m11, inv, mask, MODE_ZEROING);
+                vmuls(m11, m11, scale, mask, MODE_ZEROING);
+                vadd(m11, m11, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m12,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 2, BRC_B32);
+                vmul(m12, m12, inv, mask, MODE_ZEROING);
+                vmuls(m12, m12, scale, mask, MODE_ZEROING);
+                vadd(m12, m12, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m13,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 3, BRC_B32);
+                vmul(m13, m13, inv, mask, MODE_ZEROING);
+                vmuls(m13, m13, scale, mask, MODE_ZEROING);
+                vadd(m13, m13, bias, mask, MODE_ZEROING);
+                vmax(maximum, m10, m11, mask, MODE_ZEROING);
+                vmax(tail, m12, m13, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m10, m10, maximum, mask, MODE_ZEROING);
+                vsub(m11, m11, maximum, mask, MODE_ZEROING);
+                vsub(m12, m12, maximum, mask, MODE_ZEROING);
+                vsub(m13, m13, maximum, mask, MODE_ZEROING);
+                vexp(m10, m10, mask, MODE_ZEROING);
+                vexp(m11, m11, mask, MODE_ZEROING);
+                vexp(m12, m12, mask, MODE_ZEROING);
+                vexp(m13, m13, mask, MODE_ZEROING);
+                vadd(sum, m10, m11, mask, MODE_ZEROING);
+                vadd(tail, m12, m13, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m10, m10, sum, mask, MODE_ZEROING);
+                vdiv(m11, m11, sum, mask, MODE_ZEROING);
+                vdiv(m12, m12, sum, mask, MODE_ZEROING);
+                vdiv(m13, m13, sum, mask, MODE_ZEROING);
+                vadds(m10, m10, eps, mask, MODE_ZEROING);
+                vadds(m11, m11, eps, mask, MODE_ZEROING);
+                vadds(m12, m12, eps, mask, MODE_ZEROING);
+                vadds(m13, m13, eps, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m20,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 0, BRC_B32);
+                vmul(m20, m20, inv, mask, MODE_ZEROING);
+                vmuls(m20, m20, scale, mask, MODE_ZEROING);
+                vadd(m20, m20, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m21,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 1, BRC_B32);
+                vmul(m21, m21, inv, mask, MODE_ZEROING);
+                vmuls(m21, m21, scale, mask, MODE_ZEROING);
+                vadd(m21, m21, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m22,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 2, BRC_B32);
+                vmul(m22, m22, inv, mask, MODE_ZEROING);
+                vmuls(m22, m22, scale, mask, MODE_ZEROING);
+                vadd(m22, m22, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m23,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 3, BRC_B32);
+                vmul(m23, m23, inv, mask, MODE_ZEROING);
+                vmuls(m23, m23, scale, mask, MODE_ZEROING);
+                vadd(m23, m23, bias, mask, MODE_ZEROING);
+                vmax(maximum, m20, m21, mask, MODE_ZEROING);
+                vmax(tail, m22, m23, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m20, m20, maximum, mask, MODE_ZEROING);
+                vsub(m21, m21, maximum, mask, MODE_ZEROING);
+                vsub(m22, m22, maximum, mask, MODE_ZEROING);
+                vsub(m23, m23, maximum, mask, MODE_ZEROING);
+                vexp(m20, m20, mask, MODE_ZEROING);
+                vexp(m21, m21, mask, MODE_ZEROING);
+                vexp(m22, m22, mask, MODE_ZEROING);
+                vexp(m23, m23, mask, MODE_ZEROING);
+                vadd(sum, m20, m21, mask, MODE_ZEROING);
+                vadd(tail, m22, m23, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m20, m20, sum, mask, MODE_ZEROING);
+                vdiv(m21, m21, sum, mask, MODE_ZEROING);
+                vdiv(m22, m22, sum, mask, MODE_ZEROING);
+                vdiv(m23, m23, sum, mask, MODE_ZEROING);
+                vadds(m20, m20, eps, mask, MODE_ZEROING);
+                vadds(m21, m21, eps, mask, MODE_ZEROING);
+                vadds(m22, m22, eps, mask, MODE_ZEROING);
+                vadds(m23, m23, eps, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m30,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 0, BRC_B32);
+                vmul(m30, m30, inv, mask, MODE_ZEROING);
+                vmuls(m30, m30, scale, mask, MODE_ZEROING);
+                vadd(m30, m30, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m31,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 1, BRC_B32);
+                vmul(m31, m31, inv, mask, MODE_ZEROING);
+                vmuls(m31, m31, scale, mask, MODE_ZEROING);
+                vadd(m31, m31, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m32,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 2, BRC_B32);
+                vmul(m32, m32, inv, mask, MODE_ZEROING);
+                vmuls(m32, m32, scale, mask, MODE_ZEROING);
+                vadd(m32, m32, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m33,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 3, BRC_B32);
+                vmul(m33, m33, inv, mask, MODE_ZEROING);
+                vmuls(m33, m33, scale, mask, MODE_ZEROING);
+                vadd(m33, m33, bias, mask, MODE_ZEROING);
+                vmax(maximum, m30, m31, mask, MODE_ZEROING);
+                vmax(tail, m32, m33, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m30, m30, maximum, mask, MODE_ZEROING);
+                vsub(m31, m31, maximum, mask, MODE_ZEROING);
+                vsub(m32, m32, maximum, mask, MODE_ZEROING);
+                vsub(m33, m33, maximum, mask, MODE_ZEROING);
+                vexp(m30, m30, mask, MODE_ZEROING);
+                vexp(m31, m31, mask, MODE_ZEROING);
+                vexp(m32, m32, mask, MODE_ZEROING);
+                vexp(m33, m33, mask, MODE_ZEROING);
+                vadd(sum, m30, m31, mask, MODE_ZEROING);
+                vadd(tail, m32, m33, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m30, m30, sum, mask, MODE_ZEROING);
+                vdiv(m31, m31, sum, mask, MODE_ZEROING);
+                vdiv(m32, m32, sum, mask, MODE_ZEROING);
+                vdiv(m33, m33, sum, mask, MODE_ZEROING);
+                vadds(m30, m30, eps, mask, MODE_ZEROING);
+                vadds(m31, m31, eps, mask, MODE_ZEROING);
+                vadds(m32, m32, eps, mask, MODE_ZEROING);
+                vadds(m33, m33, eps, mask, MODE_ZEROING);
+                vadd(total0, m00, m10, mask, MODE_ZEROING);
+                vadd(total1, m01, m11, mask, MODE_ZEROING);
+                vadd(total2, m02, m12, mask, MODE_ZEROING);
+                vadd(total3, m03, m13, mask, MODE_ZEROING);
+                vadd(total0, total0, m20, mask, MODE_ZEROING);
+                vadd(total1, total1, m21, mask, MODE_ZEROING);
+                vadd(total2, total2, m22, mask, MODE_ZEROING);
+                vadd(total3, total3, m23, mask, MODE_ZEROING);
+                vadd(total0, total0, m30, mask, MODE_ZEROING);
+                vadd(total1, total1, m31, mask, MODE_ZEROING);
+                vadd(total2, total2, m32, mask, MODE_ZEROING);
+                vadd(total3, total3, m33, mask, MODE_ZEROING);
+                vadds(total0, total0, eps, mask, MODE_ZEROING);
+                vadds(total1, total1, eps, mask, MODE_ZEROING);
+                vadds(total2, total2, eps, mask, MODE_ZEROING);
+                vadds(total3, total3, eps, mask, MODE_ZEROING);
+                vdiv(m00, m00, total0, mask, MODE_ZEROING);
+                vdiv(m01, m01, total1, mask, MODE_ZEROING);
+                vdiv(m02, m02, total2, mask, MODE_ZEROING);
+                vdiv(m03, m03, total3, mask, MODE_ZEROING);
+                vdiv(m10, m10, total0, mask, MODE_ZEROING);
+                vdiv(m11, m11, total1, mask, MODE_ZEROING);
+                vdiv(m12, m12, total2, mask, MODE_ZEROING);
+                vdiv(m13, m13, total3, mask, MODE_ZEROING);
+                vdiv(m20, m20, total0, mask, MODE_ZEROING);
+                vdiv(m21, m21, total1, mask, MODE_ZEROING);
+                vdiv(m22, m22, total2, mask, MODE_ZEROING);
+                vdiv(m23, m23, total3, mask, MODE_ZEROING);
+                vdiv(m30, m30, total0, mask, MODE_ZEROING);
+                vdiv(m31, m31, total1, mask, MODE_ZEROING);
+                vdiv(m32, m32, total2, mask, MODE_ZEROING);
+                vdiv(m33, m33, total3, mask, MODE_ZEROING);
+                for (uint16_t iteration = 0; iteration < iters; ++iteration) {
+                    vadd(total0, m00, m01, mask, MODE_ZEROING);
+                    vadd(total1, m10, m11, mask, MODE_ZEROING);
+                    vadd(total2, m20, m21, mask, MODE_ZEROING);
+                    vadd(total3, m30, m31, mask, MODE_ZEROING);
+                    vadd(tail0, m02, m03, mask, MODE_ZEROING);
+                    vadd(tail1, m12, m13, mask, MODE_ZEROING);
+                    vadd(tail2, m22, m23, mask, MODE_ZEROING);
+                    vadd(tail3, m32, m33, mask, MODE_ZEROING);
+                    vadd(total0, total0, tail0, mask, MODE_ZEROING);
+                    vadd(total1, total1, tail1, mask, MODE_ZEROING);
+                    vadd(total2, total2, tail2, mask, MODE_ZEROING);
+                    vadd(total3, total3, tail3, mask, MODE_ZEROING);
+                    vadds(total0, total0, eps, mask, MODE_ZEROING);
+                    vadds(total1, total1, eps, mask, MODE_ZEROING);
+                    vadds(total2, total2, eps, mask, MODE_ZEROING);
+                    vadds(total3, total3, eps, mask, MODE_ZEROING);
+                    vdiv(m00, m00, total0, mask, MODE_ZEROING);
+                    vdiv(m10, m10, total1, mask, MODE_ZEROING);
+                    vdiv(m20, m20, total2, mask, MODE_ZEROING);
+                    vdiv(m30, m30, total3, mask, MODE_ZEROING);
+                    vdiv(m01, m01, total0, mask, MODE_ZEROING);
+                    vdiv(m11, m11, total1, mask, MODE_ZEROING);
+                    vdiv(m21, m21, total2, mask, MODE_ZEROING);
+                    vdiv(m31, m31, total3, mask, MODE_ZEROING);
+                    vdiv(m02, m02, total0, mask, MODE_ZEROING);
+                    vdiv(m12, m12, total1, mask, MODE_ZEROING);
+                    vdiv(m22, m22, total2, mask, MODE_ZEROING);
+                    vdiv(m32, m32, total3, mask, MODE_ZEROING);
+                    vdiv(m03, m03, total0, mask, MODE_ZEROING);
+                    vdiv(m13, m13, total1, mask, MODE_ZEROING);
+                    vdiv(m23, m23, total2, mask, MODE_ZEROING);
+                    vdiv(m33, m33, total3, mask, MODE_ZEROING);
+                    vadd(total0, m00, m10, mask, MODE_ZEROING);
+                    vadd(total1, m01, m11, mask, MODE_ZEROING);
+                    vadd(total2, m02, m12, mask, MODE_ZEROING);
+                    vadd(total3, m03, m13, mask, MODE_ZEROING);
+                    vadd(total0, total0, m20, mask, MODE_ZEROING);
+                    vadd(total1, total1, m21, mask, MODE_ZEROING);
+                    vadd(total2, total2, m22, mask, MODE_ZEROING);
+                    vadd(total3, total3, m23, mask, MODE_ZEROING);
+                    vadd(total0, total0, m30, mask, MODE_ZEROING);
+                    vadd(total1, total1, m31, mask, MODE_ZEROING);
+                    vadd(total2, total2, m32, mask, MODE_ZEROING);
+                    vadd(total3, total3, m33, mask, MODE_ZEROING);
+                    vadds(total0, total0, eps, mask, MODE_ZEROING);
+                    vadds(total1, total1, eps, mask, MODE_ZEROING);
+                    vadds(total2, total2, eps, mask, MODE_ZEROING);
+                    vadds(total3, total3, eps, mask, MODE_ZEROING);
+                    vdiv(m00, m00, total0, mask, MODE_ZEROING);
+                    vdiv(m01, m01, total1, mask, MODE_ZEROING);
+                    vdiv(m02, m02, total2, mask, MODE_ZEROING);
+                    vdiv(m03, m03, total3, mask, MODE_ZEROING);
+                    vdiv(m10, m10, total0, mask, MODE_ZEROING);
+                    vdiv(m11, m11, total1, mask, MODE_ZEROING);
+                    vdiv(m12, m12, total2, mask, MODE_ZEROING);
+                    vdiv(m13, m13, total3, mask, MODE_ZEROING);
+                    vdiv(m20, m20, total0, mask, MODE_ZEROING);
+                    vdiv(m21, m21, total1, mask, MODE_ZEROING);
+                    vdiv(m22, m22, total2, mask, MODE_ZEROING);
+                    vdiv(m23, m23, total3, mask, MODE_ZEROING);
+                    vdiv(m30, m30, total0, mask, MODE_ZEROING);
+                    vdiv(m31, m31, total1, mask, MODE_ZEROING);
+                    vdiv(m32, m32, total2, mask, MODE_ZEROING);
+                    vdiv(m33, m33, total3, mask, MODE_ZEROING);
+                }
+                vscatter(m00, mix + lane_batch * 1024 + 0, output_index, mask);
+                vscatter(m01, mix + lane_batch * 1024 + 1, output_index, mask);
+                vscatter(m02, mix + lane_batch * 1024 + 2, output_index, mask);
+                vscatter(m03, mix + lane_batch * 1024 + 3, output_index, mask);
+                vscatter(m10, mix + lane_batch * 1024 + 4, output_index, mask);
+                vscatter(m11, mix + lane_batch * 1024 + 5, output_index, mask);
+                vscatter(m12, mix + lane_batch * 1024 + 6, output_index, mask);
+                vscatter(m13, mix + lane_batch * 1024 + 7, output_index, mask);
+                vscatter(m20, mix + lane_batch * 1024 + 8, output_index, mask);
+                vscatter(m21, mix + lane_batch * 1024 + 9, output_index, mask);
+                vscatter(m22, mix + lane_batch * 1024 + 10, output_index, mask);
+                vscatter(m23, mix + lane_batch * 1024 + 11, output_index, mask);
+                vscatter(m30, mix + lane_batch * 1024 + 12, output_index, mask);
+                vscatter(m31, mix + lane_batch * 1024 + 13, output_index, mask);
+                vscatter(m32, mix + lane_batch * 1024 + 14, output_index, mask);
+                vscatter(m33, mix + lane_batch * 1024 + 15, output_index, mask);
+            }
+            {
+                uint16_t lane_batch = batch + 1;
+
+                vector_bool mask = plt_b32(remaining, POST_UPDATE);
+                vector_f32 inv, one, bias, maximum, tail, sum;
+                vector_f32 m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31,
+                    m32, m33;
+                vector_f32 total0, total1, total2, total3, tail0, tail1, tail2, tail3;
+                vgather2((vector_s32&)inv, (__ubuf__ int32_t*)(rms + (lane_batch) * 64), lane,
+                         mask);
+                vadds(inv, inv, norm_eps, mask, MODE_ZEROING);
+                vsqrt(inv, inv, mask, MODE_ZEROING);
+                vdup(one, 1.0f, mask, MODE_ZEROING);
+                vdiv(inv, one, inv, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m00,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 0, BRC_B32);
+                vmul(m00, m00, inv, mask, MODE_ZEROING);
+                vmuls(m00, m00, scale, mask, MODE_ZEROING);
+                vadd(m00, m00, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m01,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 1, BRC_B32);
+                vmul(m01, m01, inv, mask, MODE_ZEROING);
+                vmuls(m01, m01, scale, mask, MODE_ZEROING);
+                vadd(m01, m01, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m02,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 2, BRC_B32);
+                vmul(m02, m02, inv, mask, MODE_ZEROING);
+                vmuls(m02, m02, scale, mask, MODE_ZEROING);
+                vadd(m02, m02, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m03,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (0) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (0) * 8 + 3, BRC_B32);
+                vmul(m03, m03, inv, mask, MODE_ZEROING);
+                vmuls(m03, m03, scale, mask, MODE_ZEROING);
+                vadd(m03, m03, bias, mask, MODE_ZEROING);
+                vmax(maximum, m00, m01, mask, MODE_ZEROING);
+                vmax(tail, m02, m03, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m00, m00, maximum, mask, MODE_ZEROING);
+                vsub(m01, m01, maximum, mask, MODE_ZEROING);
+                vsub(m02, m02, maximum, mask, MODE_ZEROING);
+                vsub(m03, m03, maximum, mask, MODE_ZEROING);
+                vexp(m00, m00, mask, MODE_ZEROING);
+                vexp(m01, m01, mask, MODE_ZEROING);
+                vexp(m02, m02, mask, MODE_ZEROING);
+                vexp(m03, m03, mask, MODE_ZEROING);
+                vadd(sum, m00, m01, mask, MODE_ZEROING);
+                vadd(tail, m02, m03, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m00, m00, sum, mask, MODE_ZEROING);
+                vdiv(m01, m01, sum, mask, MODE_ZEROING);
+                vdiv(m02, m02, sum, mask, MODE_ZEROING);
+                vdiv(m03, m03, sum, mask, MODE_ZEROING);
+                vadds(m00, m00, eps, mask, MODE_ZEROING);
+                vadds(m01, m01, eps, mask, MODE_ZEROING);
+                vadds(m02, m02, eps, mask, MODE_ZEROING);
+                vadds(m03, m03, eps, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m10,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 0, BRC_B32);
+                vmul(m10, m10, inv, mask, MODE_ZEROING);
+                vmuls(m10, m10, scale, mask, MODE_ZEROING);
+                vadd(m10, m10, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m11,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 1, BRC_B32);
+                vmul(m11, m11, inv, mask, MODE_ZEROING);
+                vmuls(m11, m11, scale, mask, MODE_ZEROING);
+                vadd(m11, m11, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m12,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 2, BRC_B32);
+                vmul(m12, m12, inv, mask, MODE_ZEROING);
+                vmuls(m12, m12, scale, mask, MODE_ZEROING);
+                vadd(m12, m12, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m13,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (1) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (1) * 8 + 3, BRC_B32);
+                vmul(m13, m13, inv, mask, MODE_ZEROING);
+                vmuls(m13, m13, scale, mask, MODE_ZEROING);
+                vadd(m13, m13, bias, mask, MODE_ZEROING);
+                vmax(maximum, m10, m11, mask, MODE_ZEROING);
+                vmax(tail, m12, m13, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m10, m10, maximum, mask, MODE_ZEROING);
+                vsub(m11, m11, maximum, mask, MODE_ZEROING);
+                vsub(m12, m12, maximum, mask, MODE_ZEROING);
+                vsub(m13, m13, maximum, mask, MODE_ZEROING);
+                vexp(m10, m10, mask, MODE_ZEROING);
+                vexp(m11, m11, mask, MODE_ZEROING);
+                vexp(m12, m12, mask, MODE_ZEROING);
+                vexp(m13, m13, mask, MODE_ZEROING);
+                vadd(sum, m10, m11, mask, MODE_ZEROING);
+                vadd(tail, m12, m13, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m10, m10, sum, mask, MODE_ZEROING);
+                vdiv(m11, m11, sum, mask, MODE_ZEROING);
+                vdiv(m12, m12, sum, mask, MODE_ZEROING);
+                vdiv(m13, m13, sum, mask, MODE_ZEROING);
+                vadds(m10, m10, eps, mask, MODE_ZEROING);
+                vadds(m11, m11, eps, mask, MODE_ZEROING);
+                vadds(m12, m12, eps, mask, MODE_ZEROING);
+                vadds(m13, m13, eps, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m20,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 0, BRC_B32);
+                vmul(m20, m20, inv, mask, MODE_ZEROING);
+                vmuls(m20, m20, scale, mask, MODE_ZEROING);
+                vadd(m20, m20, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m21,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 1, BRC_B32);
+                vmul(m21, m21, inv, mask, MODE_ZEROING);
+                vmuls(m21, m21, scale, mask, MODE_ZEROING);
+                vadd(m21, m21, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m22,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 2, BRC_B32);
+                vmul(m22, m22, inv, mask, MODE_ZEROING);
+                vmuls(m22, m22, scale, mask, MODE_ZEROING);
+                vadd(m22, m22, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m23,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (2) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (2) * 8 + 3, BRC_B32);
+                vmul(m23, m23, inv, mask, MODE_ZEROING);
+                vmuls(m23, m23, scale, mask, MODE_ZEROING);
+                vadd(m23, m23, bias, mask, MODE_ZEROING);
+                vmax(maximum, m20, m21, mask, MODE_ZEROING);
+                vmax(tail, m22, m23, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m20, m20, maximum, mask, MODE_ZEROING);
+                vsub(m21, m21, maximum, mask, MODE_ZEROING);
+                vsub(m22, m22, maximum, mask, MODE_ZEROING);
+                vsub(m23, m23, maximum, mask, MODE_ZEROING);
+                vexp(m20, m20, mask, MODE_ZEROING);
+                vexp(m21, m21, mask, MODE_ZEROING);
+                vexp(m22, m22, mask, MODE_ZEROING);
+                vexp(m23, m23, mask, MODE_ZEROING);
+                vadd(sum, m20, m21, mask, MODE_ZEROING);
+                vadd(tail, m22, m23, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m20, m20, sum, mask, MODE_ZEROING);
+                vdiv(m21, m21, sum, mask, MODE_ZEROING);
+                vdiv(m22, m22, sum, mask, MODE_ZEROING);
+                vdiv(m23, m23, sum, mask, MODE_ZEROING);
+                vadds(m20, m20, eps, mask, MODE_ZEROING);
+                vadds(m21, m21, eps, mask, MODE_ZEROING);
+                vadds(m22, m22, eps, mask, MODE_ZEROING);
+                vadds(m23, m23, eps, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m30,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 0),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 0, BRC_B32);
+                vmul(m30, m30, inv, mask, MODE_ZEROING);
+                vmuls(m30, m30, scale, mask, MODE_ZEROING);
+                vadd(m30, m30, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m31,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 1),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 1, BRC_B32);
+                vmul(m31, m31, inv, mask, MODE_ZEROING);
+                vmuls(m31, m31, scale, mask, MODE_ZEROING);
+                vadd(m31, m31, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m32,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 2),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 2, BRC_B32);
+                vmul(m32, m32, inv, mask, MODE_ZEROING);
+                vmuls(m32, m32, scale, mask, MODE_ZEROING);
+                vadd(m32, m32, bias, mask, MODE_ZEROING);
+                vgather2((vector_s32&)m33,
+                         (__ubuf__ int32_t*)(mix + (lane_batch) * 1536 + 8 + (3) * 4 + 3),
+                         input_index, mask);
+                vlds(bias, base, (3) * 8 + 3, BRC_B32);
+                vmul(m33, m33, inv, mask, MODE_ZEROING);
+                vmuls(m33, m33, scale, mask, MODE_ZEROING);
+                vadd(m33, m33, bias, mask, MODE_ZEROING);
+                vmax(maximum, m30, m31, mask, MODE_ZEROING);
+                vmax(tail, m32, m33, mask, MODE_ZEROING);
+                vmax(maximum, maximum, tail, mask, MODE_ZEROING);
+                vsub(m30, m30, maximum, mask, MODE_ZEROING);
+                vsub(m31, m31, maximum, mask, MODE_ZEROING);
+                vsub(m32, m32, maximum, mask, MODE_ZEROING);
+                vsub(m33, m33, maximum, mask, MODE_ZEROING);
+                vexp(m30, m30, mask, MODE_ZEROING);
+                vexp(m31, m31, mask, MODE_ZEROING);
+                vexp(m32, m32, mask, MODE_ZEROING);
+                vexp(m33, m33, mask, MODE_ZEROING);
+                vadd(sum, m30, m31, mask, MODE_ZEROING);
+                vadd(tail, m32, m33, mask, MODE_ZEROING);
+                vadd(sum, sum, tail, mask, MODE_ZEROING);
+                vdiv(m30, m30, sum, mask, MODE_ZEROING);
+                vdiv(m31, m31, sum, mask, MODE_ZEROING);
+                vdiv(m32, m32, sum, mask, MODE_ZEROING);
+                vdiv(m33, m33, sum, mask, MODE_ZEROING);
+                vadds(m30, m30, eps, mask, MODE_ZEROING);
+                vadds(m31, m31, eps, mask, MODE_ZEROING);
+                vadds(m32, m32, eps, mask, MODE_ZEROING);
+                vadds(m33, m33, eps, mask, MODE_ZEROING);
+                vadd(total0, m00, m10, mask, MODE_ZEROING);
+                vadd(total1, m01, m11, mask, MODE_ZEROING);
+                vadd(total2, m02, m12, mask, MODE_ZEROING);
+                vadd(total3, m03, m13, mask, MODE_ZEROING);
+                vadd(total0, total0, m20, mask, MODE_ZEROING);
+                vadd(total1, total1, m21, mask, MODE_ZEROING);
+                vadd(total2, total2, m22, mask, MODE_ZEROING);
+                vadd(total3, total3, m23, mask, MODE_ZEROING);
+                vadd(total0, total0, m30, mask, MODE_ZEROING);
+                vadd(total1, total1, m31, mask, MODE_ZEROING);
+                vadd(total2, total2, m32, mask, MODE_ZEROING);
+                vadd(total3, total3, m33, mask, MODE_ZEROING);
+                vadds(total0, total0, eps, mask, MODE_ZEROING);
+                vadds(total1, total1, eps, mask, MODE_ZEROING);
+                vadds(total2, total2, eps, mask, MODE_ZEROING);
+                vadds(total3, total3, eps, mask, MODE_ZEROING);
+                vdiv(m00, m00, total0, mask, MODE_ZEROING);
+                vdiv(m01, m01, total1, mask, MODE_ZEROING);
+                vdiv(m02, m02, total2, mask, MODE_ZEROING);
+                vdiv(m03, m03, total3, mask, MODE_ZEROING);
+                vdiv(m10, m10, total0, mask, MODE_ZEROING);
+                vdiv(m11, m11, total1, mask, MODE_ZEROING);
+                vdiv(m12, m12, total2, mask, MODE_ZEROING);
+                vdiv(m13, m13, total3, mask, MODE_ZEROING);
+                vdiv(m20, m20, total0, mask, MODE_ZEROING);
+                vdiv(m21, m21, total1, mask, MODE_ZEROING);
+                vdiv(m22, m22, total2, mask, MODE_ZEROING);
+                vdiv(m23, m23, total3, mask, MODE_ZEROING);
+                vdiv(m30, m30, total0, mask, MODE_ZEROING);
+                vdiv(m31, m31, total1, mask, MODE_ZEROING);
+                vdiv(m32, m32, total2, mask, MODE_ZEROING);
+                vdiv(m33, m33, total3, mask, MODE_ZEROING);
+                for (uint16_t iteration = 0; iteration < iters; ++iteration) {
+                    vadd(total0, m00, m01, mask, MODE_ZEROING);
+                    vadd(total1, m10, m11, mask, MODE_ZEROING);
+                    vadd(total2, m20, m21, mask, MODE_ZEROING);
+                    vadd(total3, m30, m31, mask, MODE_ZEROING);
+                    vadd(tail0, m02, m03, mask, MODE_ZEROING);
+                    vadd(tail1, m12, m13, mask, MODE_ZEROING);
+                    vadd(tail2, m22, m23, mask, MODE_ZEROING);
+                    vadd(tail3, m32, m33, mask, MODE_ZEROING);
+                    vadd(total0, total0, tail0, mask, MODE_ZEROING);
+                    vadd(total1, total1, tail1, mask, MODE_ZEROING);
+                    vadd(total2, total2, tail2, mask, MODE_ZEROING);
+                    vadd(total3, total3, tail3, mask, MODE_ZEROING);
+                    vadds(total0, total0, eps, mask, MODE_ZEROING);
+                    vadds(total1, total1, eps, mask, MODE_ZEROING);
+                    vadds(total2, total2, eps, mask, MODE_ZEROING);
+                    vadds(total3, total3, eps, mask, MODE_ZEROING);
+                    vdiv(m00, m00, total0, mask, MODE_ZEROING);
+                    vdiv(m10, m10, total1, mask, MODE_ZEROING);
+                    vdiv(m20, m20, total2, mask, MODE_ZEROING);
+                    vdiv(m30, m30, total3, mask, MODE_ZEROING);
+                    vdiv(m01, m01, total0, mask, MODE_ZEROING);
+                    vdiv(m11, m11, total1, mask, MODE_ZEROING);
+                    vdiv(m21, m21, total2, mask, MODE_ZEROING);
+                    vdiv(m31, m31, total3, mask, MODE_ZEROING);
+                    vdiv(m02, m02, total0, mask, MODE_ZEROING);
+                    vdiv(m12, m12, total1, mask, MODE_ZEROING);
+                    vdiv(m22, m22, total2, mask, MODE_ZEROING);
+                    vdiv(m32, m32, total3, mask, MODE_ZEROING);
+                    vdiv(m03, m03, total0, mask, MODE_ZEROING);
+                    vdiv(m13, m13, total1, mask, MODE_ZEROING);
+                    vdiv(m23, m23, total2, mask, MODE_ZEROING);
+                    vdiv(m33, m33, total3, mask, MODE_ZEROING);
+                    vadd(total0, m00, m10, mask, MODE_ZEROING);
+                    vadd(total1, m01, m11, mask, MODE_ZEROING);
+                    vadd(total2, m02, m12, mask, MODE_ZEROING);
+                    vadd(total3, m03, m13, mask, MODE_ZEROING);
+                    vadd(total0, total0, m20, mask, MODE_ZEROING);
+                    vadd(total1, total1, m21, mask, MODE_ZEROING);
+                    vadd(total2, total2, m22, mask, MODE_ZEROING);
+                    vadd(total3, total3, m23, mask, MODE_ZEROING);
+                    vadd(total0, total0, m30, mask, MODE_ZEROING);
+                    vadd(total1, total1, m31, mask, MODE_ZEROING);
+                    vadd(total2, total2, m32, mask, MODE_ZEROING);
+                    vadd(total3, total3, m33, mask, MODE_ZEROING);
+                    vadds(total0, total0, eps, mask, MODE_ZEROING);
+                    vadds(total1, total1, eps, mask, MODE_ZEROING);
+                    vadds(total2, total2, eps, mask, MODE_ZEROING);
+                    vadds(total3, total3, eps, mask, MODE_ZEROING);
+                    vdiv(m00, m00, total0, mask, MODE_ZEROING);
+                    vdiv(m01, m01, total1, mask, MODE_ZEROING);
+                    vdiv(m02, m02, total2, mask, MODE_ZEROING);
+                    vdiv(m03, m03, total3, mask, MODE_ZEROING);
+                    vdiv(m10, m10, total0, mask, MODE_ZEROING);
+                    vdiv(m11, m11, total1, mask, MODE_ZEROING);
+                    vdiv(m12, m12, total2, mask, MODE_ZEROING);
+                    vdiv(m13, m13, total3, mask, MODE_ZEROING);
+                    vdiv(m20, m20, total0, mask, MODE_ZEROING);
+                    vdiv(m21, m21, total1, mask, MODE_ZEROING);
+                    vdiv(m22, m22, total2, mask, MODE_ZEROING);
+                    vdiv(m23, m23, total3, mask, MODE_ZEROING);
+                    vdiv(m30, m30, total0, mask, MODE_ZEROING);
+                    vdiv(m31, m31, total1, mask, MODE_ZEROING);
+                    vdiv(m32, m32, total2, mask, MODE_ZEROING);
+                    vdiv(m33, m33, total3, mask, MODE_ZEROING);
+                }
+                vscatter(m00, mix + lane_batch * 1024 + 0, output_index, mask);
+                vscatter(m01, mix + lane_batch * 1024 + 1, output_index, mask);
+                vscatter(m02, mix + lane_batch * 1024 + 2, output_index, mask);
+                vscatter(m03, mix + lane_batch * 1024 + 3, output_index, mask);
+                vscatter(m10, mix + lane_batch * 1024 + 4, output_index, mask);
+                vscatter(m11, mix + lane_batch * 1024 + 5, output_index, mask);
+                vscatter(m12, mix + lane_batch * 1024 + 6, output_index, mask);
+                vscatter(m13, mix + lane_batch * 1024 + 7, output_index, mask);
+                vscatter(m20, mix + lane_batch * 1024 + 8, output_index, mask);
+                vscatter(m21, mix + lane_batch * 1024 + 9, output_index, mask);
+                vscatter(m22, mix + lane_batch * 1024 + 10, output_index, mask);
+                vscatter(m23, mix + lane_batch * 1024 + 11, output_index, mask);
+                vscatter(m30, mix + lane_batch * 1024 + 12, output_index, mask);
+                vscatter(m31, mix + lane_batch * 1024 + 13, output_index, mask);
+                vscatter(m32, mix + lane_batch * 1024 + 14, output_index, mask);
+                vscatter(m33, mix + lane_batch * 1024 + 15, output_index, mask);
+            }
+        }
+    }
+}
+inline[aicore] uint32_t align_up(uint32_t value, uint32_t alignment) {
+    return (value + alignment - 1) / alignment * alignment;
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ float* input, __gm__ float* output,
+                                                       uint32_t matrix_count) {
+    if (matrix_count == 0 || matrix_count > 65535)
+        return;
+    uint32_t mix_bytes = align_up(matrix_count * 96 + 256, 32);
+    uint32_t mix_offset = 0;
+    uint32_t mix_gm = 0;
+    uint32_t base_bytes = align_up(matrix_count * 0 + 384, 32);
+    uint32_t base_offset = align_up(mix_offset + mix_bytes, 512);
+    uint32_t base_gm = mix_gm + mix_bytes;
+    uint32_t rms_bytes = align_up(matrix_count * 4 + 256, 32);
+    uint32_t rms_offset = align_up(base_offset + base_bytes, 512);
+    uint32_t rms_gm = base_gm + base_bytes;
+    uint32_t result_bytes = align_up(matrix_count * 128 + 256, 32);
+    uint32_t result_offset = align_up(rms_offset + rms_bytes, 512);
+    uint32_t result_gm = rms_gm + rms_bytes;
+    if (result_offset + result_bytes > 253952)
+        return;
+    uint16_t matrices = static_cast<uint16_t>(matrix_count);
+    __ubuf__ float* mix = (__ubuf__ float*)(uint64_t)mix_offset;
+    copy_gm_to_ubuf_align_v2(mix, input + mix_gm / 4, 0, 1, mix_bytes, 0, 0, 0, 0, 0, 0);
+    __ubuf__ float* base = (__ubuf__ float*)(uint64_t)base_offset;
+    copy_gm_to_ubuf_align_v2(base, input + base_gm / 4, 0, 1, base_bytes, 0, 0, 0, 0, 0, 0);
+    __ubuf__ float* rms = (__ubuf__ float*)(uint64_t)rms_offset;
+    copy_gm_to_ubuf_align_v2(rms, input + rms_gm / 4, 0, 1, rms_bytes, 0, 0, 0, 0, 0, 0);
+    __ubuf__ float* result = (__ubuf__ float*)(uint64_t)result_offset;
+    copy_gm_to_ubuf_align_v2(result, input + result_gm / 4, 0, 1, result_bytes, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(mix, rms, base, 0.5f, 1e-6f, 1e-6f, 19, matrices);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output, mix, 0, 1, mix_bytes, 0, 0, 0);
+}

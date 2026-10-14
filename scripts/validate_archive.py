@@ -64,7 +64,7 @@ for case in data["cases"]:
         for s in v["series"]:
             assert len(s["samples"]) > 10 and max(s["samples"]) > 0
             assert all(value >= 0 for value in s["samples"])
-for name in ("membar_results_summary.html", "assets/report.css", "assets/report.js", "metadata/data.js", "assets/chart.umd.js"):
+for name in ("spill_candidate_alignment_summary.html", "spill_candidate_alignment_summary.md", "metadata/data.js", "assets/chart.umd.js"):
     assert (root / name).is_file()
 print(json.dumps({"cases": len(data["cases"]), "variants": len(variants),
                   "verified_files": len(manifest), "camodel_logs": len(variants) * 2,

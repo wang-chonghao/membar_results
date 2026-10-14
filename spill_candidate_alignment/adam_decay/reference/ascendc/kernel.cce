@@ -1,0 +1,24 @@
+#include "kernel_operator.h"
+#include "reference_original.h"
+#include "atvoss/broadcast/broadcast_base_struct.h"
+#include "atvoss/broadcast/broadcast_sch_one_dim.h"
+#include "atvoss/elewise/elewise_sch.h"
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    AscendC::TPipe pipe;
+    using Dag = AdamApplyOneWithDecayOp::AdamApplyOneWithDecayCompute<float, float>::OpDag;
+    Ops::Base::BroadcastOneDimTilingData tiling = {};
+    tiling.ubFormer = 1024;
+    tiling.ubTail = 1024;
+    tiling.blockNum = 1;
+    tiling.blockFormer = 1;
+    tiling.blockTail = 1;
+    tiling.ubSplitAxis = 0;
+    Ops::Base::BroadcastOneDimSch<Dag> sch(&tiling);
+    sch.Init(&pipe, (GM_ADDR)(input + 0), (GM_ADDR)(input + 4096), (GM_ADDR)(input + 8192),
+             (GM_ADDR)(input + 12288), (GM_ADDR)(input + 16384), (GM_ADDR)(input + 16640),
+             (GM_ADDR)(input + 16896), (GM_ADDR)(input + 17152), (GM_ADDR)(input + 17408),
+             (GM_ADDR)(input + 17664), (GM_ADDR)(input + 17920), (GM_ADDR)(output + 0),
+             (GM_ADDR)(output + 4096), (GM_ADDR)(output + 8192));
+    sch.Process();
+}

@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 import shutil
+import stat
 import sys
 from collections import Counter
 from pathlib import Path
@@ -21,6 +22,9 @@ def read(path):
 
 def copy_file(source, target):
     target.parent.mkdir(parents=True, exist_ok=True)
+    # copy2 保留日志的只读权限，重复归档时只调整目标副本。
+    if target.exists():
+        target.chmod(target.stat().st_mode | stat.S_IWUSR)
     shutil.copy2(source, target)
     digest = hashlib.sha256(source.read_bytes()).hexdigest()
     assert digest == hashlib.sha256(target.read_bytes()).hexdigest()
@@ -30,7 +34,7 @@ def copy_file(source, target):
 
 def compute_opcode(op):
     op = op.removeprefix("RV_")
-    return op.startswith("V") and not op.startswith(("VLD", "VST", "VLOOP", "VAG"))
+    return op.startswith("V") and not op.startswith(("VLD", "VST", "VLOOP", "VAG", "VGATHER", "VSCATTER"))
 
 
 def curve(cycles, key, ipc=None):
@@ -55,10 +59,8 @@ def curve(cycles, key, ipc=None):
     return {"key": key, "label": LABELS[key], "color": COLORS[key], "samples": ipc, "events": total}
 
 
-def camodel_logs(folder, target):
+def camodel_curve(folder):
     done = folder / "core0.veccore0.instr_log.dump"
-    popped = folder / "core0.veccore0.instr_popped_log.dump"
-    links = [copy_file(p, target / "camodel" / p.name) for p in (popped, done)]
     complete = done.read_text(encoding="utf-8")
     vf = list(re.finditer(r"\[info\]\s*\[(\d+)\].*?\bVF\s+addr:.*?vf_execute_time:\s*(\d+)", complete))
     assert len(vf) == 1, str(done)
@@ -71,7 +73,14 @@ def camodel_logs(folder, target):
         if start <= int(cy) <= end and compute_opcode(op):
             events[int(iid)] = int(cy)
     assert events, str(done)
-    return duration, links, curve(list(events.values()), "camodel")
+    return duration, curve(list(events.values()), "camodel")
+
+
+def camodel_logs(folder, target):
+    names=("core0.veccore0.instr_popped_log.dump", "core0.veccore0.instr_log.dump")
+    links=[copy_file(folder/name,target/"camodel"/name) for name in names]
+    duration,series=camodel_curve(folder)
+    return duration,links,series
 
 
 def model_curve(folder, key):
@@ -242,6 +251,9 @@ def collect():
     if (ROOT/'results/flash_attention_grad_front_unroll2/bank_aware_u2/summary.json').is_file():
         from add_flash_attention_grad_front import collect_case
         cases.append(collect_case(sys.modules[__name__],ROOT))
+    if (ROOT/'results/mhc_vfsim_membar_compare_36_20261010/summary.json').is_file():
+        from add_mhc_sinkhorn import collect_case as collect_mhc_case
+        cases.append(collect_mhc_case(sys.modules[__name__],ROOT))
     for case in cases:
         (DEST/case["id"] / "summary.json").write_text(json.dumps(case,ensure_ascii=False,indent=2), encoding="utf-8")
     data={"generated":"2026-10-09", "soc":"A5 / DV100 / dav-3510", "window":10,

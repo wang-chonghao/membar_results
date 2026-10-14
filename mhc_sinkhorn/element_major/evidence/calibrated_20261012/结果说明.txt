@@ -1,0 +1,65 @@
+GSU 索引访存与整数 VMULS 校准
+===========================
+分支：vfinfo-core-api-unification。
+环境：CANN 9.0.0-beta.1，Ascend950PR_9599，dav-c310-vec，vec-misched=0。
+12 个微基准均通过逐字节数值校验，包括未写入的保护区。
+源码、输入输出、编译与运行命令、原始日志都保存在 cases/ 对应目录。
+
+采用的参数
+----------
+VGATHER2.b32：LOAD，latency=35，共享 GSU，issue interval=16。
+VSCATTER.b32：STORE，latency=43，共享 GSU，issue interval=32。
+以上为完整 64-lane 的稀疏参考配置：Gather 跨度 24 个元素，Scatter 跨度 16 个元素。
+VMULS.uint32：COMPUTE / ALU / EXU01，latency=8，同一 EXU 的 self-II=2。
+VLDS.uint32、VSTS.uint32：自身 latency=9，不从 producer 的 load/store cost 取值。
+
+有真实寄存器依赖的 forwarding
+----------------------------
+VCI.int32 -> VMULS.uint32       3
+VLDS.uint32 -> VMULS.uint32     6
+VMULS.uint32 -> VGATHER2.b32    6
+VMULS.uint32 -> VSTS.uint32     6
+VGATHER2.b32 -> VADDS.fp32     32
+VGATHER2.b32 -> VMUL.fp32      32
+VADDS.fp32 -> VSCATTER.b32      5
+VDIV.fp32 -> VSCATTER.b32      15
+只回填已实际观察的指令对，其他指令对仍沿用默认参数并保留 warning。
+VCI 和 PLT.b32 原有 latency=7/6，本次没有为适配用例改变它们的值。
+
+访存模式与适用边界
+------------------
+连续 Gather / Scatter 的首条指令延迟为 21 / 13，不同于稀疏访问的 35 / 43。
+Gather：跨度 24、active lanes 为 8/36/64 时，GSU 请求数为 3/9/16，首条延迟为 22/28/35。
+Scatter：跨度 16、active lanes 为 8/36/64 时，GSU 请求数为 5/18/32，首条延迟为 16/29/43。
+后续 burst 的 popped-to-done 包含排队，不能把最长等待直接当作单指令 latency。
+当前新增的是固定完整宽度稀疏参考模型，不是任意索引分布下的精确 GSU coalescing/bank 模型。
+连续访问、尾 mask、特殊索引分布可能被高估，后续需要更细的访存工作量建模。
+同一 GSU 的 Gather/Scatter 共享发射占用；普通 VLD/VST 不会因此被整体禁止发射。
+
+输入支持与依赖检查
+------------------
+Catalog 明确 Gather/Scatter 的 memory、index 和 predicate 角色，二者不作为 COMPUTE fallback。
+按硬件 B32 位搬运统一为 b32 form，寄存器中的 FP32/int32/uint32 位模式不做数值转换。
+支持 VCI 的 integral_constant<Order,...> 配置和 plt_b8/b16/b32 的返回值、POST_UPDATE 写法。
+整数 VMULS 的 uint32 form 单独维护，不能用 fp32 的参数悄悄替代。
+LOAD 就绪判定会同时等待 index 与 predicate 的 forwarding，并保留原有 align-state 依赖。
+Python/C++ 均增加了同一 GSU 的共享资源间隔约束。
+同时修复 Native 嵌套循环校验器错误移动父级 affine 作用域的问题，并增加共享回归 fixture。
+
+128 矩阵 MHC 验证
+----------------
+提取 VF：128 个 4x4 FP32 矩阵，20 轮；不是完整 MHC 算子的端到端时间。
+版本          CAModel    Python/C++预测    全局精度
+element-major U1    4950              5082       97.33%
+外层手动 U2       11446             11118       97.13%
+预测采用实际编译后指令回放；U2 的 234 次保存、234 次重载、468 次 membar 和 115 次 VMOV 保留。
+动态 opcode、PC 顺序和寄存器 producer-consumer 图均做核对，不能用没有 spill 的源程序替代 U2 回放。
+标量执行时间仍未建模；GSU 采用上述固定稀疏参考配置，以上精度不代表任意访存分布都成立。
+prediction/ 下保留两版 canonical 输入、精简开始/完成记录与比较结果。
+原始 MHC CCE 与 CAModel 日志在 results/mhc_element_major_128_20261012。
+
+回归验证
+--------
+Python：355 项通过、10 项跳过（共 365 项），无失败。
+Native：9/9，包括新增 GSU 来源依赖、共享资源间隔与普通 load 不被整体阻塞的测试。
+configs_used/ 保存本次采用的参数，manifest.json 可核对归档完整性。

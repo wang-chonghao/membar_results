@@ -1,0 +1,102 @@
+{
+  "case": "causal_conv",
+  "status": "passed",
+  "constants": {
+    "iterations": 24,
+    "elements": 9408,
+    "dtype": "fp16",
+    "shape": [
+      49,
+      192
+    ],
+    "original_outputs_per_iteration": 4
+  },
+  "engines": {
+    "ascendc": {
+      "vf_cycles": [
+        1266
+      ],
+      "total_vf_cycles": 1266,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 1,
+        "RV_PSET": 1,
+        "RV_SEND": 1,
+        "RV_SMOV": 2,
+        "RV_SMOVI": 23,
+        "RV_VADD": 784,
+        "RV_VCVT_F2F": 604,
+        "RV_VDUPS": 2,
+        "RV_VLDI": 408,
+        "RV_VLOOPv2": 2,
+        "RV_VMUL": 588,
+        "RV_VSTI": 196
+      }
+    },
+    "cce": {
+      "vf_cycles": [
+        1266
+      ],
+      "total_vf_cycles": 1266,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 1,
+        "RV_PSET": 1,
+        "RV_SEND": 1,
+        "RV_SMOV": 2,
+        "RV_SMOVI": 23,
+        "RV_VADD": 784,
+        "RV_VCVT_F2F": 604,
+        "RV_VDUPS": 2,
+        "RV_VLDI": 408,
+        "RV_VLOOPv2": 2,
+        "RV_VMUL": 588,
+        "RV_VSTI": 196
+      }
+    }
+  },
+  "validation": {
+    "bitwise_identical": true,
+    "guard_ok": true,
+    "cce_vs_ascendc": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "ascendc_vs_formula": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "cce_vs_formula": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  },
+  "stream": {
+    "vf_count": 1,
+    "static_vf_words": 220,
+    "vector_loads": 408,
+    "vector_stores": 196,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "UNPK_B16": 40
+    },
+    "loops": [
+      {
+        "pc": "0x13b38268",
+        "detail": "Sn[3]=0x18, Sn2[4]=0x4e00, instr_num : 52, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b38420",
+        "detail": "Sn[3]=0x18, Sn2[4]=0x4e00, instr_num : 52, layer: 0001, last: 1,"
+      }
+    ]
+  }
+}

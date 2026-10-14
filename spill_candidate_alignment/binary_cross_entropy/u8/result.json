@@ -1,0 +1,417 @@
+{
+  "id": "round2-binary_cross_entropy-u8",
+  "origin": "supplemental_search",
+  "case": "binary_cross_entropy",
+  "title": "BinaryCrossEntropy（概率输入）",
+  "variant": "u8",
+  "variant_label": "U8",
+  "variant_order": 8,
+  "unroll": 8,
+  "shape": "3072 元素 / FP32 / 48 次向量迭代",
+  "chart_label": "U8",
+  "comparison_group": "round2-binary_cross_entropy",
+  "comparison_label": "3072 元素 / 当前 A5 参数",
+  "status": "predicted",
+  "spill": true,
+  "reason": "",
+  "camodel": 2132,
+  "global_cycles": 2083,
+  "local_cycles": 473,
+  "software_cycles": 458,
+  "software_camodel": 416,
+  "software_accuracy": 89.90384615384616,
+  "original_accuracy": 97.70168855534709,
+  "local_gain": 77.29236677868458,
+  "software_gain": 78.01248199711954,
+  "plan": {
+    "unroll": 8,
+    "cuts": [],
+    "policy": "source",
+    "cohort": 2,
+    "pressure_weight": 0,
+    "stages": 1,
+    "scratch_bytes": 0,
+    "ub_high_water": 37120,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 8,
+          "PredicateRegister": 2
+        },
+        "lanes": 8
+      }
+    ],
+    "source_sha256": "b7dc4d40969e9e4bdee75de29bec7b87209ca46b2c46852bf36e417aad17d99b"
+  },
+  "software_validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 4.1638442382918583e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "software_comparison": null,
+  "candidate_count": 109,
+  "finalists": 4,
+  "strategy": "仅重排",
+  "files": {
+    "original_cce": [
+      {
+        "label": "commands.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/commands.json"
+      },
+      {
+        "label": "compile.log",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/compile.log"
+      },
+      {
+        "label": "core0.veccore0.instr_log.dump",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/core0.veccore0.instr_log.dump"
+      },
+      {
+        "label": "core0.veccore0.instr_popped_log.dump",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/core0.veccore0.instr_popped_log.dump"
+      },
+      {
+        "label": "core0.veccore0.rvec.IDU.dump.gz",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/core0.veccore0.rvec.IDU.dump.gz"
+      },
+      {
+        "label": "core0.veccore0.rvec.simd.idu.TRACE.dump",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/core0.veccore0.rvec.simd.idu.TRACE.dump"
+      },
+      {
+        "label": "host.cpp",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/host.cpp"
+      },
+      {
+        "label": "input.bin",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/input.bin"
+      },
+      {
+        "label": "kernel.cce",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/kernel.cce"
+      },
+      {
+        "label": "link.log",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/link.log"
+      },
+      {
+        "label": "output.bin",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/output.bin"
+      },
+      {
+        "label": "run.log",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/run.log"
+      }
+    ],
+    "comparison": [
+      {
+        "label": "comparison.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/comparison.json"
+      },
+      {
+        "label": "current/canonical/export_audit.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/canonical/export_audit.json"
+      },
+      {
+        "label": "current/canonical/vf_000.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/canonical/vf_000.json"
+      },
+      {
+        "label": "current/global/console.log",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/console.log"
+      },
+      {
+        "label": "current/global/done_by_cycle.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/done_by_cycle.json"
+      },
+      {
+        "label": "current/global/idu_address_blocked.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/idu_address_blocked.json"
+      },
+      {
+        "label": "current/global/idu_resource_blocked.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/idu_resource_blocked.json"
+      },
+      {
+        "label": "current/global/idu_to_ooo.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/idu_to_ooo.json"
+      },
+      {
+        "label": "current/global/membar_history.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/membar_history.json"
+      },
+      {
+        "label": "current/global/model_warnings.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/model_warnings.json"
+      },
+      {
+        "label": "current/global/start_by_cycle.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/start_by_cycle.json"
+      },
+      {
+        "label": "current/global/trace.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/trace.json"
+      },
+      {
+        "label": "current/global/vloop_trace.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/global/vloop_trace.json"
+      },
+      {
+        "label": "current/prediction.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/current/prediction.json"
+      },
+      {
+        "label": "experimental/canonical/export_audit.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/canonical/export_audit.json"
+      },
+      {
+        "label": "experimental/canonical/local.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/canonical/local.json"
+      },
+      {
+        "label": "experimental/canonical/vf_000.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/canonical/vf_000.json"
+      },
+      {
+        "label": "experimental/comparison.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/comparison.json"
+      },
+      {
+        "label": "experimental/compiled_instructions.txt",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/compiled_instructions.txt"
+      },
+      {
+        "label": "experimental/compiled_vf_replay.cce",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/compiled_vf_replay.cce"
+      },
+      {
+        "label": "experimental/listing_audit.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/listing_audit.json"
+      },
+      {
+        "label": "experimental/membar_global/console.log",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/console.log"
+      },
+      {
+        "label": "experimental/membar_global/done_by_cycle.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/done_by_cycle.json"
+      },
+      {
+        "label": "experimental/membar_global/idu_address_blocked.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/idu_address_blocked.json"
+      },
+      {
+        "label": "experimental/membar_global/idu_resource_blocked.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/idu_resource_blocked.json"
+      },
+      {
+        "label": "experimental/membar_global/idu_to_ooo.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/idu_to_ooo.json"
+      },
+      {
+        "label": "experimental/membar_global/membar_history.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/membar_history.json"
+      },
+      {
+        "label": "experimental/membar_global/model_warnings.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/model_warnings.json"
+      },
+      {
+        "label": "experimental/membar_global/start_by_cycle.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/start_by_cycle.json"
+      },
+      {
+        "label": "experimental/membar_global/trace.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/trace.json"
+      },
+      {
+        "label": "experimental/membar_global/vloop_trace.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/membar_global/vloop_trace.json"
+      },
+      {
+        "label": "experimental/memory_address_audit.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/memory_address_audit.json"
+      },
+      {
+        "label": "experimental/ub_local/console.log",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/console.log"
+      },
+      {
+        "label": "experimental/ub_local/done_by_cycle.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/done_by_cycle.json"
+      },
+      {
+        "label": "experimental/ub_local/idu_address_blocked.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/idu_address_blocked.json"
+      },
+      {
+        "label": "experimental/ub_local/idu_resource_blocked.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/idu_resource_blocked.json"
+      },
+      {
+        "label": "experimental/ub_local/idu_to_ooo.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/idu_to_ooo.json"
+      },
+      {
+        "label": "experimental/ub_local/membar_history.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/membar_history.json"
+      },
+      {
+        "label": "experimental/ub_local/model_warnings.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/model_warnings.json"
+      },
+      {
+        "label": "experimental/ub_local/start_by_cycle.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/start_by_cycle.json"
+      },
+      {
+        "label": "experimental/ub_local/trace.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/trace.json"
+      },
+      {
+        "label": "experimental/ub_local/vloop_trace.json",
+        "path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/ub_local/vloop_trace.json"
+      }
+    ],
+    "software": [
+      {
+        "label": "canonical/export_audit.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/canonical/export_audit.json"
+      },
+      {
+        "label": "canonical/vf_000.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/canonical/vf_000.json"
+      },
+      {
+        "label": "cce/commands.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/commands.json"
+      },
+      {
+        "label": "cce/compile.log",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/compile.log"
+      },
+      {
+        "label": "cce/core0.veccore0.instr_log.dump",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/core0.veccore0.instr_log.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.instr_popped_log.dump",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/core0.veccore0.instr_popped_log.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.rvec.IDU.dump",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/core0.veccore0.rvec.IDU.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.rvec.simd.idu.TRACE.dump",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/core0.veccore0.rvec.simd.idu.TRACE.dump"
+      },
+      {
+        "label": "cce/host.cpp",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/host.cpp"
+      },
+      {
+        "label": "cce/input.bin",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/input.bin"
+      },
+      {
+        "label": "cce/kernel.cce",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/kernel.cce"
+      },
+      {
+        "label": "cce/link.log",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/link.log"
+      },
+      {
+        "label": "cce/output.bin",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/output.bin"
+      },
+      {
+        "label": "cce/run.log",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/cce/run.log"
+      },
+      {
+        "label": "provisional.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/provisional.json"
+      },
+      {
+        "label": "validation.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/validation.json"
+      },
+      {
+        "label": "vfsim/console.log",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/console.log"
+      },
+      {
+        "label": "vfsim/done_by_cycle.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/done_by_cycle.json"
+      },
+      {
+        "label": "vfsim/idu_address_blocked.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/idu_address_blocked.json"
+      },
+      {
+        "label": "vfsim/idu_resource_blocked.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/idu_resource_blocked.json"
+      },
+      {
+        "label": "vfsim/idu_to_ooo.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/idu_to_ooo.json"
+      },
+      {
+        "label": "vfsim/membar_history.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/membar_history.json"
+      },
+      {
+        "label": "vfsim/model_warnings.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/model_warnings.json"
+      },
+      {
+        "label": "vfsim/start_by_cycle.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/start_by_cycle.json"
+      },
+      {
+        "label": "vfsim/trace.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/trace.json"
+      },
+      {
+        "label": "vfsim/vloop_trace.json",
+        "path": "spill_candidate_alignment/followup/round2-binary_cross_entropy-u8/vfsim/vloop_trace.json"
+      }
+    ]
+  },
+  "evidence_path": "spill_candidate_alignment/binary_cross_entropy/u8/result.json",
+  "spill_counts": {
+    "vector_store": 0,
+    "vector_load": 0,
+    "predicate_store": 18,
+    "predicate_load": 138
+  },
+  "scalar_stack_stores": 0,
+  "scalar_stack_loads": 0,
+  "other_extra_vector_loads": 0,
+  "spill_count_basis": "第二批 CAModel 编译后动态次数；vector 按新增写读共同地址，predicate 按 PST/PLD 统计。",
+  "note": "同流全局/局部 A/B 已核对当前主线全局周期、动态顺序及 core0 UB 地址；含 scalar stack 的版本明确拒绝。 软件对照为当前 A5 主线全局模型；历史原始/局部周期保留旧归档及原参数说明，不覆盖原记录。",
+  "loop_count": 48,
+  "loop_count_label": "48",
+  "loop_count_detail": "未展开前向量数据循环：3072 元素 / 64 元素每迭代 = 48 次。",
+  "vector_spill_store": 0,
+  "vector_spill_load": 0,
+  "predicate_spill_store": 18,
+  "predicate_spill_load": 138,
+  "spill_kind": "predicate",
+  "source_cce_path": "spill_candidate_alignment/binary_cross_entropy/u8/original/cce/kernel.cce",
+  "compiled_cce_path": "spill_candidate_alignment/binary_cross_entropy/u8/original/comparison/experimental/compiled_vf_replay.cce",
+  "membar_vs_software_performance": 96.82875264270614,
+  "software_reference": "",
+  "selection_role": "register spill"
+}

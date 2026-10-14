@@ -1,0 +1,115 @@
+{
+  "plan": {
+    "unroll": 12,
+    "cuts": [
+      16
+    ],
+    "policy": "source",
+    "cohort": 4,
+    "pressure_weight": 0,
+    "stages": 2,
+    "scratch_bytes": 73728,
+    "ub_high_water": 164096,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 12,
+          "PredicateRegister": 1
+        },
+        "lanes": 12
+      },
+      {
+        "stage": 1,
+        "section": 0,
+        "peaks": {
+          "Register": 4,
+          "PredicateRegister": 1
+        },
+        "lanes": 12
+      }
+    ],
+    "source_sha256": "8830678ec9dd988d1bcc981474fd58b170d9cdd6220675979cc5e12276b70535"
+  },
+  "status": "validated_no_spill",
+  "camodel_cycles": 2214,
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.1920928955078125e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 614,
+    "vector_loads": 384,
+    "vector_stores": 384,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 1,
+    "static_load_pc_counts": {
+      "NORAML": 48
+    },
+    "loops": [
+      {
+        "pc": "0x13b4a3d8",
+        "detail": "Sn[5]=0x8, Sn2[6]=0x0, instr_num : 390, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b4aaa0",
+        "detail": "Sn[5]=0x8, Sn2[6]=0x0, instr_num : 124, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "compiler_stack_instruction_count": 0,
+  "compiler_stack_opcodes": [],
+  "export_audit": [
+    {
+      "vf_index": 0,
+      "camodel_cycles": 2214,
+      "expected_counts": {
+        "PSET_B32": 1,
+        "VLDS": 384,
+        "VMULS": 288,
+        "VSTS": 384,
+        "VMINS": 96,
+        "VMAXS": 96,
+        "VMUL": 1056,
+        "VADDS": 1056,
+        "MEMBAR": 1,
+        "VDIV": 96
+      },
+      "json_counts": {
+        "PSET_B32": 1,
+        "VLDS": 384,
+        "VMULS": 288,
+        "VSTS": 384,
+        "VMINS": 96,
+        "VMAXS": 96,
+        "VMUL": 1056,
+        "VADDS": 1056,
+        "MEMBAR": 1,
+        "VDIV": 96
+      },
+      "count_match": true,
+      "missing_semantics": [],
+      "unmodeled_scalar_opcounts": {
+        "RV_SMOVI": 386,
+        "RV_SMOVK": 364
+      },
+      "diagnostics": [],
+      "status": "ready",
+      "json_file": "vf_000.json"
+    }
+  ],
+  "global_cycles": 1712
+}

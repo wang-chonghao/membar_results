@@ -1,0 +1,893 @@
+{
+  "has_warning": true,
+  "vreg_capacity_warnings": [],
+  "instruction_fallback_warnings": [
+    {
+      "kind": "compatible_forwarding_pair_fallback",
+      "producer": "VDUP.b32",
+      "consumer": "VSUB.fp32",
+      "used_producer": "VDUP.fp32",
+      "used_consumer": "VSUB.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_forwarding_pair_fallback",
+      "producer": "VDUP.b32",
+      "consumer": "VMAX.fp32",
+      "used_producer": "VDUP.fp32",
+      "used_consumer": "VMAX.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_forwarding_pair_fallback",
+      "producer": "VDUP.b32",
+      "consumer": "VSTS.fp32",
+      "used_producer": "VDUP.fp32",
+      "used_consumer": "VSTS.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VDUP.b32",
+      "cur": "VABS.fp32",
+      "used_prev": "VDUP.fp32",
+      "used_cur": "VABS.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VMAX.fp32",
+      "cur": "VDUP.b32",
+      "used_prev": "VMAX.fp32",
+      "used_cur": "VDUP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VEXP.fp32",
+      "cur": "VDUP.b32",
+      "used_prev": "VEXP.fp32",
+      "used_cur": "VDUP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VDUP.b32",
+      "cur": "VEXP.fp32",
+      "used_prev": "VDUP.fp32",
+      "used_cur": "VEXP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VADDS.fp32",
+      "cur": "VDUP.b32",
+      "used_prev": "VADDS.fp32",
+      "used_cur": "VDUP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VMUL.fp32",
+      "cur": "VDUP.b32",
+      "used_prev": "VMUL.fp32",
+      "used_cur": "VDUP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VDUP.b32",
+      "cur": "VMUL.fp32",
+      "used_prev": "VDUP.fp32",
+      "used_cur": "VMUL.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VDUP.b32",
+      "cur": "VADD.fp32",
+      "used_prev": "VDUP.fp32",
+      "used_cur": "VADD.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VDIV.fp32",
+      "cur": "VDUP.b32",
+      "used_prev": "VDIV.fp32",
+      "used_cur": "VDUP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VSUB.fp32",
+      "cur": "VDUP.b32",
+      "used_prev": "VSUB.fp32",
+      "used_cur": "VDUP.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_ii_pair_fallback",
+      "prev": "VDUP.b32",
+      "cur": "VMULS.fp32",
+      "used_prev": "VDUP.fp32",
+      "used_cur": "VMULS.fp32",
+      "count": 1
+    },
+    {
+      "kind": "compatible_isa_form_fallback",
+      "op": "VDUP",
+      "requested_form": "b32",
+      "used_form": "fp32",
+      "count": 2
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VABS.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VMULS.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VEXP.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VMAX.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VDUP.b32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VEXP.fp32",
+      "consumer": "VCMPS_LT.fp32",
+      "producer_latency": 16,
+      "used_default": 13,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VCMPS_LT.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VADDS.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VSTS.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VCMPS_LT.fp32",
+      "consumer": "PSTS.b8",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VSUB.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VADDS.fp32",
+      "consumer": "VLN.fp32",
+      "producer_latency": 7,
+      "used_default": 4,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VLN.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VMUL.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VLN.fp32",
+      "consumer": "VSEL.fp32",
+      "producer_latency": 18,
+      "used_default": 15,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VCMPS_LT.fp32",
+      "consumer": "VSEL.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VADD.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VADD.fp32",
+      "consumer": "VSQRT.fp32",
+      "producer_latency": 7,
+      "used_default": 4,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VSQRT.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VSQRT.fp32",
+      "consumer": "VADDS.fp32",
+      "producer_latency": 17,
+      "used_default": 14,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "VSQRT.fp32",
+      "consumer": "VDIV.fp32",
+      "producer_latency": 17,
+      "used_default": 14,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VDIV.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PSET_B32.b32",
+      "cur": "PLT.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "PLT.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VDUP.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDUP.b32",
+      "cur": "VDUP.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VABS.fp32",
+      "prev_latency": 6,
+      "cur_latency": 5,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMAX.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDUP.b32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VCMPS_LT.fp32",
+      "cur": "VMULS.fp32",
+      "prev_latency": 6,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VEXP.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 16,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VADDS.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 7,
+      "cur_latency": 6,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VCMPS_LT.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VCMPS_LT.fp32",
+      "cur": "VSUB.fp32",
+      "prev_latency": 6,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VEXP.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 16,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VADDS.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 7,
+      "cur_latency": 6,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMULS.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 8,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VCMPS_LT.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 6,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSUB.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 7,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VMUL.fp32",
+      "prev_latency": 6,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VADDS.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 7,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMUL.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 8,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 18,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "VSUB.fp32",
+      "prev_latency": 18,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VLN.fp32",
+      "prev_latency": 6,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMUL.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 8,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "VMUL.fp32",
+      "prev_latency": 18,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 18,
+      "cur_latency": 17,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VADD.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 7,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VADD.fp32",
+      "prev_latency": 17,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSEL.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 6,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VADDS.fp32",
+      "prev_latency": 17,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VDIV.fp32",
+      "prev_latency": 17,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSEL.fp32",
+      "cur": "VDIV.fp32",
+      "prev_latency": 6,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSEL.fp32",
+      "cur": "VABS.fp32",
+      "prev_latency": 6,
+      "cur_latency": 5,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VSEL.fp32",
+      "prev_latency": 17,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMULS.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 8,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMAX.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 6,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VEXP.fp32",
+      "prev_latency": 17,
+      "cur_latency": 16,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VCMPS_LT.fp32",
+      "cur": "VADDS.fp32",
+      "prev_latency": 6,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VCMPS_LT.fp32",
+      "cur": "VDIV.fp32",
+      "prev_latency": 6,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDIV.fp32",
+      "cur": "VLN.fp32",
+      "prev_latency": 17,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMULS.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 8,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "VADDS.fp32",
+      "prev_latency": 18,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VMULS.fp32",
+      "prev_latency": 6,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "VMULS.fp32",
+      "prev_latency": 18,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMULS.fp32",
+      "cur": "VSEL.fp32",
+      "prev_latency": 8,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDIV.fp32",
+      "cur": "VSQRT.fp32",
+      "prev_latency": 17,
+      "cur_latency": 17,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VABS.fp32",
+      "prev_latency": 17,
+      "cur_latency": 5,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDIV.fp32",
+      "cur": "VSEL.fp32",
+      "prev_latency": 17,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMULS.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 8,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDIV.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 17,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VDUP.b32",
+      "cur": "VLN.fp32",
+      "prev_latency": 6,
+      "cur_latency": 18,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VSEL.fp32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VLN.fp32",
+      "cur": "VSEL.fp32",
+      "prev_latency": 18,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSEL.fp32",
+      "cur": "VMULS.fp32",
+      "prev_latency": 6,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSUB.fp32",
+      "cur": "VCMPS_LT.fp32",
+      "prev_latency": 7,
+      "cur_latency": 6,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSUB.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 7,
+      "cur_latency": 6,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSQRT.fp32",
+      "cur": "VMULS.fp32",
+      "prev_latency": 17,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    }
+  ]
+}

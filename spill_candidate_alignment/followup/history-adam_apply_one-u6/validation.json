@@ -1,0 +1,97 @@
+{
+  "plan": {
+    "unroll": 6,
+    "cuts": [],
+    "policy": "pressure",
+    "cohort": 6,
+    "pressure_weight": 8,
+    "stages": 1,
+    "scratch_bytes": 0,
+    "ub_high_water": 86528,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 18,
+          "PredicateRegister": 1
+        },
+        "lanes": 6
+      }
+    ],
+    "source_sha256": "d1084b3f200ee184a2fe0ce929ed92a295283cd4af231cd8fb8f7bf9af55ba3a"
+  },
+  "status": "validated_no_spill",
+  "camodel_cycles": 518,
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.1920928955078125e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 151,
+    "vector_loads": 198,
+    "vector_stores": 144,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 6,
+      "NORAML": 24
+    },
+    "loops": [
+      {
+        "pc": "0x13b4c28c",
+        "detail": "Sn[5]=0x8, Sn2[6]=0x5000, instr_num : 114, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "compiler_stack_instruction_count": 0,
+  "compiler_stack_opcodes": [],
+  "export_audit": [
+    {
+      "vf_index": 0,
+      "camodel_cycles": 518,
+      "expected_counts": {
+        "PSET_B32": 1,
+        "VLDS": 198,
+        "VMUL": 288,
+        "VADD": 144,
+        "VSTS": 144,
+        "VSQRT": 48,
+        "VDIV": 48,
+        "VSUB": 48
+      },
+      "json_counts": {
+        "PSET_B32": 1,
+        "VLDS": 198,
+        "VMUL": 288,
+        "VADD": 144,
+        "VSTS": 144,
+        "VSQRT": 48,
+        "VDIV": 48,
+        "VSUB": 48
+      },
+      "count_match": true,
+      "missing_semantics": [],
+      "unmodeled_scalar_opcounts": {
+        "RV_SMOVI": 21,
+        "RV_SMOVK": 6
+      },
+      "diagnostics": [],
+      "status": "ready",
+      "json_file": "vf_000.json"
+    }
+  ],
+  "global_cycles": 480
+}

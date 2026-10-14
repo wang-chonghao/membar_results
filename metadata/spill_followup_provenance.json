@@ -1,0 +1,120 @@
+{
+  "configs_sha256": {
+    "forwarding.json": "9ccf2175fb7ae6aeb38e7cc6e06be339561ef06dabb5a7a69e88190f737a9d88",
+    "InitiationInterval.json": "80807f6eb4fcbc24444f8bc3c621423543ca23cf1f9cf3f4dff20d9550870305",
+    "instruction_catalog.json": "1787992b25e164adde2f5f50d786a1dcf597a7ecf66f181becc2b3a29ff0e768",
+    "isa.json": "5a944c164d7c9a8a6017386a451992c7ccdcf49b3eea1af00d3fcbd7c2df8092",
+    "uarch.json": "33533160a2dbc1eeaf89884f3587bf1c0c12f7b1fb2427b5bcbe23ab67c45f62",
+    "uarch_override_schema.json": "adba6f7d92e3ae19e440ec5160363fb676658594b88a2f61599cdeb43ed79854"
+  },
+  "scripts_sha256": {
+    "mhc_search.py": "3def79b979267ffd68af27f41f95e410c376bc7489e291d49e5edcdd6752ff7f",
+    "prepare_history.py": "d2902226cc33912246e375ad44f1f2abe313947c6e7642511d2d501aaf15e8bf",
+    "report.py": "b751eed23fbb7cda68d791339fe9c89ff360031a87250c326ca85fbfc6728d17",
+    "run.py": "78b10da34bc9fde8474e5b8dc1356985a0fd08a5a705fcf186649e90c142b39a"
+  },
+  "plans": [
+    {
+      "name": "historical_gelu_poly",
+      "base": "cce_code/spill_software_followup/cases/historical_gelu_poly",
+      "unroll": 12,
+      "report_row_ids": [
+        "history-gelu_poly-u12"
+      ]
+    },
+    {
+      "name": "historical_swiglu_grad",
+      "base": "cce_code/spill_software_followup/cases/historical_swiglu_grad",
+      "unroll": 6,
+      "report_row_ids": [
+        "history-swiglu_grad-u6"
+      ]
+    },
+    {
+      "name": "historical_swiglu_grad",
+      "base": "cce_code/spill_software_followup/cases/historical_swiglu_grad",
+      "unroll": 8,
+      "report_row_ids": [
+        "history-swiglu_grad-u8"
+      ]
+    },
+    {
+      "name": "historical_adam_apply_one",
+      "base": "cce_code/spill_software_followup/cases/historical_adam_apply_one",
+      "unroll": 6,
+      "report_row_ids": [
+        "history-adam_apply_one-u6"
+      ]
+    },
+    {
+      "name": "historical_adam_apply_one",
+      "base": "cce_code/spill_software_followup/cases/historical_adam_apply_one",
+      "unroll": 8,
+      "report_row_ids": [
+        "history-adam_apply_one-u8"
+      ]
+    },
+    {
+      "name": "historical_gelu_grad",
+      "base": "cce_code/spill_software_followup/cases/historical_gelu_grad",
+      "unroll": 8,
+      "report_row_ids": [
+        "history-gelu_grad-u8",
+        "history-gelu_grad-u8_explicit"
+      ]
+    },
+    {
+      "name": "mhc_resident",
+      "unroll": 6,
+      "report_row_ids": [
+        "history-mhc_sinkhorn-resident_u6"
+      ]
+    },
+    {
+      "name": "mhc_element",
+      "unroll": 2,
+      "report_row_ids": [
+        "history-mhc_sinkhorn-m128_element_major_u2"
+      ]
+    },
+    {
+      "name": "mish",
+      "base": "cce_code/spill_candidates_round2/cases/mish",
+      "unroll": 4
+    },
+    {
+      "name": "mish",
+      "base": "cce_code/spill_candidates_round2/cases/mish",
+      "unroll": 8
+    },
+    {
+      "name": "mish",
+      "base": "cce_code/spill_candidates_round2/cases/mish",
+      "unroll": 12
+    },
+    {
+      "name": "logsigmoid_grad",
+      "base": "cce_code/spill_candidates_round2/cases/logsigmoid_grad",
+      "unroll": 4
+    },
+    {
+      "name": "logsigmoid_grad",
+      "base": "cce_code/spill_candidates_round2/cases/logsigmoid_grad",
+      "unroll": 8
+    },
+    {
+      "name": "logsigmoid_grad",
+      "base": "cce_code/spill_candidates_round2/cases/logsigmoid_grad",
+      "unroll": 12
+    },
+    {
+      "name": "binary_cross_entropy",
+      "base": "cce_code/spill_candidates_round2/cases/binary_cross_entropy",
+      "unroll": 8
+    }
+  ],
+  "model": "current A5 global Membar; existing concurrent model changes retained",
+  "software_rows": 15,
+  "candidates": 1068,
+  "compiler_validations": 57
+}

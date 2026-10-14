@@ -1,0 +1,96 @@
+{
+  "case": "resident_u4",
+  "matrices": 64,
+  "camodel": 45217,
+  "global_cycles": 50732,
+  "local_cycles": 46877,
+  "speedup": 1.0822364912430402,
+  "global_accuracy_percent": 87.80325983590242,
+  "removed_static_membars": 2,
+  "hardware_dynamic_membars": 65,
+  "audits": {
+    "global": {
+      "opcode_and_pc_order_equal": true,
+      "register_producer_graph_equal": true,
+      "memory_range_checks": 0,
+      "rounded_32b_ordering_checks": {}
+    },
+    "local": {
+      "opcode_and_pc_order_equal": true,
+      "register_producer_graph_equal": true,
+      "memory_range_checks": 1793,
+      "rounded_32b_ordering_checks": {
+        "RAW": 2660,
+        "WAW": 512,
+        "WAR": 764
+      }
+    }
+  },
+  "global_result": {
+    "cycles_executed": 50720,
+    "vf_end_cycle": 50732,
+    "results_dir": "/tmp/mhc-vfsim-final-20261010/m64/resident_u4/global",
+    "trace_path": "/tmp/mhc-vfsim-final-20261010/m64/resident_u4/global/trace.json",
+    "memory_ordering_stats": {
+      "precise_access_count": 0,
+      "total_access_count": 0,
+      "precise_access_ratio": 0.0,
+      "local_dependency_edges": 0,
+      "precise_dependency_edges": 0,
+      "fallback_dependency_edges": 0,
+      "fallback_warning_count": 0,
+      "ub_dependency_blocked_cycles": 0
+    },
+    "linear_inst_count": 167,
+    "normalization_stats": {
+      "renamed_operands": 0,
+      "reused_slots": 0
+    },
+    "canonicalization_stats": {
+      "expanded_loops": 0,
+      "expanded_instructions": 0
+    },
+    "soc": "DV100",
+    "soc_selector": "dav-3510",
+    "soc_expansion_stats": {
+      "expanded_instruction_count": 0,
+      "generated_instruction_count": 0
+    }
+  },
+  "local_result": {
+    "cycles_executed": 46865,
+    "vf_end_cycle": 46877,
+    "results_dir": "/tmp/mhc-vfsim-final-20261010/m64/resident_u4/local",
+    "trace_path": "/tmp/mhc-vfsim-final-20261010/m64/resident_u4/local/trace.json",
+    "memory_ordering_stats": {
+      "precise_access_count": 1793,
+      "total_access_count": 1793,
+      "precise_access_ratio": 1.0,
+      "local_dependency_edges": 834,
+      "precise_dependency_edges": 834,
+      "fallback_dependency_edges": 0,
+      "fallback_warning_count": 0,
+      "ub_dependency_blocked_cycles": 25010
+    },
+    "linear_inst_count": 165,
+    "normalization_stats": {
+      "renamed_operands": 0,
+      "reused_slots": 0
+    },
+    "canonicalization_stats": {
+      "expanded_loops": 0,
+      "expanded_instructions": 0
+    },
+    "soc": "DV100",
+    "soc_selector": "dav-3510"
+  },
+  "scope": "Python experiment: global directional barriers vs 32B UB-address RAW/WAR/WAW ordering; cap7 unchanged; scalar timing excluded.",
+  "audit_scope": {
+    "dynamic_graph_match_between_modes": true,
+    "global_dynamic_membars_match_hardware": true,
+    "local_dynamic_membars": 0,
+    "scalar_timing_excluded": true,
+    "pointer_post_update_timing_included": true,
+    "all_local_memory_ranges_resolved": true
+  }
+}

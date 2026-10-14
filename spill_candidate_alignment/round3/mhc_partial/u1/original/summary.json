@@ -1,0 +1,111 @@
+{
+  "case": "mhc_partial",
+  "status": "passed",
+  "constants": {
+    "iterations": 48,
+    "elements": 3072,
+    "dtype": "fp32",
+    "shape": [
+      4,
+      48,
+      64
+    ],
+    "group_k": 4
+  },
+  "engines": {
+    "ascendc": {
+      "vf_cycles": [
+        1145
+      ],
+      "total_vf_cycles": 1145,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 2,
+        "RV_SADD": 240,
+        "RV_SADDI": 48,
+        "RV_SEND": 1,
+        "RV_SMOV": 145,
+        "RV_SMOVI": 8,
+        "RV_VADD": 672,
+        "RV_VADDS": 48,
+        "RV_VDIV": 48,
+        "RV_VDUPS": 3,
+        "RV_VLD": 192,
+        "RV_VLDA": 192,
+        "RV_VLDUI": 192,
+        "RV_VLOOPv2": 1,
+        "RV_VMULS": 48,
+        "RV_VSQRT": 48,
+        "RV_VSTAI": 96,
+        "RV_VSTUI": 96
+      }
+    },
+    "cce": {
+      "vf_cycles": [
+        1145
+      ],
+      "total_vf_cycles": 1145,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 2,
+        "RV_SADD": 240,
+        "RV_SADDI": 48,
+        "RV_SEND": 1,
+        "RV_SMOV": 145,
+        "RV_SMOVI": 8,
+        "RV_VADD": 672,
+        "RV_VADDS": 48,
+        "RV_VDIV": 48,
+        "RV_VDUPS": 3,
+        "RV_VLD": 192,
+        "RV_VLDA": 192,
+        "RV_VLDUI": 192,
+        "RV_VLOOPv2": 1,
+        "RV_VMULS": 48,
+        "RV_VSQRT": 48,
+        "RV_VSTAI": 96,
+        "RV_VSTUI": 96
+      }
+    }
+  },
+  "validation": {
+    "bitwise_identical": true,
+    "guard_ok": true,
+    "cce_vs_ascendc": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "ascendc_vs_formula": {
+      "ok": true,
+      "max_abs_error": 2.086162567138672e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "cce_vs_formula": {
+      "ok": true,
+      "max_abs_error": 2.086162567138672e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  },
+  "stream": {
+    "vf_count": 1,
+    "static_vf_words": 61,
+    "vector_loads": 192,
+    "vector_stores": 0,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 4
+    },
+    "loops": [
+      {
+        "pc": "0x13b3d240",
+        "detail": "Sn[7]=0x30, Sn2[8]=0x0, instr_num : 43, layer: 0001, last: 1,"
+      }
+    ]
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "case": "compressor_softmax",
+  "status": "passed",
+  "constants": {
+    "iterations": 1,
+    "elements": 4096,
+    "dtype": "fp32",
+    "shape": [
+      4,
+      8,
+      128
+    ],
+    "layout": "DND [Sc,Reduce,Row]",
+    "original_sc_per_iteration": 4
+  },
+  "engines": {
+    "ascendc": {
+      "vf_cycles": [
+        1182
+      ],
+      "total_vf_cycles": 1182,
+      "dynamic_rv_opcounts": {
+        "RV_PSET": 2,
+        "RV_SEND": 1,
+        "RV_SMEM_BAR": 60,
+        "RV_SMOVI": 1,
+        "RV_SMOVK": 1,
+        "RV_VADD": 72,
+        "RV_VBR": 1,
+        "RV_VDIV": 64,
+        "RV_VDUPS": 1,
+        "RV_VEXPDIF": 64,
+        "RV_VLD": 192,
+        "RV_VLDI": 42,
+        "RV_VLOOPv2": 3,
+        "RV_VMAX": 72,
+        "RV_VMOV": 133,
+        "RV_VST": 128,
+        "RV_VSTI": 17
+      }
+    },
+    "cce": {
+      "vf_cycles": [
+        1183
+      ],
+      "total_vf_cycles": 1183,
+      "dynamic_rv_opcounts": {
+        "RV_PSET": 2,
+        "RV_SEND": 1,
+        "RV_SMEM_BAR": 60,
+        "RV_SMOVI": 1,
+        "RV_SMOVK": 1,
+        "RV_VADD": 72,
+        "RV_VDIV": 64,
+        "RV_VDUPS": 2,
+        "RV_VEXPDIF": 64,
+        "RV_VLD": 192,
+        "RV_VLDI": 42,
+        "RV_VLOOPv2": 3,
+        "RV_VMAX": 72,
+        "RV_VMOV": 133,
+        "RV_VST": 128,
+        "RV_VSTI": 17
+      }
+    }
+  },
+  "validation": {
+    "bitwise_identical": true,
+    "guard_ok": true,
+    "cce_vs_ascendc": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "ascendc_vs_formula": {
+      "ok": true,
+      "max_abs_error": 1.1773819430516141e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "cce_vs_formula": {
+      "ok": true,
+      "max_abs_error": 1.1773819430516141e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  },
+  "stream": {
+    "vf_count": 1,
+    "static_vf_words": 250,
+    "vector_loads": 234,
+    "vector_stores": 145,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 60,
+    "static_load_pc_counts": {
+      "NORAML": 52
+    },
+    "loops": [
+      {
+        "pc": "0x13b36260",
+        "detail": "Sn[6]=0x4, Sn2[7]=0x8, instr_num : 32, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b36384",
+        "detail": "Sn[6]=0x4, Sn2[7]=0x8, instr_num : 114, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b36580",
+        "detail": "Sn[7]=0x8, Sn2[8]=0xffff, instr_num : 24, layer: 0001, last: 1,"
+      }
+    ]
+  }
+}

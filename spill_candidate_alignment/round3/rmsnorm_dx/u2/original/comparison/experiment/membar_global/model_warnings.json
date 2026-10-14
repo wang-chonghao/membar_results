@@ -1,0 +1,83 @@
+{
+  "has_warning": true,
+  "vreg_capacity_warnings": [],
+  "instruction_fallback_warnings": [
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VMUL.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VSUB.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_forwarding_pair",
+      "producer": "PLT.b32",
+      "consumer": "VSTS.fp32",
+      "producer_latency": 6,
+      "used_default": 3,
+      "rule": "producer_latency_minus_default_offset",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "PLT.b32",
+      "prev_latency": 6,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VMUL.fp32",
+      "prev_latency": 6,
+      "cur_latency": 8,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VMUL.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 8,
+      "cur_latency": 6,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "VSUB.fp32",
+      "cur": "PLT.b32",
+      "prev_latency": 7,
+      "cur_latency": 6,
+      "used_default": 2,
+      "rule": "prev_latency_minus_cur_latency_eq_1",
+      "count": 1
+    },
+    {
+      "kind": "missing_ii_pair",
+      "prev": "PLT.b32",
+      "cur": "VSUB.fp32",
+      "prev_latency": 6,
+      "cur_latency": 7,
+      "used_default": 1,
+      "rule": "default_one",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "case": "adam_decay",
+  "unroll": 5,
+  "method": "manual",
+  "selected_loop": "i",
+  "source_sha256": "211d1c18b9289cf10477519761b2e3aae40ca8ee41229dda83ccd14e5db041a6",
+  "baseline_source_sha256": "4be7a7c584707ed7c003fccf183b724531ff6f16b5702abb0ca120df1c097cfe",
+  "metrics": {
+    "vf_cycles": [
+      290
+    ],
+    "total_vf_cycles": 290,
+    "dynamic_rv_opcounts": {
+      "RV_PLT": 16,
+      "RV_SEND": 1,
+      "RV_SMOVI": 30,
+      "RV_VADD": 64,
+      "RV_VDIV": 16,
+      "RV_VLD": 60,
+      "RV_VLDI": 18,
+      "RV_VLOOPv2": 1,
+      "RV_VMUL": 112,
+      "RV_VSQRT": 16,
+      "RV_VST": 45,
+      "RV_VSTI": 3,
+      "RV_VSUB": 16
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 179,
+    "vector_loads": 78,
+    "vector_stores": 48,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 14,
+      "NORAML": 24
+    },
+    "loops": [
+      {
+        "pc": "0x13b35260",
+        "detail": "Sn[5]=0x3, Sn2[6]=0x4000, instr_num : 110, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.1324203175178127e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 7,
+    "extra_vector_loads": 7,
+    "extra_vector_stores": 0,
+    "added_accesses": [
+      {
+        "direction": "load",
+        "byte_address": 16384,
+        "mode": "BRC_B32",
+        "count": 1
+      },
+      {
+        "direction": "load",
+        "byte_address": 16640,
+        "mode": "BRC_B32",
+        "count": 1
+      },
+      {
+        "direction": "load",
+        "byte_address": 16896,
+        "mode": "BRC_B32",
+        "count": 1
+      },
+      {
+        "direction": "load",
+        "byte_address": 17152,
+        "mode": "BRC_B32",
+        "count": 1
+      },
+      {
+        "direction": "load",
+        "byte_address": 17408,
+        "mode": "BRC_B32",
+        "count": 1
+      },
+      {
+        "direction": "load",
+        "byte_address": 17664,
+        "mode": "BRC_B32",
+        "count": 1
+      },
+      {
+        "direction": "load",
+        "byte_address": 17920,
+        "mode": "BRC_B32",
+        "count": 1
+      }
+    ],
+    "removed_accesses": [],
+    "vector_evidence": [
+      {
+        "pc": "0x13b35204",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[0], Sn[6]=0x4000, Sn2[7]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35208",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[1], Sn[8]=0x4100, Sn2[9]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b3520c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[2], Sn[10]=0x4200, Sn2[11]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35210",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[3], Sn[12]=0x4300, Sn2[13]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35214",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[4], Sn[14]=0x4400, Sn2[15]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35218",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[5], Sn[16]=0x4500, Sn2[17]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b3521c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[6], Sn[18]=0x4600, Sn2[19]=0x0, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35444",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[4], Sn[64]=0x4000, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b3544c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[5], Sn[64]=0x4100, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35454",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[6], Sn[64]=0x4200, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b3545c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[64]=0x4300, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35464",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[8], Sn[64]=0x4400, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b3546c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[9], Sn[64]=0x4500, #offset=0, dist:BRC_B32, #p=0, "
+      },
+      {
+        "pc": "0x13b35474",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[10], Sn[64]=0x4600, #offset=0, dist:BRC_B32, #p=0, "
+      }
+    ],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 6.0,
+  "unroll_effective": true,
+  "elapsed_seconds": 38.493379642022774,
+  "camodel_speedup_percent": -11.111111111111116,
+  "prediction": {
+    "case": "u5",
+    "title": "adam_decay U5",
+    "cce_source_sha256": "211d1c18b9289cf10477519761b2e3aae40ca8ee41229dda83ccd14e5db041a6",
+    "camodel_vf_cycles": [
+      290
+    ],
+    "camodel_vf_cycles_sum": 290,
+    "vfsim_cycles": 262,
+    "prediction_accuracy_percent": 90.3448275862069,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 290,
+        "expected_counts": {
+          "VLDS": 78,
+          "PLT": 16,
+          "VMUL": 112,
+          "VADD": 64,
+          "VSQRT": 16,
+          "VDIV": 16,
+          "VSUB": 16,
+          "VSTS": 48
+        },
+        "json_counts": {
+          "VLDS": 78,
+          "PLT": 16,
+          "VMUL": 112,
+          "VADD": 64,
+          "VSQRT": 16,
+          "VDIV": 16,
+          "VSUB": 16,
+          "VSTS": 48
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVI": 30
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 262,
+        "camodel_cycles": 290
+      }
+    ],
+    "timing_warning_count": 19,
+    "timing_warning_kinds": [
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 240,
+    "average_compute_ipc": 0.8275862068965517,
+    "dual_issue_cycles": 86,
+    "peak_compute_issue_per_cycle": 2
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "id": "groupnorm-u16",
+  "case": "groupnorm",
+  "title": "GroupNorm SiLU",
+  "unroll": 16,
+  "status": "unsupported",
+  "spill": true,
+  "reason": "编译器插入了标量 spill 指令 RV_SSTI/SLDI，当前 VfSim 不建模其执行；不忽略这些指令生成不完整预测。",
+  "camodel": 2276,
+  "global_cycles": null,
+  "local_cycles": null,
+  "original_accuracy": null,
+  "local_gain": null,
+  "software_cycles": 177,
+  "software_camodel": 184,
+  "software_accuracy": 96.19565217391303,
+  "software_gain": null,
+  "strategy": "仅重排",
+  "plan": {
+    "unroll": 16,
+    "cuts": [],
+    "policy": "source",
+    "cohort": 4,
+    "pressure_weight": 0,
+    "stages": 1,
+    "scratch_bytes": 0,
+    "ub_high_water": 17152,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 14,
+          "PredicateRegister": 4
+        },
+        "lanes": 16
+      }
+    ],
+    "source_sha256": "5813a3f4150a1d6aabe02f4ffcb2510e2cb1560c798d119c48760f3843d4bc9f"
+  },
+  "software_validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 3.256802241224932e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "candidate_count": 74,
+  "finalists": 3,
+  "files": {
+    "original_cce": [
+      {
+        "label": "commands.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/commands.json"
+      },
+      {
+        "label": "compile.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/compile.log"
+      },
+      {
+        "label": "core0.veccore0.instr_log.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/core0.veccore0.instr_log.dump"
+      },
+      {
+        "label": "core0.veccore0.instr_popped_log.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/core0.veccore0.instr_popped_log.dump"
+      },
+      {
+        "label": "core0.veccore0.rvec.IDU.dump.gz",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/core0.veccore0.rvec.IDU.dump.gz"
+      },
+      {
+        "label": "core0.veccore0.rvec.simd.idu.TRACE.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/core0.veccore0.rvec.simd.idu.TRACE.dump"
+      },
+      {
+        "label": "host.cpp",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/host.cpp"
+      },
+      {
+        "label": "input.bin",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/input.bin"
+      },
+      {
+        "label": "kernel.cce",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/kernel.cce"
+      },
+      {
+        "label": "link.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/link.log"
+      },
+      {
+        "label": "output.bin",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/output.bin"
+      },
+      {
+        "label": "run.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/cce/run.log"
+      }
+    ],
+    "comparison": [
+      {
+        "label": "canonical/export_audit.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/comparison/canonical/export_audit.json"
+      },
+      {
+        "label": "comparison.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/comparison/comparison.json"
+      },
+      {
+        "label": "compiled_instructions.txt",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/comparison/compiled_instructions.txt"
+      },
+      {
+        "label": "original_unrolled.cce",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/comparison/original_unrolled.cce"
+      }
+    ],
+    "software": [
+      {
+        "label": "before_replay_fix.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/before_replay_fix.json"
+      },
+      {
+        "label": "canonical/export_audit.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/canonical/export_audit.json"
+      },
+      {
+        "label": "canonical/vf_000.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/canonical/vf_000.json"
+      },
+      {
+        "label": "cce/commands.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/commands.json"
+      },
+      {
+        "label": "cce/compile.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/compile.log"
+      },
+      {
+        "label": "cce/core0.veccore0.instr_log.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/core0.veccore0.instr_log.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.instr_popped_log.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/core0.veccore0.instr_popped_log.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.rvec.IDU.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/core0.veccore0.rvec.IDU.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.rvec.simd.idu.TRACE.dump",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/core0.veccore0.rvec.simd.idu.TRACE.dump"
+      },
+      {
+        "label": "cce/host.cpp",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/host.cpp"
+      },
+      {
+        "label": "cce/input.bin",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/input.bin"
+      },
+      {
+        "label": "cce/kernel.cce",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/kernel.cce"
+      },
+      {
+        "label": "cce/link.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/link.log"
+      },
+      {
+        "label": "cce/output.bin",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/output.bin"
+      },
+      {
+        "label": "cce/run.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/cce/run.log"
+      },
+      {
+        "label": "provisional.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/provisional.json"
+      },
+      {
+        "label": "validation.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/validation.json"
+      },
+      {
+        "label": "vfsim/vf_000/console.log",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/console.log"
+      },
+      {
+        "label": "vfsim/vf_000/done_by_cycle.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/done_by_cycle.json"
+      },
+      {
+        "label": "vfsim/vf_000/idu_address_blocked.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/idu_address_blocked.json"
+      },
+      {
+        "label": "vfsim/vf_000/idu_resource_blocked.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/idu_resource_blocked.json"
+      },
+      {
+        "label": "vfsim/vf_000/idu_to_ooo.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/idu_to_ooo.json"
+      },
+      {
+        "label": "vfsim/vf_000/membar_history.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/membar_history.json"
+      },
+      {
+        "label": "vfsim/vf_000/model_warnings.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/model_warnings.json"
+      },
+      {
+        "label": "vfsim/vf_000/start_by_cycle.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/start_by_cycle.json"
+      },
+      {
+        "label": "vfsim/vf_000/trace.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/trace.json"
+      },
+      {
+        "label": "vfsim/vf_000/vloop_trace.json",
+        "path": "spill_candidate_alignment/groupnorm/u16/software/vfsim/vf_000/vloop_trace.json"
+      }
+    ],
+    "spill_audit": [
+      {
+        "label": "Spill 分类与动态次数原记录",
+        "path": "spill_candidate_alignment/groupnorm/u16/original/spill_summary.json"
+      }
+    ]
+  },
+  "evidence_path": "spill_candidate_alignment/groupnorm/u16/result.json",
+  "membar_vs_software_performance": null,
+  "origin": "fixed_unroll_search",
+  "variant": "u16",
+  "variant_label": "U16",
+  "variant_order": 16,
+  "shape": "1024 元素 / 16 个向量迭代",
+  "chart_label": "U16",
+  "comparison_group": "fixed-groupnorm",
+  "comparison_label": "1024 元素 / 本轮参数",
+  "note": "",
+  "software_reference": "",
+  "loop_count": 16,
+  "loop_count_label": "16",
+  "loop_count_detail": "未展开前的向量数据循环：1024 元素 / 64 元素每迭代 = 16 次。",
+  "scalar_stack_stores": 10,
+  "scalar_stack_loads": 10,
+  "spill_counts": {
+    "vector_store": 18,
+    "vector_load": 18,
+    "predicate_store": 16,
+    "predicate_load": 100
+  },
+  "other_extra_vector_loads": 0,
+  "spill_count_basis": "编译后动态统计：向量按已配对 spill 地址统计；谓词按 PLD/PST 统计。额外只读系数重载不计入 spill。",
+  "vector_spill_store": 18,
+  "vector_spill_load": 18,
+  "predicate_spill_store": 16,
+  "predicate_spill_load": 100,
+  "spill_kind": "vector_predicate",
+  "source_cce_path": "spill_candidate_alignment/groupnorm/u16/original/cce/kernel.cce",
+  "compiled_cce_path": null,
+  "selection_role": "register spill"
+}

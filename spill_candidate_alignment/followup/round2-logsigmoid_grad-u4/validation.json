@@ -1,0 +1,105 @@
+{
+  "plan": {
+    "unroll": 4,
+    "cuts": [],
+    "policy": "source",
+    "cohort": 1,
+    "pressure_weight": 0,
+    "stages": 1,
+    "scratch_bytes": 0,
+    "ub_high_water": 37120,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 6,
+          "PredicateRegister": 2
+        },
+        "lanes": 4
+      }
+    ],
+    "source_sha256": "c23e8ceff3b351b23ede2f0b44029edb98b2f7792e4630498bda71f9effc9536"
+  },
+  "status": "validated_no_spill",
+  "camodel_cycles": 366,
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.935208953085521e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 55,
+    "vector_loads": 96,
+    "vector_stores": 48,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "NORAML": 8
+    },
+    "loops": [
+      {
+        "pc": "0x13b37214",
+        "detail": "Sn[5]=0xc, Sn2[6]=0x0, instr_num : 48, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "compiler_stack_instruction_count": 0,
+  "compiler_stack_opcodes": [],
+  "export_audit": [
+    {
+      "vf_index": 0,
+      "camodel_cycles": 366,
+      "expected_counts": {
+        "PSET_B32": 1,
+        "VDUP": 2,
+        "PLT": 48,
+        "VLDS": 96,
+        "VABS": 48,
+        "VMULS": 48,
+        "VEXP": 48,
+        "VADDS": 48,
+        "VCMP_LT": 48,
+        "VSEL": 48,
+        "VDIV": 48,
+        "VMUL": 48,
+        "VSTS": 48
+      },
+      "json_counts": {
+        "PSET_B32": 1,
+        "VDUP": 2,
+        "PLT": 48,
+        "VLDS": 96,
+        "VABS": 48,
+        "VMULS": 48,
+        "VEXP": 48,
+        "VADDS": 48,
+        "VCMP_LT": 48,
+        "VSEL": 48,
+        "VDIV": 48,
+        "VMUL": 48,
+        "VSTS": 48
+      },
+      "count_match": true,
+      "missing_semantics": [],
+      "unmodeled_scalar_opcounts": {
+        "RV_SMOVI": 1
+      },
+      "diagnostics": [],
+      "status": "ready",
+      "json_file": "vf_000.json"
+    }
+  ],
+  "global_cycles": 360
+}

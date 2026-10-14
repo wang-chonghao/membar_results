@@ -1,0 +1,1155 @@
+{
+  "schema_version": 2,
+  "context": [
+    {
+      "kind": "instruction",
+      "instruction_id": "softmax_ce.vf0.pc13b3d208.0",
+      "opcode": "PSET_B32",
+      "instruction_class": "compute",
+      "form": "b32",
+      "inputs": [],
+      "outputs": [
+        {
+          "value_id": "p1.def0",
+          "role": "destination",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "dependencies": [],
+      "attributes": {
+        "rv_opcode": "RV_PSET",
+        "rv_pc": "0x13b3d208",
+        "rv_detail": "Dtype: B32  Pd[1], #pattern=0, ",
+        "replay_dynamic_id": 71,
+        "rv_dtype": "B32",
+        "pattern": "PAT_ALL"
+      },
+      "source_location": {
+        "source": "CAModel decoded instruction",
+        "line": null,
+        "column": null,
+        "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+      }
+    },
+    {
+      "kind": "loop",
+      "loop_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "induction": {
+        "variable_id": "iter_13b3d20c",
+        "start": 0,
+        "step": 1
+      },
+      "count": 48,
+      "unroll": 1,
+      "carried_values": [
+        {
+          "logical_id": "memory.fp32",
+          "entry_value_id": "memory.fp32.def1",
+          "back_edge_value_id": "memory.fp32.def16",
+          "exit_value_id": "memory.fp32.def17"
+        },
+        {
+          "logical_id": "v0",
+          "entry_value_id": null,
+          "back_edge_value_id": "v0.def14",
+          "exit_value_id": "v0.def18"
+        },
+        {
+          "logical_id": "v1",
+          "entry_value_id": null,
+          "back_edge_value_id": "v1.def10",
+          "exit_value_id": "v1.def19"
+        },
+        {
+          "logical_id": "v2",
+          "entry_value_id": null,
+          "back_edge_value_id": "v2.def13",
+          "exit_value_id": "v2.def20"
+        },
+        {
+          "logical_id": "v3",
+          "entry_value_id": null,
+          "back_edge_value_id": "v3.def8",
+          "exit_value_id": "v3.def21"
+        },
+        {
+          "logical_id": "v4",
+          "entry_value_id": null,
+          "back_edge_value_id": "v4.def6",
+          "exit_value_id": "v4.def22"
+        }
+      ],
+      "body": [
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d210.2",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def1",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 6144,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 1
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 1,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v0.def2",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3d210",
+            "rv_detail": "Vd[0], Sn[8]=0x6000, Sn2[9]=0x0, Am[0]=0x0, dist:BRC_B32, ",
+            "replay_dynamic_id": 73
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d214.3",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def1",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 6208,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 1
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 1,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def3",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3d214",
+            "rv_detail": "Vd[1], Sn[10]=0x6100, Sn2[11]=0x0, Am[0]=0x0, dist:BRC_B32, ",
+            "replay_dynamic_id": 74
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d218.4",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def1",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 6272,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 1
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 1,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def4",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3d218",
+            "rv_detail": "Vd[2], Sn[12]=0x6200, Sn2[13]=0x0, Am[0]=0x0, dist:BRC_B32, ",
+            "replay_dynamic_id": 75
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d21c.5",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def1",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 0,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def5",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3d21c",
+            "rv_detail": "Vd[3], Sn[14]=0x0, Sn2[15]=0x0, Am[1]=0x0, dist:NORAML, ",
+            "replay_dynamic_id": 76
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d220.6",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def1",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 3072,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def6",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3d220",
+            "rv_detail": "Vd[4], Sn[16]=0x3000, Sn2[17]=0x0, Am[1]=0x0, dist:NORAML, ",
+            "replay_dynamic_id": 77
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d224.7",
+          "opcode": "VSUB",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def5",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v0.def2",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v0.def7",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSUB",
+            "rv_pc": "0x13b3d224",
+            "rv_detail": "Dtype: F32  Vd[0], Vn[3], Vm[0], Pg[1], ",
+            "replay_dynamic_id": 78,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d228.8",
+          "opcode": "VEXP",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v0.def7",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def8",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VEXP",
+            "rv_pc": "0x13b3d228",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[0], Pg[1], ",
+            "replay_dynamic_id": 79,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d22c.9",
+          "opcode": "VDIV",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def8",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v1.def3",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def9",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VDIV",
+            "rv_pc": "0x13b3d22c",
+            "rv_detail": "Dtype: F32  Vd[1], Vn[3], Vm[1], Pg[1], ",
+            "replay_dynamic_id": 80,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d230.10",
+          "opcode": "VSUB",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def9",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v4.def6",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def10",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSUB",
+            "rv_pc": "0x13b3d230",
+            "rv_detail": "Dtype: F32  Vd[1], Vn[1], Vm[4], Pg[1], ",
+            "replay_dynamic_id": 81,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d234.11",
+          "opcode": "VSUB",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def4",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v0.def7",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v0.def11",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSUB",
+            "rv_pc": "0x13b3d234",
+            "rv_detail": "Dtype: F32  Vd[0], Vn[2], Vm[0], Pg[1], ",
+            "replay_dynamic_id": 82,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d238.12",
+          "opcode": "VMUL",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v0.def11",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v4.def6",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v0.def12",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMUL",
+            "rv_pc": "0x13b3d238",
+            "rv_detail": "Dtype: F32  Vd[0], Vn[0], Vm[4], Pg[1], ",
+            "replay_dynamic_id": 83,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d23c.13",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def1",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 6336,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def13",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3d23c",
+            "rv_detail": "Vd[2], Sn[18]=0x6300, Sn2[19]=0x0, Am[1]=0x0, dist:NORAML, ",
+            "replay_dynamic_id": 85
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d240.14",
+          "opcode": "VADD",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v0.def12",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v2.def13",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v0.def14",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VADD",
+            "rv_pc": "0x13b3d240",
+            "rv_detail": "Dtype: F32  Vd[0], Vn[0], Vm[2], Pg[1], ",
+            "replay_dynamic_id": 86,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d244.15",
+          "opcode": "VSTS",
+          "instruction_class": "store",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v0.def14",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "memory.fp32.def15",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 6336,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "write",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VST",
+            "rv_pc": "0x13b3d244",
+            "rv_detail": "Vd[0], Sn[18]=0x6300, Sn2[19]=0x0, Am[1]=0x0, Pg[1], dist:NORM_B32, ",
+            "replay_dynamic_id": 87
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "softmax_ce.vf0.pc13b3d248.16",
+          "opcode": "VSTS",
+          "instruction_class": "store",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def10",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def0",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "memory.fp32.def16",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 9408,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3d20c",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "write",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VST",
+            "rv_pc": "0x13b3d248",
+            "rv_detail": "Vd[1], Sn[20]=0x9300, Sn2[21]=0x0, Am[1]=0x0, Pg[1], dist:NORM_B32, ",
+            "replay_dynamic_id": 88
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/softmax_ce/cce/kernel.cce"
+          }
+        }
+      ],
+      "source_location": null
+    }
+  ],
+  "values": {
+    "p1.def0": {
+      "definition_id": "p1.def0",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d208.0",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def1": {
+      "definition_id": "memory.fp32.def1",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "v0.def2": {
+      "definition_id": "v0.def2",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d210.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def3": {
+      "definition_id": "v1.def3",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def4": {
+      "definition_id": "v2.def4",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d218.4",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def5": {
+      "definition_id": "v3.def5",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d21c.5",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def6": {
+      "definition_id": "v4.def6",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d220.6",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v0.def7": {
+      "definition_id": "v0.def7",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d224.7",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def8": {
+      "definition_id": "v3.def8",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d228.8",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def9": {
+      "definition_id": "v1.def9",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d22c.9",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def10": {
+      "definition_id": "v1.def10",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d230.10",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v0.def11": {
+      "definition_id": "v0.def11",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d234.11",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v0.def12": {
+      "definition_id": "v0.def12",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d238.12",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def13": {
+      "definition_id": "v2.def13",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d23c.13",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v0.def14": {
+      "definition_id": "v0.def14",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d240.14",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def15": {
+      "definition_id": "memory.fp32.def15",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d244.15",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "memory.fp32.def16": {
+      "definition_id": "memory.fp32.def16",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d248.16",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "memory.fp32.def17": {
+      "definition_id": "memory.fp32.def17",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "v0.def18": {
+      "definition_id": "v0.def18",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def19": {
+      "definition_id": "v1.def19",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def20": {
+      "definition_id": "v2.def20",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def21": {
+      "definition_id": "v3.def21",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def22": {
+      "definition_id": "v4.def22",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "softmax_ce.vf0.pc13b3d20c.1",
+      "storage_object_id": null,
+      "source_location": null
+    }
+  },
+  "storage_objects": {
+    "ub": {
+      "object_id": "ub",
+      "storage": "UB",
+      "shape": [
+        262144
+      ],
+      "source_location": null
+    }
+  },
+  "params": {},
+  "uarch": {},
+  "source": {
+    "adapter": "compiled_cce_replay",
+    "case": "softmax_ce",
+    "vf_index": 0,
+    "scalar_timing_modeled": false
+  }
+}

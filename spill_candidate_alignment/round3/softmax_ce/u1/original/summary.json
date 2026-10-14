@@ -1,0 +1,99 @@
+{
+  "case": "softmax_ce",
+  "status": "passed",
+  "constants": {
+    "iterations": 48,
+    "elements": 3072,
+    "dtype": "fp32",
+    "logical_shape": [
+      48,
+      128
+    ],
+    "modeled_tail_shape": [
+      48,
+      64
+    ],
+    "preceding_partial": "First 64 columns, one-hot labels; stats over all 128 columns"
+  },
+  "engines": {
+    "ascendc": {
+      "vf_cycles": [
+        356
+      ],
+      "total_vf_cycles": 356,
+      "dynamic_rv_opcounts": {
+        "RV_PSET": 1,
+        "RV_SEND": 1,
+        "RV_VADD": 48,
+        "RV_VDIV": 48,
+        "RV_VEXP": 48,
+        "RV_VLD": 288,
+        "RV_VLOOPv2": 1,
+        "RV_VMUL": 48,
+        "RV_VST": 96,
+        "RV_VSUB": 144
+      }
+    },
+    "cce": {
+      "vf_cycles": [
+        356
+      ],
+      "total_vf_cycles": 356,
+      "dynamic_rv_opcounts": {
+        "RV_PSET": 1,
+        "RV_SEND": 1,
+        "RV_VADD": 48,
+        "RV_VDIV": 48,
+        "RV_VEXP": 48,
+        "RV_VLD": 288,
+        "RV_VLOOPv2": 1,
+        "RV_VMUL": 48,
+        "RV_VST": 96,
+        "RV_VSUB": 144
+      }
+    }
+  },
+  "validation": {
+    "bitwise_identical": true,
+    "guard_ok": true,
+    "cce_vs_ascendc": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "ascendc_vs_formula": {
+      "ok": true,
+      "max_abs_error": 7.152557373046875e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "cce_vs_formula": {
+      "ok": true,
+      "max_abs_error": 7.152557373046875e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  },
+  "stream": {
+    "vf_count": 1,
+    "static_vf_words": 20,
+    "vector_loads": 288,
+    "vector_stores": 96,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 3,
+      "NORAML": 3
+    },
+    "loops": [
+      {
+        "pc": "0x13b3d20c",
+        "detail": "Sn[7]=0x30, Sn2[8]=0x6000, instr_num : 15, layer: 0001, last: 1,"
+      }
+    ]
+  }
+}

@@ -1,0 +1,204 @@
+/**
+ * Copyright (c) 2026 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+namespace AscendC {
+namespace Reg = MicroAPI;
+}
+using namespace AscendC;
+using namespace AscendC::MicroAPI;
+__simd_callee__ inline void ClampMask(MaskReg& gateInRangeMask, RegTensor<float>& gate,
+                                      float clampLimit, MaskReg& activeMask) {
+    CompareScalar<float, CMPMODE::LT>(gateInRangeMask, gate, clampLimit, activeMask);
+}
+__simd_callee__ inline void SelectMask(RegTensor<float>& floatMask, MaskReg& conditionMask,
+                                       RegTensor<float>& ones, RegTensor<float>& zeros) {
+    Select<float>(floatMask, ones, zeros, conditionMask);
+}
+__simd_callee__ inline void ClipMask(MaskReg& upBelowUpperMask, MaskReg& upAboveLowerMask,
+                                     RegTensor<float>& negativeUp, RegTensor<float>& up,
+                                     float clampLimit, MaskReg& activeMask) {
+    CompareScalar<float, CMPMODE::LT>(upBelowUpperMask, up, clampLimit, activeMask);
+    Muls(negativeUp, up, float(-1.0), activeMask);
+    CompareScalar<float, CMPMODE::LT>(upAboveLowerMask, negativeUp, clampLimit, activeMask);
+}
+__simd_callee__ inline void ClampClip(RegTensor<float>& gate, RegTensor<float>& up,
+                                      float clampLimit, MaskReg& activeMask) {
+    Mins(gate, gate, clampLimit, activeMask);
+    Mins(up, up, clampLimit, activeMask);
+    Maxs(up, up, float(-clampLimit), activeMask);
+}
+__simd_callee__ inline void Sigmoid(RegTensor<float>& sigmoid, RegTensor<float>& gate,
+                                    RegTensor<float>& ones, MaskReg& activeMask) {
+    RegTensor<float> negativeGate;
+    RegTensor<float> expNegativeGate;
+    RegTensor<float> onePlusExp;
+    Muls(negativeGate, gate, float(-1.0), activeMask);
+    Exp(expNegativeGate, negativeGate, activeMask);
+    Adds(onePlusExp, expNegativeGate, float(1.0), activeMask);
+    Div(sigmoid, ones, onePlusExp, activeMask);
+}
+__simd_callee__ inline void Silu(RegTensor<float>& gate, RegTensor<float>& sigmoid,
+                                 RegTensor<float>& zeros, MaskReg& activeMask) {
+    MaskReg negInfMask;
+    MaskReg belowPositiveMinMask;
+    MaskReg negativeNormalMask;
+    RegTensor<float> rawSilu;
+    RegTensor<float> positiveSideFlushedSilu;
+    RegTensor<float> flushedSilu;
+    CompareScalar<float, CMPMODE::EQ>(negInfMask, gate, -__builtin_inff(), activeMask);
+    Mul(rawSilu, gate, sigmoid, activeMask);
+    // Align the intermediate f = gate * sigmoid with the hardware/golden FTZ semantics.
+    CompareScalar<float, CMPMODE::LT>(belowPositiveMinMask, rawSilu, FLT_MIN, activeMask);
+    Select<float>(positiveSideFlushedSilu, zeros, rawSilu, belowPositiveMinMask);
+    CompareScalar<float, CMPMODE::LE>(negativeNormalMask, rawSilu, -FLT_MIN, activeMask);
+    Select<float>(flushedSilu, rawSilu, positiveSideFlushedSilu, negativeNormalMask);
+    Select<float>(gate, zeros, flushedSilu, negInfMask);
+}
+__simd_callee__ inline void SiluPrime(RegTensor<float>& siluPrime,
+                                      RegTensor<float>& siluTimesSigmoid, RegTensor<float>& sigmoid,
+                                      RegTensor<float>& silu, RegTensor<float>& ones,
+                                      MaskReg& activeMask) {
+    MaskReg posInfMask;
+    RegTensor<float> rawSiluPrime;
+    CompareScalar<float, CMPMODE::EQ>(posInfMask, silu, __builtin_inff(), activeMask);
+    Mul(siluTimesSigmoid, silu, sigmoid, activeMask);
+    Add(rawSiluPrime, sigmoid, silu, activeMask);
+    Sub(rawSiluPrime, rawSiluPrime, siluTimesSigmoid, activeMask);
+    Select<float>(siluPrime, ones, rawSiluPrime, posInfMask);
+}
+__simd_callee__ inline void ComputeGradGate(RegTensor<float>& gradGate, RegTensor<float>& gradY,
+                                            RegTensor<float>& siluPrime, RegTensor<float>& up,
+                                            RegTensor<float>& weight,
+                                            RegTensor<float>& gateClampMask, float rowMaskValue,
+                                            MaskReg& activeMask) {
+    Mul(gradGate, gradY, siluPrime, activeMask);
+    Mul(gradGate, gradGate, up, activeMask);
+
+    Mul(gradGate, gradGate, weight, activeMask);
+
+    Mul(gradGate, gradGate, gateClampMask, activeMask);
+}
+__simd_callee__ inline void ComputeGradUp(RegTensor<float>& gradUp, RegTensor<float>& gradY,
+                                          RegTensor<float>& silu, RegTensor<float>& weight,
+                                          RegTensor<float>& upClampMask, float rowMaskValue,
+                                          MaskReg& activeMask) {
+    Mul(gradUp, gradY, silu, activeMask);
+
+    Mul(gradUp, gradUp, weight, activeMask);
+
+    Mul(gradUp, gradUp, upClampMask, activeMask);
+}
+__aicore__ inline void candidate_vf(__ubuf__ float* gradYAddress, __ubuf__ float* gateAddress,
+                                    __ubuf__ float* upAddress, __ubuf__ float* weightAddress,
+                                    __ubuf__ float* yOriginAddress, __ubuf__ float* gradGateAddress,
+                                    __ubuf__ float* gradUpAddress,
+                                    __ubuf__ float* gradWeightProductAddress) {
+    constexpr uint32_t FP32_VECTOR_LENGTH = 64;
+    uint32_t elementCount = 1024;
+    float clampLimit = 2.0f, rowMaskValue = 1.0f;
+    __VEC_SCOPE__ {
+        MaskReg activeMask;
+        MaskReg fullMask = CreateMask<float, MaskPattern::ALL>();
+        RegTensor<float> ones;
+        RegTensor<float> zeros;
+        Duplicate(ones, float(1.0), fullMask);
+        Duplicate(zeros, float(0.0), fullMask);
+        RegTensor<float> weight;
+
+        LoadAlign<float, LoadDist::DIST_BRC_B32>(weight, weightAddress);
+
+        RegTensor<float> gradY;
+        RegTensor<float> gate;
+        RegTensor<float> up;
+        RegTensor<float> sigmoid;
+        RegTensor<float> siluPrime;
+        RegTensor<float> siluTimesSigmoid;
+        RegTensor<float> gradGate;
+        RegTensor<float> gradUp;
+        RegTensor<float> gateClampMask;
+        RegTensor<float> upClampMask;
+        RegTensor<float> gradWeightProduct;
+        RegTensor<float> gradGateOutput;
+        RegTensor<float> gradUpOutput;
+        uint16_t repeatCount =
+            static_cast<uint16_t>((elementCount + FP32_VECTOR_LENGTH - 1) / FP32_VECTOR_LENGTH);
+        for (uint16_t repeatIndex = 0; repeatIndex < repeatCount; repeatIndex++) {
+            uint32_t offset = repeatIndex * FP32_VECTOR_LENGTH;
+            uint32_t currentElementCount = (elementCount - offset > FP32_VECTOR_LENGTH)
+                                               ? FP32_VECTOR_LENGTH
+                                               : (elementCount - offset);
+            if (currentElementCount == FP32_VECTOR_LENGTH) {
+                activeMask = fullMask;
+            } else {
+                activeMask = UpdateMask<float>(currentElementCount);
+            }
+            LoadAlign(gradY, gradYAddress + offset);
+            LoadAlign(gate, gateAddress + offset);
+            LoadAlign(up, upAddress + offset);
+
+            MaskReg gateInRangeMask;
+            ClampMask(gateInRangeMask, gate, clampLimit, activeMask);
+            SelectMask(gateClampMask, gateInRangeMask, ones, zeros);
+            MaskReg upBelowUpperMask;
+            MaskReg upAboveLowerMask;
+            RegTensor<float> negativeUp;
+            ClipMask(upBelowUpperMask, upAboveLowerMask, negativeUp, up, clampLimit, activeMask);
+            RegTensor<float> upperBoundMask;
+            RegTensor<float> lowerBoundMask;
+            SelectMask(upperBoundMask, upBelowUpperMask, ones, zeros);
+            SelectMask(lowerBoundMask, upAboveLowerMask, ones, zeros);
+            Mul(upClampMask, upperBoundMask, lowerBoundMask, activeMask);
+            ClampClip(gate, up, clampLimit, activeMask);
+
+            Sigmoid(sigmoid, gate, ones, activeMask);
+            Silu(gate, sigmoid, zeros, activeMask);
+
+            Mul(gradWeightProduct, gradY, gate, activeMask);
+            Mul(gradWeightProduct, gradWeightProduct, up, activeMask);
+            StoreAlign(gradWeightProductAddress + offset, gradWeightProduct, activeMask);
+
+            SiluPrime(siluPrime, siluTimesSigmoid, sigmoid, gate, ones, activeMask);
+
+            // Compute, apply the optional row mask, cast and store in the same RegBase path.
+            ComputeGradGate(gradGate, gradY, siluPrime, up, weight, gateClampMask, rowMaskValue,
+                            activeMask);
+
+            StoreAlign((__ubuf__ float*)gradGateAddress + offset, gradGate, activeMask);
+
+            ComputeGradUp(gradUp, gradY, gate, weight, upClampMask, rowMaskValue, activeMask);
+
+            StoreAlign((__ubuf__ float*)gradUpAddress + offset, gradUp, activeMask);
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ float* gradYAddress = (__ubuf__ float*)get_imm(0);
+    __ubuf__ float* gateAddress = (__ubuf__ float*)get_imm(4096);
+    __ubuf__ float* upAddress = (__ubuf__ float*)get_imm(8192);
+    __ubuf__ float* weightAddress = (__ubuf__ float*)get_imm(12288);
+    __ubuf__ float* yOriginAddress = (__ubuf__ float*)get_imm(12544);
+    __ubuf__ float* gradGateAddress = (__ubuf__ float*)get_imm(12800);
+    __ubuf__ float* gradUpAddress = (__ubuf__ float*)get_imm(16896);
+    __ubuf__ float* gradWeightProductAddress = (__ubuf__ float*)get_imm(20992);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 12800, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(gradYAddress, gateAddress, upAddress, weightAddress, yOriginAddress,
+                 gradGateAddress, gradUpAddress, gradWeightProductAddress);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)gradGateAddress, 0, 1, 4096, 0, 0, 0);
+    copy_ubuf_to_gm_align_v2(output + 4096, (__ubuf__ uint8_t*)gradUpAddress, 0, 1, 4096, 0, 0, 0);
+    copy_ubuf_to_gm_align_v2(output + 8192, (__ubuf__ uint8_t*)gradWeightProductAddress, 0, 1, 4096,
+                             0, 0, 0);
+}

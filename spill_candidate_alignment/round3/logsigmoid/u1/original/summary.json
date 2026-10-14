@@ -1,0 +1,106 @@
+{
+  "case": "logsigmoid",
+  "status": "passed",
+  "constants": {
+    "iterations": 48,
+    "elements": 3072,
+    "dtype": "fp32"
+  },
+  "engines": {
+    "ascendc": {
+      "vf_cycles": [
+        544
+      ],
+      "total_vf_cycles": 544,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 48,
+        "RV_SEND": 1,
+        "RV_SMOVI": 1,
+        "RV_VABS_FP": 48,
+        "RV_VADDS": 96,
+        "RV_VBR": 1,
+        "RV_VCMPS_NE": 48,
+        "RV_VDIV": 48,
+        "RV_VEXP": 48,
+        "RV_VLD": 48,
+        "RV_VLN": 48,
+        "RV_VLOOPv2": 1,
+        "RV_VMIN": 48,
+        "RV_VMUL": 48,
+        "RV_VMULS": 48,
+        "RV_VSEL": 48,
+        "RV_VST": 48,
+        "RV_VSUB": 48
+      }
+    },
+    "cce": {
+      "vf_cycles": [
+        567
+      ],
+      "total_vf_cycles": 567,
+      "dynamic_rv_opcounts": {
+        "RV_PLT": 48,
+        "RV_PSET": 1,
+        "RV_SEND": 1,
+        "RV_SMOVI": 1,
+        "RV_VABS_FP": 48,
+        "RV_VADDS": 96,
+        "RV_VCMPS_NE": 48,
+        "RV_VDIV": 48,
+        "RV_VDUPS": 1,
+        "RV_VEXP": 48,
+        "RV_VLD": 48,
+        "RV_VLN": 48,
+        "RV_VLOOPv2": 1,
+        "RV_VMIN": 48,
+        "RV_VMUL": 48,
+        "RV_VMULS": 48,
+        "RV_VSEL": 48,
+        "RV_VST": 48,
+        "RV_VSUB": 48
+      }
+    }
+  },
+  "validation": {
+    "bitwise_identical": true,
+    "guard_ok": true,
+    "cce_vs_ascendc": {
+      "ok": true,
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "ascendc_vs_formula": {
+      "ok": true,
+      "max_abs_error": 4.765726639988088e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "cce_vs_formula": {
+      "ok": true,
+      "max_abs_error": 4.765726639988088e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  },
+  "stream": {
+    "vf_count": 1,
+    "static_vf_words": 21,
+    "vector_loads": 48,
+    "vector_stores": 48,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "NORAML": 1
+    },
+    "loops": [
+      {
+        "pc": "0x13b34110",
+        "detail": "Sn[5]=0x30, Sn2[6]=0x0, instr_num : 15, layer: 0001, last: 1,"
+      }
+    ]
+  }
+}

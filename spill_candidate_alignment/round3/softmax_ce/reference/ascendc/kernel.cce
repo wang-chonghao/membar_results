@@ -1,0 +1,111 @@
+/**
+ * Copyright (c) 2025 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+namespace AscendC {
+namespace Reg = MicroAPI;
+}
+using namespace AscendC;
+using namespace AscendC::MicroAPI;
+__aicore__ inline void candidate_vf(__ubuf__ float* inputUbAddr, __ubuf__ float* labelsUbAddr,
+                                    __ubuf__ float* maxUbAddr, __ubuf__ float* sumUbAddr,
+                                    __ubuf__ float* logUbAddr, __ubuf__ float* outUbAddr,
+                                    __ubuf__ float* backProbAddr) {
+    uint16_t nTimes = 48, repeatTimes1 = 1, tailLoopTimes = 0;
+    uint32_t vfLen = 64, rOnceNumTAlign = 64, rOnceNumAlign = 64, tailNum = 0;
+    __VEC_SCOPE__ {
+        MaskReg copyOutReg = CreateMask<float, MaskPattern::ALL>();
+        RegTensor<float> maxReg;
+        RegTensor<float> sumReg;
+        RegTensor<float> logReg;
+        RegTensor<float> srcReg0;
+        RegTensor<float> srcReg1;
+        RegTensor<float> srcRegfp32;
+        RegTensor<float> srcReg1fp32;
+        RegTensor<float> subReg;
+        RegTensor<float> expReg;
+        RegTensor<float> tmpReg;
+
+        RegTensor<float> outReg;
+        RegTensor<float> outReg1;
+        RegTensor<float> backPropReg;
+        MaskReg preg = UpdateMask<float>(tailNum);
+#pragma unroll 1
+        for (uint16_t i = 0; i < nTimes; i++) {
+            DataCopy<float, LoadDist::DIST_BRC_B32>(
+                maxReg,
+                maxUbAddr + i); // mask通过data_copy的brc功能实现broadcast
+            DataCopy<float, LoadDist::DIST_BRC_B32>(
+                sumReg,
+                sumUbAddr + i); // mask通过data_copy的brc功能实现broadcast
+            DataCopy<float, LoadDist::DIST_BRC_B32>(
+                logReg,
+                logUbAddr + i); // mask通过data_copy的brc功能实现broadcast
+#pragma unroll 1
+            for (uint16_t j = 0; j < repeatTimes1; j++) {
+                AddrReg srcOffset = CreateAddrReg<float>(i, rOnceNumTAlign, j, vfLen);
+                AddrReg outOffset = CreateAddrReg<float>(i, rOnceNumAlign, j, vfLen);
+
+                DataCopy(srcRegfp32, inputUbAddr, srcOffset);
+                DataCopy(srcReg1fp32, labelsUbAddr, srcOffset);
+
+                Sub(subReg, srcRegfp32, maxReg, copyOutReg);
+                Exp(expReg, subReg, copyOutReg);
+                Div(expReg, expReg, sumReg, copyOutReg);
+                Sub(expReg, expReg, srcReg1fp32, copyOutReg);
+                Sub(tmpReg, logReg, subReg, copyOutReg);
+                Mul(tmpReg, tmpReg, srcReg1fp32, copyOutReg);
+                DataCopy(outReg, outUbAddr, outOffset);
+                Add(outReg1, tmpReg, outReg, copyOutReg);
+                DataCopy(outUbAddr, outReg1, outOffset, copyOutReg);
+
+                DataCopy(backProbAddr, expReg, srcOffset, copyOutReg);
+            }
+#pragma unroll 1
+            for (uint16_t k = 0; k < tailLoopTimes; k++) {
+
+                DataCopy(srcRegfp32, inputUbAddr + i * rOnceNumTAlign + repeatTimes1 * vfLen);
+                DataCopy(srcReg1fp32, labelsUbAddr + i * rOnceNumTAlign + repeatTimes1 * vfLen);
+
+                Sub(subReg, srcRegfp32, maxReg, preg);
+                Exp(expReg, subReg, preg);
+                Div(expReg, expReg, sumReg, preg);
+                Sub(expReg, expReg, srcReg1fp32, preg);
+                Sub(logReg, logReg, subReg, preg);
+                Mul(logReg, logReg, srcReg1fp32, preg);
+                DataCopy(outReg, outUbAddr + i * rOnceNumAlign + repeatTimes1 * vfLen);
+                Add(outReg1, logReg, outReg, preg);
+                DataCopy(outUbAddr + i * rOnceNumAlign + repeatTimes1 * vfLen, outReg1, preg);
+
+                DataCopy(backProbAddr + i * rOnceNumTAlign + repeatTimes1 * vfLen, expReg, preg);
+            }
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ float* inputUbAddr = (__ubuf__ float*)get_imm(0);
+    __ubuf__ float* labelsUbAddr = (__ubuf__ float*)get_imm(12288);
+    __ubuf__ float* maxUbAddr = (__ubuf__ float*)get_imm(24576);
+    __ubuf__ float* sumUbAddr = (__ubuf__ float*)get_imm(24832);
+    __ubuf__ float* logUbAddr = (__ubuf__ float*)get_imm(25088);
+    __ubuf__ float* outUbAddr = (__ubuf__ float*)get_imm(25344);
+    __ubuf__ float* backProbAddr = (__ubuf__ float*)get_imm(37632);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 37632, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(inputUbAddr, labelsUbAddr, maxUbAddr, sumUbAddr, logUbAddr, outUbAddr,
+                 backProbAddr);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)outUbAddr, 0, 1, 12288, 0, 0, 0);
+    copy_ubuf_to_gm_align_v2(output + 12288, (__ubuf__ uint8_t*)backProbAddr, 0, 1, 12288, 0, 0, 0);
+}

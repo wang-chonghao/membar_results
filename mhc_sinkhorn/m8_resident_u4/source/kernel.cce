@@ -1,0 +1,211 @@
+/*
+ * MHC 四行驻留版：手动展开外层矩阵，每组同时处理 4 个独立矩阵。
+ * 8 个 4x4 FP32 矩阵，总计 20 轮；初始化与原驻留版相同。
+ * z=0.5*mix+bias；a=softmax(z,行)+eps；x=a/(列和(a)+eps)。
+ * 后续 19 轮：h=x/(行和(x)+eps)，x=h/(列和(h)+eps)，eps=1e-6。
+ * 各矩阵的行归约、广播、除法按指令阶段交错，分别维护独立的 sum 与 total。
+ * 每个矩阵的四行相加顺序及跨轮依赖不变；仅最后一轮后写回 UB。
+ * 保留原布局：输入行距 16B，结果行距 32B，无额外 UB scratch 或新增 membar。
+ * 这是源码优化实验，不是原 AscendC 函数逐字翻译；没有依赖 pragma unroll(4)。
+ */
+#define __aicore__ [aicore]
+__attribute__((always_inline)) inline [aicore] void candidate_vf(
+    __ubuf__ float *mix, __ubuf__ float *base, __ubuf__ float *result) {
+    __VEC_SCOPE__ {
+        uint32_t remaining=4;
+        vector_bool mask=plt_b32(remaining,POST_UPDATE);
+        vector_f32 x,b,maximum,total,column_sum;
+        vector_align u_mix;
+        __ubuf__ float *mix_origin=mix;
+        __ubuf__ float *mix_addr=mix;
+        vldas(u_mix, (__ubuf__ int32_t *)mix_addr);
+
+        for (uint16_t matrix=0; matrix<8; ++matrix) {
+            vdup(column_sum, 0.0f, mask, MODE_ZEROING);
+            for (uint16_t row=0; row<4; ++row) {
+                mix_addr=mix_origin+24*matrix+4*row;
+                vlds(b, base, 8*row, NORM);
+                vldus((vector_s32 &)x, u_mix, (__ubuf__ int32_t *&)mix_addr, 64, POST_UPDATE);
+                vmuls(x, x, 0.5f, mask, MODE_ZEROING);
+                vadd(x, x, b, mask, MODE_ZEROING);
+                vcmax(maximum, x, mask, MODE_ZEROING);
+                vdup(maximum, maximum, mask, POS_LOWEST, MODE_ZEROING);
+                vsub(x, x, maximum, mask, MODE_ZEROING);
+                vexp(x, x, mask, MODE_ZEROING);
+                vcadd(total, x, mask, MODE_ZEROING);
+                vdup(total, total, mask, POS_LOWEST, MODE_ZEROING);
+                vdiv(x, x, total, mask, MODE_ZEROING);
+                vadds(x, x, 1e-6f, mask, MODE_ZEROING);
+                vadd(column_sum, column_sum, x, mask, MODE_ZEROING);
+                vsts(x, result, 32*matrix+8*row, NORM_B32, mask);
+            }
+            mem_bar(VST_VLD);
+            vadds(column_sum, column_sum, 1e-6f, mask, MODE_ZEROING);
+            for (uint16_t row=0; row<4; ++row) {
+                vlds(x, result, 32*matrix+8*row, NORM);
+                vdiv(x, x, column_sum, mask, MODE_ZEROING);
+                vsts(x, result, 32*matrix+8*row, NORM_B32, mask);
+            }
+        }
+        mem_bar(VST_VLD);
+        vector_f32 a0,a1,a2,a3,b0,b1,b2,b3,c0,c1,c2,c3,d0,d1,d2,d3;
+        vector_f32 total_a,total_b,total_c,total_d,sum_a,sum_b,sum_c,sum_d;
+        for (uint16_t matrix=0; matrix<8; matrix+=4) {
+            vlds(a0,result,32*matrix+0,NORM);
+            vlds(b0,result,32*(matrix+1)+0,NORM);
+            vlds(c0,result,32*(matrix+2)+0,NORM);
+            vlds(d0,result,32*(matrix+3)+0,NORM);
+            vlds(a1,result,32*matrix+8,NORM);
+            vlds(b1,result,32*(matrix+1)+8,NORM);
+            vlds(c1,result,32*(matrix+2)+8,NORM);
+            vlds(d1,result,32*(matrix+3)+8,NORM);
+            vlds(a2,result,32*matrix+16,NORM);
+            vlds(b2,result,32*(matrix+1)+16,NORM);
+            vlds(c2,result,32*(matrix+2)+16,NORM);
+            vlds(d2,result,32*(matrix+3)+16,NORM);
+            vlds(a3,result,32*matrix+24,NORM);
+            vlds(b3,result,32*(matrix+1)+24,NORM);
+            vlds(c3,result,32*(matrix+2)+24,NORM);
+            vlds(d3,result,32*(matrix+3)+24,NORM);
+            for (uint16_t iteration=0; iteration<19; ++iteration) {
+                vdup(sum_a,0.0f,mask,MODE_ZEROING);
+                vdup(sum_b,0.0f,mask,MODE_ZEROING);
+                vdup(sum_c,0.0f,mask,MODE_ZEROING);
+                vdup(sum_d,0.0f,mask,MODE_ZEROING);
+                vcadd(total_a,a0,mask,MODE_ZEROING);
+                vcadd(total_b,b0,mask,MODE_ZEROING);
+                vcadd(total_c,c0,mask,MODE_ZEROING);
+                vcadd(total_d,d0,mask,MODE_ZEROING);
+                vdup(total_a,total_a,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_b,total_b,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_c,total_c,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_d,total_d,mask,POS_LOWEST,MODE_ZEROING);
+                vadds(total_a,total_a,1e-6f,mask,MODE_ZEROING);
+                vadds(total_b,total_b,1e-6f,mask,MODE_ZEROING);
+                vadds(total_c,total_c,1e-6f,mask,MODE_ZEROING);
+                vadds(total_d,total_d,1e-6f,mask,MODE_ZEROING);
+                vdiv(a0,a0,total_a,mask,MODE_ZEROING);
+                vdiv(b0,b0,total_b,mask,MODE_ZEROING);
+                vdiv(c0,c0,total_c,mask,MODE_ZEROING);
+                vdiv(d0,d0,total_d,mask,MODE_ZEROING);
+                vadd(sum_a,sum_a,a0,mask,MODE_ZEROING);
+                vadd(sum_b,sum_b,b0,mask,MODE_ZEROING);
+                vadd(sum_c,sum_c,c0,mask,MODE_ZEROING);
+                vadd(sum_d,sum_d,d0,mask,MODE_ZEROING);
+                vcadd(total_a,a1,mask,MODE_ZEROING);
+                vcadd(total_b,b1,mask,MODE_ZEROING);
+                vcadd(total_c,c1,mask,MODE_ZEROING);
+                vcadd(total_d,d1,mask,MODE_ZEROING);
+                vdup(total_a,total_a,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_b,total_b,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_c,total_c,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_d,total_d,mask,POS_LOWEST,MODE_ZEROING);
+                vadds(total_a,total_a,1e-6f,mask,MODE_ZEROING);
+                vadds(total_b,total_b,1e-6f,mask,MODE_ZEROING);
+                vadds(total_c,total_c,1e-6f,mask,MODE_ZEROING);
+                vadds(total_d,total_d,1e-6f,mask,MODE_ZEROING);
+                vdiv(a1,a1,total_a,mask,MODE_ZEROING);
+                vdiv(b1,b1,total_b,mask,MODE_ZEROING);
+                vdiv(c1,c1,total_c,mask,MODE_ZEROING);
+                vdiv(d1,d1,total_d,mask,MODE_ZEROING);
+                vadd(sum_a,sum_a,a1,mask,MODE_ZEROING);
+                vadd(sum_b,sum_b,b1,mask,MODE_ZEROING);
+                vadd(sum_c,sum_c,c1,mask,MODE_ZEROING);
+                vadd(sum_d,sum_d,d1,mask,MODE_ZEROING);
+                vcadd(total_a,a2,mask,MODE_ZEROING);
+                vcadd(total_b,b2,mask,MODE_ZEROING);
+                vcadd(total_c,c2,mask,MODE_ZEROING);
+                vcadd(total_d,d2,mask,MODE_ZEROING);
+                vdup(total_a,total_a,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_b,total_b,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_c,total_c,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_d,total_d,mask,POS_LOWEST,MODE_ZEROING);
+                vadds(total_a,total_a,1e-6f,mask,MODE_ZEROING);
+                vadds(total_b,total_b,1e-6f,mask,MODE_ZEROING);
+                vadds(total_c,total_c,1e-6f,mask,MODE_ZEROING);
+                vadds(total_d,total_d,1e-6f,mask,MODE_ZEROING);
+                vdiv(a2,a2,total_a,mask,MODE_ZEROING);
+                vdiv(b2,b2,total_b,mask,MODE_ZEROING);
+                vdiv(c2,c2,total_c,mask,MODE_ZEROING);
+                vdiv(d2,d2,total_d,mask,MODE_ZEROING);
+                vadd(sum_a,sum_a,a2,mask,MODE_ZEROING);
+                vadd(sum_b,sum_b,b2,mask,MODE_ZEROING);
+                vadd(sum_c,sum_c,c2,mask,MODE_ZEROING);
+                vadd(sum_d,sum_d,d2,mask,MODE_ZEROING);
+                vcadd(total_a,a3,mask,MODE_ZEROING);
+                vcadd(total_b,b3,mask,MODE_ZEROING);
+                vcadd(total_c,c3,mask,MODE_ZEROING);
+                vcadd(total_d,d3,mask,MODE_ZEROING);
+                vdup(total_a,total_a,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_b,total_b,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_c,total_c,mask,POS_LOWEST,MODE_ZEROING);
+                vdup(total_d,total_d,mask,POS_LOWEST,MODE_ZEROING);
+                vadds(total_a,total_a,1e-6f,mask,MODE_ZEROING);
+                vadds(total_b,total_b,1e-6f,mask,MODE_ZEROING);
+                vadds(total_c,total_c,1e-6f,mask,MODE_ZEROING);
+                vadds(total_d,total_d,1e-6f,mask,MODE_ZEROING);
+                vdiv(a3,a3,total_a,mask,MODE_ZEROING);
+                vdiv(b3,b3,total_b,mask,MODE_ZEROING);
+                vdiv(c3,c3,total_c,mask,MODE_ZEROING);
+                vdiv(d3,d3,total_d,mask,MODE_ZEROING);
+                vadd(sum_a,sum_a,a3,mask,MODE_ZEROING);
+                vadd(sum_b,sum_b,b3,mask,MODE_ZEROING);
+                vadd(sum_c,sum_c,c3,mask,MODE_ZEROING);
+                vadd(sum_d,sum_d,d3,mask,MODE_ZEROING);
+                vadds(sum_a,sum_a,1e-6f,mask,MODE_ZEROING);
+                vadds(sum_b,sum_b,1e-6f,mask,MODE_ZEROING);
+                vadds(sum_c,sum_c,1e-6f,mask,MODE_ZEROING);
+                vadds(sum_d,sum_d,1e-6f,mask,MODE_ZEROING);
+                vdiv(a0,a0,sum_a,mask,MODE_ZEROING);
+                vdiv(b0,b0,sum_b,mask,MODE_ZEROING);
+                vdiv(c0,c0,sum_c,mask,MODE_ZEROING);
+                vdiv(d0,d0,sum_d,mask,MODE_ZEROING);
+                vdiv(a1,a1,sum_a,mask,MODE_ZEROING);
+                vdiv(b1,b1,sum_b,mask,MODE_ZEROING);
+                vdiv(c1,c1,sum_c,mask,MODE_ZEROING);
+                vdiv(d1,d1,sum_d,mask,MODE_ZEROING);
+                vdiv(a2,a2,sum_a,mask,MODE_ZEROING);
+                vdiv(b2,b2,sum_b,mask,MODE_ZEROING);
+                vdiv(c2,c2,sum_c,mask,MODE_ZEROING);
+                vdiv(d2,d2,sum_d,mask,MODE_ZEROING);
+                vdiv(a3,a3,sum_a,mask,MODE_ZEROING);
+                vdiv(b3,b3,sum_b,mask,MODE_ZEROING);
+                vdiv(c3,c3,sum_c,mask,MODE_ZEROING);
+                vdiv(d3,d3,sum_d,mask,MODE_ZEROING);
+            }
+            vsts(a0,result,32*matrix+0,NORM_B32,mask);
+            vsts(b0,result,32*(matrix+1)+0,NORM_B32,mask);
+            vsts(c0,result,32*(matrix+2)+0,NORM_B32,mask);
+            vsts(d0,result,32*(matrix+3)+0,NORM_B32,mask);
+            vsts(a1,result,32*matrix+8,NORM_B32,mask);
+            vsts(b1,result,32*(matrix+1)+8,NORM_B32,mask);
+            vsts(c1,result,32*(matrix+2)+8,NORM_B32,mask);
+            vsts(d1,result,32*(matrix+3)+8,NORM_B32,mask);
+            vsts(a2,result,32*matrix+16,NORM_B32,mask);
+            vsts(b2,result,32*(matrix+1)+16,NORM_B32,mask);
+            vsts(c2,result,32*(matrix+2)+16,NORM_B32,mask);
+            vsts(d2,result,32*(matrix+3)+16,NORM_B32,mask);
+            vsts(a3,result,32*matrix+24,NORM_B32,mask);
+            vsts(b3,result,32*(matrix+1)+24,NORM_B32,mask);
+            vsts(c3,result,32*(matrix+2)+24,NORM_B32,mask);
+            vsts(d3,result,32*(matrix+3)+24,NORM_B32,mask);
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ float *input, __gm__ float *output) {
+    __ubuf__ float *mix=(__ubuf__ float *)get_imm(0);
+    __ubuf__ float *base=(__ubuf__ float *)get_imm(0x2000);
+    __ubuf__ float *rms=(__ubuf__ float *)get_imm(0x3000);
+    __ubuf__ float *result=(__ubuf__ float *)get_imm(0x4000);
+    copy_gm_to_ubuf_align_v2(mix,input,0,1,2048,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(base,input+512,0,1,256,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(rms,input+576,0,1,256,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(result,input+640,0,1,2048,0,0,0,0,0,0);
+    set_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    wait_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    candidate_vf(mix+8,base,result);
+    set_flag(PIPE_V,PIPE_MTE3,(event_t)0);
+    wait_flag(PIPE_V,PIPE_MTE3,(event_t)0);
+    copy_ubuf_to_gm_align_v2(output,result,0,1,2048,0,0,0);
+}
+

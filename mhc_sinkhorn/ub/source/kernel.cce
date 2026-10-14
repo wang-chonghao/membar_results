@@ -1,0 +1,106 @@
+/*
+ * MHC VF 通用矩阵数测试：hc_mult 固定为 4，matrix_count 从 host 运行参数传入。
+ * 总计 20 轮：初始化 softmax(0.5*mix+bias,行)+eps，再做列归一化；
+ * 后续 19 轮依次做行除法、列除法，分母为对应和+eps，eps=1e-6。
+ * element_major 额外先用 rms 做输入归一化；其结果原地紧凑写回 mix。
+ * 输入记录步长 24 个 float，逐行输入行距 4 个 float，结果行距 8 个 float。
+ * UB 缓冲区按矩阵数计算，只在缓冲区末尾留安全余量，不增加矩阵行填充。
+ * resident 手动分组展开系数为 1；不足一组的矩阵走单矩阵尾循环。
+ */
+#define __aicore__ [aicore]
+inline [aicore] void candidate_vf(__ubuf__ float *mix,__ubuf__ float *base,__ubuf__ float *result,
+    float scale,float eps,uint16_t iters,uint16_t matrices) {
+    __VEC_SCOPE__ {
+        uint32_t remaining=4;
+        vector_bool mask=plt_b32(remaining,POST_UPDATE);
+        vector_f32 x,b,maximum,total,column_sum;
+        vector_align u_mix;
+        __ubuf__ float *mix_origin=mix;
+        __ubuf__ float *mix_addr=mix;
+        vldas(u_mix,(__ubuf__ int32_t *)mix_addr);
+        for (uint16_t matrix=0; matrix<matrices; ++matrix) {
+            vdup(column_sum,0.0f,mask,MODE_ZEROING);
+            for (uint16_t row=0; row<4; ++row) {
+                mix_addr=mix_origin+24*matrix+4*row;
+                vlds(b,base,8*row,NORM);
+                vldus((vector_s32 &)x,u_mix,(__ubuf__ int32_t *&)mix_addr,64,POST_UPDATE);
+                vmuls(x,x,scale,mask,MODE_ZEROING);
+                vadd(x,x,b,mask,MODE_ZEROING);
+                vcmax(maximum,x,mask,MODE_ZEROING);
+                vdup(maximum,maximum,mask,POS_LOWEST,MODE_ZEROING);
+                vsub(x,x,maximum,mask,MODE_ZEROING);
+                vexp(x,x,mask,MODE_ZEROING);
+                vcadd(total,x,mask,MODE_ZEROING);
+                vdup(total,total,mask,POS_LOWEST,MODE_ZEROING);
+                vdiv(x,x,total,mask,MODE_ZEROING);
+                vadds(x,x,eps,mask,MODE_ZEROING);
+                vadd(column_sum,column_sum,x,mask,MODE_ZEROING);
+                vsts(x,result,32*matrix+8*row,NORM_B32,mask);
+            }
+            mem_bar(VST_VLD);
+            vadds(column_sum,column_sum,eps,mask,MODE_ZEROING);
+            for (uint16_t row=0; row<4; ++row) {
+                vlds(x,result,32*matrix+8*row,NORM);
+                vdiv(x,x,column_sum,mask,MODE_ZEROING);
+                vsts(x,result,32*matrix+8*row,NORM_B32,mask);
+            }
+        }
+        for (uint16_t iteration=0; iteration<iters; ++iteration) {
+            mem_bar(VST_VLD);
+            for (uint16_t matrix=0; matrix<matrices; ++matrix) {
+                vdup(column_sum,0.0f,mask,MODE_ZEROING);
+                for (uint16_t row=0; row<4; ++row) {
+                    vlds(x,result,32*matrix+8*row,NORM);
+                    vcadd(total,x,mask,MODE_ZEROING);
+                    vdup(total,total,mask,POS_LOWEST,MODE_ZEROING);
+                    vadds(total,total,eps,mask,MODE_ZEROING);
+                    vdiv(x,x,total,mask,MODE_ZEROING);
+                    vadd(column_sum,column_sum,x,mask,MODE_ZEROING);
+                    vsts(x,result,32*matrix+8*row,NORM_B32,mask);
+                }
+                mem_bar(VST_VLD);
+                vadds(column_sum,column_sum,eps,mask,MODE_ZEROING);
+                for (uint16_t row=0; row<4; ++row) {
+                    vlds(x,result,32*matrix+8*row,NORM);
+                    vdiv(x,x,column_sum,mask,MODE_ZEROING);
+                    vsts(x,result,32*matrix+8*row,NORM_B32,mask);
+                }
+            }
+        }
+    }
+}
+inline [aicore] uint32_t align_up(uint32_t value,uint32_t alignment) {
+    return (value+alignment-1)/alignment*alignment;
+}
+extern "C" __global__ __aicore__ void candidate_kernel(
+    __gm__ float *input, __gm__ float *output, uint32_t matrix_count) {
+    if (matrix_count == 0 || matrix_count > 65535) return;
+    uint32_t mix_bytes=align_up(matrix_count*96+256,32);
+    uint32_t mix_offset=0;
+    uint32_t mix_gm=0;
+    uint32_t base_bytes=align_up(matrix_count*0+384,32);
+    uint32_t base_offset=align_up(mix_offset+mix_bytes,512);
+    uint32_t base_gm=mix_gm+mix_bytes;
+    uint32_t rms_bytes=align_up(matrix_count*4+256,32);
+    uint32_t rms_offset=align_up(base_offset+base_bytes,512);
+    uint32_t rms_gm=base_gm+base_bytes;
+    uint32_t result_bytes=align_up(matrix_count*128+256,32);
+    uint32_t result_offset=align_up(rms_offset+rms_bytes,512);
+    uint32_t result_gm=rms_gm+rms_bytes;
+    if (result_offset+result_bytes > 253952) return;
+    uint16_t matrices=static_cast<uint16_t>(matrix_count);
+    __ubuf__ float *mix=(__ubuf__ float *)(uint64_t)mix_offset;
+    copy_gm_to_ubuf_align_v2(mix,input+mix_gm/4,0,1,mix_bytes,0,0,0,0,0,0);
+    __ubuf__ float *base=(__ubuf__ float *)(uint64_t)base_offset;
+    copy_gm_to_ubuf_align_v2(base,input+base_gm/4,0,1,base_bytes,0,0,0,0,0,0);
+    __ubuf__ float *rms=(__ubuf__ float *)(uint64_t)rms_offset;
+    copy_gm_to_ubuf_align_v2(rms,input+rms_gm/4,0,1,rms_bytes,0,0,0,0,0,0);
+    __ubuf__ float *result=(__ubuf__ float *)(uint64_t)result_offset;
+    copy_gm_to_ubuf_align_v2(result,input+result_gm/4,0,1,result_bytes,0,0,0,0,0,0);
+    set_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    wait_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    candidate_vf(mix+8,base,result,0.5f,1e-6f,19,matrices);
+    set_flag(PIPE_V,PIPE_MTE3,(event_t)0);
+    wait_flag(PIPE_V,PIPE_MTE3,(event_t)0);
+    copy_ubuf_to_gm_align_v2(output,result,0,1,result_bytes,0,0,0);
+}

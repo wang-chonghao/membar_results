@@ -1,0 +1,145 @@
+{
+  "case": "lstm",
+  "unroll": 5,
+  "method": "manual",
+  "selected_loop": "i",
+  "source_sha256": "7c973109e9732d1baa1343b422e8c50f69e76798cdb4e5bb4cc75159261792f9",
+  "baseline_source_sha256": "7d73c660ea6c9b94a6b5a45e39653f7d930033c3eabec93674b04493590fd617",
+  "metrics": {
+    "vf_cycles": [
+      213
+    ],
+    "total_vf_cycles": 213,
+    "dynamic_rv_opcounts": {
+      "RV_PLT": 16,
+      "RV_PSET": 1,
+      "RV_SEND": 1,
+      "RV_SMOVI": 23,
+      "RV_VDUPS": 1,
+      "RV_VLD": 75,
+      "RV_VLDI": 5,
+      "RV_VLOOPv2": 1,
+      "RV_VMUL": 144,
+      "RV_VST": 45,
+      "RV_VSTI": 3,
+      "RV_VSUB": 48
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 154,
+    "vector_loads": 80,
+    "vector_stores": 48,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "NORAML": 30
+    },
+    "loops": [
+      {
+        "pc": "0x13b36248",
+        "detail": "Sn[5]=0x3, Sn2[6]=0x0, instr_num : 105, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 6.354126014240791e-08,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 6.0,
+  "unroll_effective": true,
+  "elapsed_seconds": 38.1036940679769,
+  "camodel_speedup_percent": -15.760869565217384,
+  "prediction": {
+    "case": "u5",
+    "title": "lstm U5",
+    "cce_source_sha256": "7c973109e9732d1baa1343b422e8c50f69e76798cdb4e5bb4cc75159261792f9",
+    "camodel_vf_cycles": [
+      213
+    ],
+    "camodel_vf_cycles_sum": 213,
+    "vfsim_cycles": 186,
+    "prediction_accuracy_percent": 87.32394366197182,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 213,
+        "expected_counts": {
+          "PSET_B32": 1,
+          "VDUP": 1,
+          "PLT": 16,
+          "VLDS": 80,
+          "VSUB": 48,
+          "VMUL": 144,
+          "VSTS": 48
+        },
+        "json_counts": {
+          "PSET_B32": 1,
+          "VDUP": 1,
+          "PLT": 16,
+          "VLDS": 80,
+          "VSUB": 48,
+          "VMUL": 144,
+          "VSTS": 48
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVI": 23
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 186,
+        "camodel_cycles": 213
+      }
+    ],
+    "timing_warning_count": 12,
+    "timing_warning_kinds": [
+      "compatible_forwarding_pair_fallback",
+      "compatible_isa_form_fallback",
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 210,
+    "average_compute_ipc": 0.9859154929577465,
+    "dual_issue_cycles": 82,
+    "peak_compute_issue_per_cycle": 2
+  }
+}

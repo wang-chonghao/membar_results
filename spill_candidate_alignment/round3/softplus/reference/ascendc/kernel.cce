@@ -1,0 +1,21 @@
+#include "kernel_operator.h"
+#include "reference_original.h"
+#include "atvoss/broadcast/broadcast_base_struct.h"
+#include "atvoss/broadcast/broadcast_sch_one_dim.h"
+#include "atvoss/elewise/elewise_sch.h"
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    AscendC::TPipe pipe;
+    using Dag = SoftplusOp::SoftplusDag<float, float>::OpDag;
+    Ops::Base::EleBaseTilingData tiling = {};
+    tiling.ubFormer = 3072;
+    tiling.blockNum = 1;
+    tiling.blockFormer = 3072;
+    tiling.ubLoopOfTailBlock = 1;
+    tiling.ubTailOfTailBlock = 3072;
+    tiling.ubLoopOfFormerBlock = 1;
+    tiling.ubTailOfFormerBlock = 3072;
+    Ops::Base::ElementwiseSch<0, Dag> sch(&tiling, &pipe);
+    sch.Init((GM_ADDR)(input + 0), (GM_ADDR)(output + 0));
+    sch.Process();
+}

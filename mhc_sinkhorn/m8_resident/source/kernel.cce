@@ -1,0 +1,108 @@
+/*
+ * 与 AscendC VFProcessCombFragRLessVLUseFourUnfold 对齐的 FP32 VF 测试。
+ * 8 个 4x4 矩阵，总计 20 轮（初始化 1 轮 + 后续 19 轮）。
+ * z = 0.5 * mix + bias；a = softmax(z, 行) + eps。
+ * 初始化：x = a / (列和(a) + eps)，eps=1e-6。
+ * 后续每轮：h = x / (行和(x) + eps)；x = h / (列和(h) + eps)。
+ * 逐行版输入是每矩阵 24 个 float 的混合系数记录，其中偏移 8 后为 4x4 数据；
+ * 输入行距 4 个 float，中间结果行距 8 个 float，没有 256B 行填充。
+ * element_major 版另含输入 RMS 归一化，输出原地紧凑存放，每矩阵 16 个 float。
+ * 两种语言使用相同输入、UB 起点和编译选项，独立核对 CAModel 结果。
+ */
+#define __aicore__ [aicore]
+__attribute__((always_inline)) inline [aicore] void candidate_vf(
+    __ubuf__ float *mix, __ubuf__ float *base, __ubuf__ float *result) {
+    __VEC_SCOPE__ {
+        uint32_t remaining=4;
+        vector_bool mask=plt_b32(remaining,POST_UPDATE);
+        vector_f32 x,b,maximum,total,column_sum,r0,r1,r2,r3;
+        vector_align u_mix;
+        __ubuf__ float *mix_origin=mix;
+        __ubuf__ float *mix_addr=mix;
+        vldas(u_mix, (__ubuf__ int32_t *)mix_addr);
+
+        for (uint16_t matrix=0; matrix<8; ++matrix) {
+            vdup(column_sum, 0.0f, mask, MODE_ZEROING);
+            for (uint16_t row=0; row<4; ++row) {
+                mix_addr=mix_origin+24*matrix+4*row;
+                vlds(b, base, 8*row, NORM);
+                vldus((vector_s32 &)x, u_mix, (__ubuf__ int32_t *&)mix_addr, 64, POST_UPDATE);
+                vmuls(x, x, 0.5f, mask, MODE_ZEROING);
+                vadd(x, x, b, mask, MODE_ZEROING);
+                vcmax(maximum, x, mask, MODE_ZEROING);
+                vdup(maximum, maximum, mask, POS_LOWEST, MODE_ZEROING);
+                vsub(x, x, maximum, mask, MODE_ZEROING);
+                vexp(x, x, mask, MODE_ZEROING);
+                vcadd(total, x, mask, MODE_ZEROING);
+                vdup(total, total, mask, POS_LOWEST, MODE_ZEROING);
+                vdiv(x, x, total, mask, MODE_ZEROING);
+                vadds(x, x, 1e-6f, mask, MODE_ZEROING);
+                vadd(column_sum, column_sum, x, mask, MODE_ZEROING);
+                vsts(x, result, 32*matrix+8*row, NORM_B32, mask);
+            }
+            mem_bar(VST_VLD);
+            vadds(column_sum, column_sum, 1e-6f, mask, MODE_ZEROING);
+            for (uint16_t row=0; row<4; ++row) {
+                vlds(x, result, 32*matrix+8*row, NORM);
+                vdiv(x, x, column_sum, mask, MODE_ZEROING);
+                vsts(x, result, 32*matrix+8*row, NORM_B32, mask);
+            }
+        }
+        mem_bar(VST_VLD);
+        for (uint16_t matrix=0; matrix<8; ++matrix) {
+            vlds(r0, result, 32*matrix+0, NORM);
+            vlds(r1, result, 32*matrix+8, NORM);
+            vlds(r2, result, 32*matrix+16, NORM);
+            vlds(r3, result, 32*matrix+24, NORM);
+            for (uint16_t iteration=0; iteration<19; ++iteration) {
+                vdup(column_sum, 0.0f, mask, MODE_ZEROING);
+                vcadd(total, r0, mask, MODE_ZEROING);
+                vdup(total, total, mask, POS_LOWEST, MODE_ZEROING);
+                vadds(total, total, 1e-6f, mask, MODE_ZEROING);
+                vdiv(r0, r0, total, mask, MODE_ZEROING);
+                vadd(column_sum, column_sum, r0, mask, MODE_ZEROING);
+                vcadd(total, r1, mask, MODE_ZEROING);
+                vdup(total, total, mask, POS_LOWEST, MODE_ZEROING);
+                vadds(total, total, 1e-6f, mask, MODE_ZEROING);
+                vdiv(r1, r1, total, mask, MODE_ZEROING);
+                vadd(column_sum, column_sum, r1, mask, MODE_ZEROING);
+                vcadd(total, r2, mask, MODE_ZEROING);
+                vdup(total, total, mask, POS_LOWEST, MODE_ZEROING);
+                vadds(total, total, 1e-6f, mask, MODE_ZEROING);
+                vdiv(r2, r2, total, mask, MODE_ZEROING);
+                vadd(column_sum, column_sum, r2, mask, MODE_ZEROING);
+                vcadd(total, r3, mask, MODE_ZEROING);
+                vdup(total, total, mask, POS_LOWEST, MODE_ZEROING);
+                vadds(total, total, 1e-6f, mask, MODE_ZEROING);
+                vdiv(r3, r3, total, mask, MODE_ZEROING);
+                vadd(column_sum, column_sum, r3, mask, MODE_ZEROING);
+                vadds(column_sum, column_sum, 1e-6f, mask, MODE_ZEROING);
+                vdiv(r0, r0, column_sum, mask, MODE_ZEROING);
+                vdiv(r1, r1, column_sum, mask, MODE_ZEROING);
+                vdiv(r2, r2, column_sum, mask, MODE_ZEROING);
+                vdiv(r3, r3, column_sum, mask, MODE_ZEROING);
+            }
+            vsts(r0, result, 32*matrix+0, NORM_B32, mask);
+            vsts(r1, result, 32*matrix+8, NORM_B32, mask);
+            vsts(r2, result, 32*matrix+16, NORM_B32, mask);
+            vsts(r3, result, 32*matrix+24, NORM_B32, mask);
+        }
+
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ float *input, __gm__ float *output) {
+    __ubuf__ float *mix=(__ubuf__ float *)get_imm(0);
+    __ubuf__ float *base=(__ubuf__ float *)get_imm(0x2000);
+    __ubuf__ float *rms=(__ubuf__ float *)get_imm(0x3000);
+    __ubuf__ float *result=(__ubuf__ float *)get_imm(0x4000);
+    copy_gm_to_ubuf_align_v2(mix,input,0,1,2048,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(base,input+512,0,1,256,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(rms,input+576,0,1,256,0,0,0,0,0,0);
+    copy_gm_to_ubuf_align_v2(result,input+640,0,1,2048,0,0,0,0,0,0);
+    set_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    wait_flag(PIPE_MTE2,PIPE_V,(event_t)0);
+    candidate_vf(mix+8,base,result);
+    set_flag(PIPE_V,PIPE_MTE3,(event_t)0);
+    wait_flag(PIPE_V,PIPE_MTE3,(event_t)0);
+    copy_ubuf_to_gm_align_v2(output,result,0,1,2048,0,0,0);
+}

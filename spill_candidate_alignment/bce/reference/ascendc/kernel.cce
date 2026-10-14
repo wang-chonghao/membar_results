@@ -1,0 +1,98 @@
+/**
+ * Copyright (c) 2025 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+namespace AscendC {
+namespace Reg = MicroAPI;
+}
+using namespace AscendC;
+using namespace AscendC::MicroAPI;
+__aicore__ inline void candidate_vf(__ubuf__ float* xAddr, __ubuf__ float* yAddr,
+                                    __ubuf__ float* weightAddr, __ubuf__ float* posWeightAddr,
+                                    __ubuf__ float* lossAddr) {
+    uint32_t oneRepeat = 64, totalLen = 1024, repeatTimes = 16;
+    __VEC_SCOPE__ {
+        Reg::MaskReg pregUp;
+        Reg::RegTensor<float> regX;
+        Reg::RegTensor<float> regY;
+        Reg::RegTensor<float> regWeight;
+        Reg::RegTensor<float> regPosWeight;
+        Reg::RegTensor<float> regLoss;
+
+        Reg::RegTensor<float> regMinVal;
+        Reg::RegTensor<float> regAbsX;
+        Reg::RegTensor<float> regNegAbsX;
+        Reg::RegTensor<float> regExpNegAbsX;
+        Reg::RegTensor<float> regOneAddExp;
+        Reg::RegTensor<float> regLog;
+        Reg::RegTensor<float> regLogSigmoid;
+        Reg::RegTensor<float> regPWSubOne;
+        Reg::RegTensor<float> regPWSubOneMulY;
+        Reg::RegTensor<float> regPWSubOneMulYAddOne;
+        Reg::RegTensor<float> regOneSubY;
+        Reg::RegTensor<float> regOneSubYMulX;
+
+        Reg::RegTensor<float> regOne;
+
+        for (uint16_t loop = 0; loop < (uint16_t)repeatTimes; loop++) {
+            pregUp = Reg::UpdateMask<float>(totalLen);
+            AscendC::Reg::Duplicate(regOne, (float)1.0f, pregUp);
+            Reg::LoadAlign<float, Reg::PostLiteral::POST_MODE_UPDATE>(regX, xAddr,
+                                                                      (int32_t)oneRepeat);
+            Reg::LoadAlign<float, Reg::PostLiteral::POST_MODE_UPDATE>(regY, yAddr,
+                                                                      (int32_t)oneRepeat);
+
+            Reg::LoadAlign<float, Reg::PostLiteral::POST_MODE_UPDATE>(regWeight, weightAddr,
+                                                                      (int32_t)oneRepeat);
+
+            Reg::LoadAlign<float, Reg::PostLiteral::POST_MODE_UPDATE>(regPosWeight, posWeightAddr,
+                                                                      (int32_t)oneRepeat);
+
+            Reg::Mins(regMinVal, regX, (float)0.0f, pregUp);
+            Reg::Abs(regAbsX, regX, pregUp);
+            Reg::Neg(regNegAbsX, regAbsX, pregUp);
+            Reg::Exp(regExpNegAbsX, regNegAbsX, pregUp);
+            Reg::Adds(regOneAddExp, regExpNegAbsX, (float)1.0f, pregUp);
+            Reg::Log(regLog, regOneAddExp, pregUp);
+
+            Reg::Sub(regLogSigmoid, regMinVal, regLog, pregUp);
+
+            Reg::Sub(regPWSubOne, regPosWeight, regOne, pregUp);
+            Reg::Mul(regPWSubOneMulY, regPWSubOne, regY, pregUp);
+            Reg::Adds(regPWSubOneMulYAddOne, regPWSubOneMulY, (float)1.0f, pregUp);
+            Reg::Mul(regLogSigmoid, regLogSigmoid, regPWSubOneMulYAddOne, pregUp);
+
+            Reg::Sub(regOneSubY, regOne, regY, pregUp);
+            Reg::Mul(regOneSubYMulX, regOneSubY, regX, pregUp);
+            Reg::Sub(regLoss, regOneSubYMulX, regLogSigmoid, pregUp);
+
+            Reg::Mul(regLoss, regLoss, regWeight, pregUp);
+
+            Reg::StoreAlign<float, Reg::PostLiteral::POST_MODE_UPDATE>(lossAddr, regLoss,
+                                                                       (int32_t)oneRepeat, pregUp);
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ float* xAddr = (__ubuf__ float*)get_imm(0);
+    __ubuf__ float* yAddr = (__ubuf__ float*)get_imm(4096);
+    __ubuf__ float* weightAddr = (__ubuf__ float*)get_imm(8192);
+    __ubuf__ float* posWeightAddr = (__ubuf__ float*)get_imm(12288);
+    __ubuf__ float* lossAddr = (__ubuf__ float*)get_imm(16384);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 16384, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(xAddr, yAddr, weightAddr, posWeightAddr, lossAddr);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)lossAddr, 0, 1, 4096, 0, 0, 0);
+}

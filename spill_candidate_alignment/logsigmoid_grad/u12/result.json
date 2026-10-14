@@ -1,0 +1,261 @@
+{
+  "id": "round2-logsigmoid_grad-u12",
+  "origin": "supplemental_search",
+  "case": "logsigmoid_grad",
+  "title": "LogSigmoidGrad",
+  "variant": "u12",
+  "variant_label": "U12",
+  "variant_order": 12,
+  "unroll": 12,
+  "shape": "3072 元素 / FP32 / 48 次向量迭代",
+  "chart_label": "U12",
+  "comparison_group": "round2-logsigmoid_grad",
+  "comparison_label": "3072 元素 / 当前 A5 参数",
+  "status": "unsupported",
+  "spill": true,
+  "reason": "['No vector/predicate destination contract for RV_SSTI']",
+  "camodel": 8058,
+  "global_cycles": null,
+  "local_cycles": null,
+  "software_cycles": 360,
+  "software_camodel": 376,
+  "software_accuracy": 95.74468085106383,
+  "original_accuracy": null,
+  "local_gain": null,
+  "software_gain": null,
+  "plan": {
+    "unroll": 12,
+    "cuts": [],
+    "policy": "source",
+    "cohort": 1,
+    "pressure_weight": 0,
+    "stages": 1,
+    "scratch_bytes": 0,
+    "ub_high_water": 37120,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 6,
+          "PredicateRegister": 2
+        },
+        "lanes": 12
+      }
+    ],
+    "source_sha256": "9143b89266c07aaaceae3d7c8a49e363aa94ddbaabb523056a59d523efa38260"
+  },
+  "software_validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.935208953085521e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "software_comparison": null,
+  "candidate_count": 98,
+  "finalists": 4,
+  "strategy": "仅重排",
+  "files": {
+    "original_cce": [
+      {
+        "label": "commands.json",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/commands.json"
+      },
+      {
+        "label": "compile.log",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/compile.log"
+      },
+      {
+        "label": "core0.veccore0.instr_log.dump",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/core0.veccore0.instr_log.dump"
+      },
+      {
+        "label": "core0.veccore0.instr_popped_log.dump",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/core0.veccore0.instr_popped_log.dump"
+      },
+      {
+        "label": "core0.veccore0.rvec.IDU.dump.gz",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/core0.veccore0.rvec.IDU.dump.gz"
+      },
+      {
+        "label": "core0.veccore0.rvec.simd.idu.TRACE.dump",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/core0.veccore0.rvec.simd.idu.TRACE.dump"
+      },
+      {
+        "label": "host.cpp",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/host.cpp"
+      },
+      {
+        "label": "input.bin",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/input.bin"
+      },
+      {
+        "label": "kernel.cce",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/kernel.cce"
+      },
+      {
+        "label": "link.log",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/link.log"
+      },
+      {
+        "label": "output.bin",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/output.bin"
+      },
+      {
+        "label": "run.log",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/run.log"
+      }
+    ],
+    "comparison": [
+      {
+        "label": "comparison.json",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/comparison/comparison.json"
+      },
+      {
+        "label": "current/canonical/export_audit.json",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/comparison/current/canonical/export_audit.json"
+      },
+      {
+        "label": "current/prediction.json",
+        "path": "spill_candidate_alignment/logsigmoid_grad/u12/original/comparison/current/prediction.json"
+      }
+    ],
+    "software": [
+      {
+        "label": "canonical/export_audit.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/canonical/export_audit.json"
+      },
+      {
+        "label": "canonical/vf_000.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/canonical/vf_000.json"
+      },
+      {
+        "label": "cce/commands.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/commands.json"
+      },
+      {
+        "label": "cce/compile.log",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/compile.log"
+      },
+      {
+        "label": "cce/core0.veccore0.instr_log.dump",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/core0.veccore0.instr_log.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.instr_popped_log.dump",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/core0.veccore0.instr_popped_log.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.rvec.IDU.dump",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/core0.veccore0.rvec.IDU.dump"
+      },
+      {
+        "label": "cce/core0.veccore0.rvec.simd.idu.TRACE.dump",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/core0.veccore0.rvec.simd.idu.TRACE.dump"
+      },
+      {
+        "label": "cce/host.cpp",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/host.cpp"
+      },
+      {
+        "label": "cce/input.bin",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/input.bin"
+      },
+      {
+        "label": "cce/kernel.cce",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/kernel.cce"
+      },
+      {
+        "label": "cce/link.log",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/link.log"
+      },
+      {
+        "label": "cce/output.bin",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/output.bin"
+      },
+      {
+        "label": "cce/run.log",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/cce/run.log"
+      },
+      {
+        "label": "provisional.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/provisional.json"
+      },
+      {
+        "label": "validation.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/validation.json"
+      },
+      {
+        "label": "vfsim/console.log",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/console.log"
+      },
+      {
+        "label": "vfsim/done_by_cycle.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/done_by_cycle.json"
+      },
+      {
+        "label": "vfsim/idu_address_blocked.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/idu_address_blocked.json"
+      },
+      {
+        "label": "vfsim/idu_resource_blocked.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/idu_resource_blocked.json"
+      },
+      {
+        "label": "vfsim/idu_to_ooo.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/idu_to_ooo.json"
+      },
+      {
+        "label": "vfsim/membar_history.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/membar_history.json"
+      },
+      {
+        "label": "vfsim/model_warnings.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/model_warnings.json"
+      },
+      {
+        "label": "vfsim/start_by_cycle.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/start_by_cycle.json"
+      },
+      {
+        "label": "vfsim/trace.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/trace.json"
+      },
+      {
+        "label": "vfsim/vloop_trace.json",
+        "path": "spill_candidate_alignment/followup/round2-logsigmoid_grad-u12/vfsim/vloop_trace.json"
+      }
+    ]
+  },
+  "evidence_path": "spill_candidate_alignment/logsigmoid_grad/u12/result.json",
+  "spill_counts": {
+    "vector_store": 76,
+    "vector_load": 76,
+    "predicate_store": 84,
+    "predicate_load": 268
+  },
+  "scalar_stack_stores": 112,
+  "scalar_stack_loads": 112,
+  "other_extra_vector_loads": 0,
+  "spill_count_basis": "第二批 CAModel 编译后动态次数；vector 按新增写读共同地址，predicate 按 PST/PLD 统计。",
+  "note": "同流全局/局部 A/B 已核对当前主线全局周期、动态顺序及 core0 UB 地址；含 scalar stack 的版本明确拒绝。 软件对照为当前 A5 主线全局模型；历史原始/局部周期保留旧归档及原参数说明，不覆盖原记录。",
+  "loop_count": 48,
+  "loop_count_label": "48",
+  "loop_count_detail": "未展开前向量数据循环：3072 元素 / 64 元素每迭代 = 48 次。",
+  "vector_spill_store": 76,
+  "vector_spill_load": 76,
+  "predicate_spill_store": 84,
+  "predicate_spill_load": 268,
+  "spill_kind": "vector_predicate",
+  "source_cce_path": "spill_candidate_alignment/logsigmoid_grad/u12/original/cce/kernel.cce",
+  "compiled_cce_path": null,
+  "membar_vs_software_performance": null,
+  "software_reference": "",
+  "selection_role": "register spill"
+}

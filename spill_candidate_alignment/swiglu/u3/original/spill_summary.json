@@ -1,0 +1,178 @@
+{
+  "case": "swiglu",
+  "unroll": 3,
+  "method": "manual",
+  "selected_loop": "repeatIndex",
+  "source_sha256": "8a6bde624d11732ac74bdfb2e3180b603706c0d530f2e7fb6153e5ea691d4cfe",
+  "baseline_source_sha256": "d6174a933bcf0415117547e054ad14e5a92f7a83ca44fe0bfd956a606568834b",
+  "metrics": {
+    "vf_cycles": [
+      575
+    ],
+    "total_vf_cycles": 575,
+    "dynamic_rv_opcounts": {
+      "RV_PSET": 1,
+      "RV_SEND": 1,
+      "RV_SMOVI": 14,
+      "RV_SMOVK": 8,
+      "RV_VADD": 16,
+      "RV_VADDS": 16,
+      "RV_VCMPS_EQ": 32,
+      "RV_VCMPS_LE": 16,
+      "RV_VCMPS_LT": 64,
+      "RV_VDIV": 16,
+      "RV_VDUPS": 2,
+      "RV_VEXP": 16,
+      "RV_VLD": 45,
+      "RV_VLDI": 4,
+      "RV_VLOOPv2": 1,
+      "RV_VMAXS": 16,
+      "RV_VMINS": 32,
+      "RV_VMUL": 176,
+      "RV_VMULS": 32,
+      "RV_VSEL": 112,
+      "RV_VST": 45,
+      "RV_VSTI": 3,
+      "RV_VSUB": 16
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 193,
+    "vector_loads": 49,
+    "vector_stores": 48,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 1,
+      "NORAML": 12
+    },
+    "loops": [
+      {
+        "pc": "0x13b34214",
+        "detail": "Sn[5]=0x5, Sn2[6]=0x0, instr_num : 123, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 3.169830469218482e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 4.0,
+  "unroll_effective": true,
+  "elapsed_seconds": 59.1615288600442,
+  "camodel_speedup_percent": -4.545454545454541,
+  "prediction": {
+    "case": "u3",
+    "title": "swiglu U3",
+    "cce_source_sha256": "8a6bde624d11732ac74bdfb2e3180b603706c0d530f2e7fb6153e5ea691d4cfe",
+    "camodel_vf_cycles": [
+      575
+    ],
+    "camodel_vf_cycles_sum": 575,
+    "vfsim_cycles": 594,
+    "prediction_accuracy_percent": 96.69565217391305,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 575,
+        "expected_counts": {
+          "PSET_B32": 1,
+          "VDUP": 2,
+          "VLDS": 49,
+          "VCMPS_LT": 64,
+          "VSEL": 112,
+          "VMULS": 32,
+          "VMUL": 176,
+          "VMINS": 32,
+          "VMAXS": 16,
+          "VEXP": 16,
+          "VADDS": 16,
+          "VDIV": 16,
+          "VCMPS_EQ": 32,
+          "VCMPS_LE": 16,
+          "VSTS": 48,
+          "VADD": 16,
+          "VSUB": 16
+        },
+        "json_counts": {
+          "PSET_B32": 1,
+          "VDUP": 2,
+          "VLDS": 49,
+          "VCMPS_LT": 64,
+          "VSEL": 112,
+          "VMULS": 32,
+          "VMUL": 176,
+          "VMINS": 32,
+          "VMAXS": 16,
+          "VEXP": 16,
+          "VADDS": 16,
+          "VDIV": 16,
+          "VCMPS_EQ": 32,
+          "VCMPS_LE": 16,
+          "VSTS": 48,
+          "VADD": 16,
+          "VSUB": 16
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVI": 14,
+          "RV_SMOVK": 8
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 594,
+        "camodel_cycles": 575
+      }
+    ],
+    "timing_warning_count": 53,
+    "timing_warning_kinds": [
+      "compatible_forwarding_pair_fallback",
+      "compatible_isa_form_fallback",
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 563,
+    "average_compute_ipc": 0.9791304347826087,
+    "dual_issue_cycles": 216,
+    "peak_compute_issue_per_cycle": 2
+  }
+}

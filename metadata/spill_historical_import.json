@@ -1,0 +1,284 @@
+{
+  "source": "metadata/data.json",
+  "source_date": "2026-10-12",
+  "source_sha256": "2a8838bbf9a89d50d2f6aa0b9c4ebc8dbfea406c7062ae5e2af525c4421d66cf",
+  "groups": 8,
+  "versions": 51,
+  "status_counts": {
+    "predicted": 50,
+    "unsupported": 1
+  },
+  "software_pairs": [
+    {
+      "original_case": "gelu_grad",
+      "original_variant": "u1",
+      "case": "gelu_grad_three_stage",
+      "variant": "three_stage_post",
+      "unroll": 1,
+      "cycles": 932,
+      "camodel": 854,
+      "strategy": "已有三段切分 U1 对照",
+      "label": "三段循环 · POST_UPDATE · 每段 U1",
+      "files": {
+        "original_cce": [
+          {
+            "label": "完整 CCE",
+            "path": "gelu_grad_three_stage/three_stage_post/source/kernel.cce"
+          },
+          {
+            "label": "CAModel 完整用例说明",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel_case/README.txt"
+          },
+          {
+            "label": "CAModel 构建运行入口",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel_case/run.py"
+          },
+          {
+            "label": "CAModel host 源码",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel_case/host.cpp"
+          }
+        ],
+        "comparison": [
+          {
+            "label": "core0.veccore0.instr_popped_log.dump",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel/core0.veccore0.instr_popped_log.dump"
+          },
+          {
+            "label": "core0.veccore0.instr_log.dump",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel/core0.veccore0.instr_log.dump"
+          },
+          {
+            "label": "1_summary.json",
+            "path": "gelu_grad_three_stage/three_stage_post/evidence/1_summary.json"
+          },
+          {
+            "label": "2_validation.json",
+            "path": "gelu_grad_three_stage/three_stage_post/evidence/2_validation.json"
+          }
+        ]
+      },
+      "shared_binary_sha256": {
+        "input.bin": "15e6b0e969b39070728e1f632dc80e15f149c5312d51754a09b2a29db0b78d83",
+        "output.bin": "49f05160fb49e1efd3381e8e14ce7e778f322dd4fe3f9bc38fa0ed9252d09314"
+      }
+    },
+    {
+      "original_case": "gelu_grad_three_stage",
+      "original_variant": "single_u1",
+      "case": "gelu_grad_three_stage",
+      "variant": "three_stage_post",
+      "unroll": 1,
+      "cycles": 932,
+      "camodel": 854,
+      "strategy": "已有三段切分 U1 对照",
+      "label": "三段循环 · POST_UPDATE · 每段 U1",
+      "files": {
+        "original_cce": [
+          {
+            "label": "完整 CCE",
+            "path": "gelu_grad_three_stage/three_stage_post/source/kernel.cce"
+          },
+          {
+            "label": "CAModel 完整用例说明",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel_case/README.txt"
+          },
+          {
+            "label": "CAModel 构建运行入口",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel_case/run.py"
+          },
+          {
+            "label": "CAModel host 源码",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel_case/host.cpp"
+          }
+        ],
+        "comparison": [
+          {
+            "label": "core0.veccore0.instr_popped_log.dump",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel/core0.veccore0.instr_popped_log.dump"
+          },
+          {
+            "label": "core0.veccore0.instr_log.dump",
+            "path": "gelu_grad_three_stage/three_stage_post/camodel/core0.veccore0.instr_log.dump"
+          },
+          {
+            "label": "1_summary.json",
+            "path": "gelu_grad_three_stage/three_stage_post/evidence/1_summary.json"
+          },
+          {
+            "label": "2_validation.json",
+            "path": "gelu_grad_three_stage/three_stage_post/evidence/2_validation.json"
+          }
+        ]
+      },
+      "shared_binary_sha256": {
+        "input.bin": "15e6b0e969b39070728e1f632dc80e15f149c5312d51754a09b2a29db0b78d83",
+        "output.bin": "49f05160fb49e1efd3381e8e14ce7e778f322dd4fe3f9bc38fa0ed9252d09314"
+      }
+    },
+    {
+      "original_case": "mhc_sinkhorn",
+      "original_variant": "m128_element_major",
+      "case": "mhc_sinkhorn",
+      "variant": "m128_element_major_split4_15",
+      "unroll": 1,
+      "cycles": 4364,
+      "camodel": 4600,
+      "strategy": "已有 4+15 切分重排 U1 对照",
+      "label": "128 矩阵 · Element-major 4+15 切分＋重排",
+      "files": {
+        "original_cce": [
+          {
+            "label": "实际编译 CCE · 4+15 切分重排",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/source/kernel.cce"
+          }
+        ],
+        "comparison": [
+          {
+            "label": "core0.veccore0.instr_popped_log.dump",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/camodel/core0.veccore0.instr_popped_log.dump"
+          },
+          {
+            "label": "core0.veccore0.instr_log.dump",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/camodel/core0.veccore0.instr_log.dump"
+          },
+          {
+            "label": "1_summary.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/1_summary.json"
+          },
+          {
+            "label": "2_validation.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/2_validation.json"
+          },
+          {
+            "label": "3_experiment.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/3_experiment.json"
+          },
+          {
+            "label": "4_optimization.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/4_optimization.json"
+          },
+          {
+            "label": "5_spill_summary.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/5_spill_summary.json"
+          },
+          {
+            "label": "6_layout.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/6_layout.json"
+          },
+          {
+            "label": "7_commands.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/7_commands.json"
+          },
+          {
+            "label": "8_comparison.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/8_comparison.json"
+          },
+          {
+            "label": "9_canonical_input.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/9_canonical_input.json"
+          },
+          {
+            "label": "10_config_hashes.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/10_config_hashes.json"
+          },
+          {
+            "label": "11_native_run.log",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/11_native_run.log"
+          },
+          {
+            "label": "12_comparison.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/12_comparison.json"
+          },
+          {
+            "label": "13_config_hashes.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/13_config_hashes.json"
+          },
+          {
+            "label": "14_dependency_edges.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/14_dependency_edges.json"
+          },
+          {
+            "label": "15_memory_records.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/15_memory_records.json"
+          },
+          {
+            "label": "16_local_canonical.json",
+            "path": "mhc_sinkhorn/m128_element_major_split4_15/evidence/16_local_canonical.json"
+          }
+        ]
+      },
+      "shared_binary_sha256": {}
+    },
+    {
+      "original_case": "flash_attention_grad_front",
+      "original_variant": "u2_concentrated_spill",
+      "case": "flash_attention_grad_front",
+      "variant": "u2_original",
+      "unroll": 2,
+      "cycles": 201,
+      "camodel": 234,
+      "strategy": "已有同 U2 无 spill 重排对照",
+      "label": "原序直接展开 U2",
+      "files": {
+        "original_cce": [
+          {
+            "label": "完整 CCE",
+            "path": "flash_attention_grad_front/u2_original/source/kernel.cce"
+          },
+          {
+            "label": "编译后 PC 回放",
+            "path": "flash_attention_grad_front/u2_original/source/compiled_pc_replay.cce"
+          },
+          {
+            "label": "CAModel 完整用例说明",
+            "path": "flash_attention_grad_front/u2_original/camodel_case/README.txt"
+          },
+          {
+            "label": "CAModel 构建运行入口",
+            "path": "flash_attention_grad_front/u2_original/camodel_case/run.py"
+          },
+          {
+            "label": "CAModel host 源码",
+            "path": "flash_attention_grad_front/u2_original/camodel_case/host.cpp"
+          }
+        ],
+        "comparison": [
+          {
+            "label": "core0.veccore0.instr_popped_log.dump",
+            "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_popped_log.dump"
+          },
+          {
+            "label": "core0.veccore0.instr_log.dump",
+            "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_log.dump"
+          },
+          {
+            "label": "1_summary.json",
+            "path": "flash_attention_grad_front/u2_original/evidence/1_summary.json"
+          },
+          {
+            "label": "2_validation.json",
+            "path": "flash_attention_grad_front/u2_original/evidence/2_validation.json"
+          },
+          {
+            "label": "3_alignment_audit.json",
+            "path": "flash_attention_grad_front/u2_original/evidence/3_alignment_audit.json"
+          },
+          {
+            "label": "4_commands.json",
+            "path": "flash_attention_grad_front/u2_original/evidence/4_commands.json"
+          }
+        ]
+      },
+      "shared_binary_sha256": {
+        "input.bin": "671b44b05fe567a011ef171f5ee9069982412356cd6a6a4bf73b42d8288a1c18",
+        "output.bin": "8e275954ea687a930c49daa08358fe1ffe4f06af66c8c1eb1f0e7ad3f47c569d"
+      }
+    }
+  ],
+  "limitations": [
+    "只归档已有结果，不重新预测或校准。",
+    "保留各版本的模型快照、scalar/VMOV/GSU 限制；不能把历史结果声称为当前模型的完整指令回放。",
+    "未执行的局部预测不由全局结果填充。源码预测不包含 compiler spill 时，不充当软件优化结果。",
+    "MHC 按矩阵数和冻结/新校准 GSU 参数分组画图；不跨参数或 unroll 选软件对照。"
+  ]
+}

@@ -1,0 +1,1286 @@
+{
+  "schema_version": 2,
+  "context": [
+    {
+      "kind": "instruction",
+      "instruction_id": "logsigmoid.vf0.pc13b34104.0",
+      "opcode": "PSET_B32",
+      "instruction_class": "compute",
+      "form": "b32",
+      "inputs": [],
+      "outputs": [
+        {
+          "value_id": "p1.def0",
+          "role": "destination",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "dependencies": [],
+      "attributes": {
+        "rv_opcode": "RV_PSET",
+        "rv_pc": "0x13b34104",
+        "rv_detail": "Dtype: B32  Pd[1], #pattern=0, ",
+        "replay_dynamic_id": 57,
+        "rv_dtype": "B32",
+        "pattern": "PAT_ALL"
+      },
+      "source_location": {
+        "source": "CAModel decoded instruction",
+        "line": null,
+        "column": null,
+        "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+      }
+    },
+    {
+      "kind": "instruction",
+      "instruction_id": "logsigmoid.vf0.pc13b34108.1",
+      "opcode": "VDUP",
+      "instruction_class": "compute",
+      "form": "b32",
+      "inputs": [
+        {
+          "value_id": "constant.uint32.0.def1",
+          "role": "source",
+          "dtype": null,
+          "memory_access": null
+        },
+        {
+          "value_id": "p1.def0",
+          "role": "predicate",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "outputs": [
+        {
+          "value_id": "v0.def2",
+          "role": "destination",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "dependencies": [],
+      "attributes": {
+        "rv_opcode": "RV_VDUPS",
+        "rv_pc": "0x13b34108",
+        "rv_detail": "Dtype: B32  Vd[0], Sn[0]=0x0, Sn2[1]=0x0, #pm=1, Pg[1], ",
+        "replay_dynamic_id": 58,
+        "rv_dtype": "B32"
+      },
+      "source_location": {
+        "source": "CAModel decoded instruction",
+        "line": null,
+        "column": null,
+        "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+      }
+    },
+    {
+      "kind": "loop",
+      "loop_id": "logsigmoid.vf0.pc13b34110.2",
+      "induction": {
+        "variable_id": "iter_13b34110",
+        "start": 0,
+        "step": 1
+      },
+      "count": 48,
+      "unroll": 1,
+      "carried_values": [
+        {
+          "logical_id": "p1",
+          "entry_value_id": null,
+          "back_edge_value_id": "p1.def4",
+          "exit_value_id": "p1.def23"
+        },
+        {
+          "logical_id": "counter.s64",
+          "entry_value_id": "counter.s64.def3",
+          "back_edge_value_id": "counter.s64.def5",
+          "exit_value_id": "counter.s64.def24"
+        },
+        {
+          "logical_id": "memory.fp32",
+          "entry_value_id": "memory.fp32.def6",
+          "back_edge_value_id": "memory.fp32.def22",
+          "exit_value_id": "memory.fp32.def25"
+        },
+        {
+          "logical_id": "v1",
+          "entry_value_id": null,
+          "back_edge_value_id": "v1.def21",
+          "exit_value_id": "v1.def26"
+        },
+        {
+          "logical_id": "v2",
+          "entry_value_id": null,
+          "back_edge_value_id": "v2.def8",
+          "exit_value_id": "v2.def27"
+        },
+        {
+          "logical_id": "constant.fp32.bf800000",
+          "entry_value_id": "constant.fp32.bf800000.def10",
+          "back_edge_value_id": "constant.fp32.bf800000.def10",
+          "exit_value_id": "constant.fp32.bf800000.def28"
+        },
+        {
+          "logical_id": "constant.fp32.3f800000",
+          "entry_value_id": "constant.fp32.3f800000.def13",
+          "back_edge_value_id": "constant.fp32.3f800000.def13",
+          "exit_value_id": "constant.fp32.3f800000.def29"
+        },
+        {
+          "logical_id": "v3",
+          "entry_value_id": null,
+          "back_edge_value_id": "v3.def14",
+          "exit_value_id": "v3.def30"
+        },
+        {
+          "logical_id": "v4",
+          "entry_value_id": null,
+          "back_edge_value_id": "v4.def18",
+          "exit_value_id": "v4.def31"
+        },
+        {
+          "logical_id": "v5",
+          "entry_value_id": null,
+          "back_edge_value_id": "v5.def17",
+          "exit_value_id": "v5.def32"
+        },
+        {
+          "logical_id": "p2",
+          "entry_value_id": null,
+          "back_edge_value_id": "p2.def19",
+          "exit_value_id": "p2.def33"
+        }
+      ],
+      "body": [
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34114.3",
+          "opcode": "PLT",
+          "instruction_class": "compute",
+          "form": "b32",
+          "inputs": [
+            {
+              "value_id": "counter.s64.def3",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "p1.def4",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "counter.s64.def5",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_PLT",
+            "rv_pc": "0x13b34114",
+            "rv_detail": "Dtype: B32  Pd[1], Sn[64]=0xbc0, ",
+            "replay_dynamic_id": 61,
+            "rv_dtype": "B32",
+            "scalar_counter_step": 64,
+            "first_observed_count_before_update": 3072
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34118.4",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def6",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 0,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b34110",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def7",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b34118",
+            "rv_detail": "Vd[1], Sn[6]=0x0, Sn2[7]=0x0, Am[0]=0x0, dist:NORAML, ",
+            "replay_dynamic_id": 62
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b3411c.5",
+          "opcode": "VMIN",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def7",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v0.def2",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def8",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMIN",
+            "rv_pc": "0x13b3411c",
+            "rv_detail": "Dtype: F32  Vd[2], Vn[1], Vm[0], Pg[1], ",
+            "replay_dynamic_id": 63,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34120.6",
+          "opcode": "VABS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def7",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def9",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VABS_FP",
+            "rv_pc": "0x13b34120",
+            "rv_detail": "Dtype: F32  Vd[1], Vn[1], Pg[1], ",
+            "replay_dynamic_id": 64,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34124.7",
+          "opcode": "VMULS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def9",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.bf800000.def10",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def11",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMULS",
+            "rv_pc": "0x13b34124",
+            "rv_detail": "Dtype: F32  Vd[1], Vn[1], Sm[8]=0x0, Sm2[9]=0xbf80, Pg[1], ",
+            "replay_dynamic_id": 65,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34128.8",
+          "opcode": "VEXP",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def11",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def12",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VEXP",
+            "rv_pc": "0x13b34128",
+            "rv_detail": "Dtype: F32  Vd[1], Vn[1], Pg[1], ",
+            "replay_dynamic_id": 66,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b3412c.9",
+          "opcode": "VADDS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def12",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.3f800000.def13",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def14",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VADDS",
+            "rv_pc": "0x13b3412c",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[1], Sm[10]=0x0, Sm2[11]=0x3f80, Pg[1], ",
+            "replay_dynamic_id": 67,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34130.10",
+          "opcode": "VADDS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def14",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.bf800000.def10",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def15",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VADDS",
+            "rv_pc": "0x13b34130",
+            "rv_detail": "Dtype: F32  Vd[4], Vn[3], Sm[8]=0x0, Sm2[9]=0xbf80, Pg[1], ",
+            "replay_dynamic_id": 68,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34134.11",
+          "opcode": "VDIV",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def12",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v4.def15",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def16",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VDIV",
+            "rv_pc": "0x13b34134",
+            "rv_detail": "Dtype: F32  Vd[4], Vn[1], Vm[4], Pg[1], ",
+            "replay_dynamic_id": 69,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34138.12",
+          "opcode": "VLN",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def14",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v5.def17",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLN",
+            "rv_pc": "0x13b34138",
+            "rv_detail": "Dtype: F32  Vd[5], Vn[3], Pg[1], ",
+            "replay_dynamic_id": 70,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b3413c.13",
+          "opcode": "VMUL",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v5.def17",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v4.def16",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def18",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMUL",
+            "rv_pc": "0x13b3413c",
+            "rv_detail": "Dtype: F32  Vd[4], Vn[5], Vm[4], Pg[1], ",
+            "replay_dynamic_id": 71,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34140.14",
+          "opcode": "VCMPS_NE",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def14",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.3f800000.def13",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "p2.def19",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VCMPS_NE",
+            "rv_pc": "0x13b34140",
+            "rv_detail": "Dtype: F32  Pd[2], Vn[3], Sm[10]=0x0, Sm2[11]=0x3f80, Pg[1], ",
+            "replay_dynamic_id": 72,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34144.15",
+          "opcode": "VSEL",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v4.def18",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v1.def12",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p2.def19",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def20",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSEL",
+            "rv_pc": "0x13b34144",
+            "rv_detail": "Dtype: B32  Vd[1], Vn[4], Vm[1], Pg[2], ",
+            "replay_dynamic_id": 73,
+            "rv_dtype": "B32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b34148.16",
+          "opcode": "VSUB",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def8",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v1.def20",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v1.def21",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSUB",
+            "rv_pc": "0x13b34148",
+            "rv_detail": "Dtype: F32  Vd[1], Vn[2], Vm[1], Pg[1], ",
+            "replay_dynamic_id": 74,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "logsigmoid.vf0.pc13b3414c.17",
+          "opcode": "VSTS",
+          "instruction_class": "store",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v1.def21",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def4",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "memory.fp32.def22",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 3072,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b34110",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "write",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VST",
+            "rv_pc": "0x13b3414c",
+            "rv_detail": "Vd[1], Sn[12]=0x3000, Sn2[13]=0x0, Am[0]=0x0, Pg[1], dist:NORM_B32, ",
+            "replay_dynamic_id": 75
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/logsigmoid/cce/kernel.cce"
+          }
+        }
+      ],
+      "source_location": null
+    }
+  ],
+  "values": {
+    "p1.def0": {
+      "definition_id": "p1.def0",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34104.0",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.uint32.0.def1": {
+      "definition_id": "constant.uint32.0.def1",
+      "logical_id": "constant.uint32.0",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v0.def2": {
+      "definition_id": "v0.def2",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34108.1",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "counter.s64.def3": {
+      "definition_id": "counter.s64.def3",
+      "logical_id": "counter.s64",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "p1.def4": {
+      "definition_id": "p1.def4",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34114.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "counter.s64.def5": {
+      "definition_id": "counter.s64.def5",
+      "logical_id": "counter.s64",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34114.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def6": {
+      "definition_id": "memory.fp32.def6",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "v1.def7": {
+      "definition_id": "v1.def7",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34118.4",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def8": {
+      "definition_id": "v2.def8",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b3411c.5",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def9": {
+      "definition_id": "v1.def9",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34120.6",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.bf800000.def10": {
+      "definition_id": "constant.fp32.bf800000.def10",
+      "logical_id": "constant.fp32.bf800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def11": {
+      "definition_id": "v1.def11",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34124.7",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def12": {
+      "definition_id": "v1.def12",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34128.8",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3f800000.def13": {
+      "definition_id": "constant.fp32.3f800000.def13",
+      "logical_id": "constant.fp32.3f800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def14": {
+      "definition_id": "v3.def14",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b3412c.9",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def15": {
+      "definition_id": "v4.def15",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34130.10",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def16": {
+      "definition_id": "v4.def16",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34134.11",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v5.def17": {
+      "definition_id": "v5.def17",
+      "logical_id": "v5",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34138.12",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def18": {
+      "definition_id": "v4.def18",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b3413c.13",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "p2.def19": {
+      "definition_id": "p2.def19",
+      "logical_id": "p2",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34140.14",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def20": {
+      "definition_id": "v1.def20",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34144.15",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def21": {
+      "definition_id": "v1.def21",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34148.16",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def22": {
+      "definition_id": "memory.fp32.def22",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b3414c.17",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "p1.def23": {
+      "definition_id": "p1.def23",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "counter.s64.def24": {
+      "definition_id": "counter.s64.def24",
+      "logical_id": "counter.s64",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def25": {
+      "definition_id": "memory.fp32.def25",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "v1.def26": {
+      "definition_id": "v1.def26",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def27": {
+      "definition_id": "v2.def27",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.bf800000.def28": {
+      "definition_id": "constant.fp32.bf800000.def28",
+      "logical_id": "constant.fp32.bf800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3f800000.def29": {
+      "definition_id": "constant.fp32.3f800000.def29",
+      "logical_id": "constant.fp32.3f800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def30": {
+      "definition_id": "v3.def30",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def31": {
+      "definition_id": "v4.def31",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v5.def32": {
+      "definition_id": "v5.def32",
+      "logical_id": "v5",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "p2.def33": {
+      "definition_id": "p2.def33",
+      "logical_id": "p2",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "logsigmoid.vf0.pc13b34110.2",
+      "storage_object_id": null,
+      "source_location": null
+    }
+  },
+  "storage_objects": {
+    "ub": {
+      "object_id": "ub",
+      "storage": "UB",
+      "shape": [
+        262144
+      ],
+      "source_location": null
+    }
+  },
+  "params": {},
+  "uarch": {},
+  "source": {
+    "adapter": "compiled_cce_replay",
+    "case": "logsigmoid",
+    "vf_index": 0,
+    "scalar_timing_modeled": false
+  }
+}

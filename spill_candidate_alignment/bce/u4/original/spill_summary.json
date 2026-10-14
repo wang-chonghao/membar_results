@@ -1,0 +1,160 @@
+{
+  "case": "bce",
+  "unroll": 4,
+  "method": "manual",
+  "selected_loop": "loop",
+  "source_sha256": "2c52012f9fe4940c60fb54b61a77263048c89100cd709fe56e6025878c339dd5",
+  "baseline_source_sha256": "0a7e71f94ed10de7d6f7acfba6b5ec608f5dfb16893856b61c01246dc588ca1e",
+  "metrics": {
+    "vf_cycles": [
+      284
+    ],
+    "total_vf_cycles": 284,
+    "dynamic_rv_opcounts": {
+      "RV_PLT": 16,
+      "RV_SEND": 1,
+      "RV_SMOV": 5,
+      "RV_SMOVI": 1,
+      "RV_VABS_FP": 16,
+      "RV_VADDS": 32,
+      "RV_VDUPS": 16,
+      "RV_VEXP": 16,
+      "RV_VLDI": 64,
+      "RV_VLN": 16,
+      "RV_VLOOPv2": 1,
+      "RV_VMINS": 16,
+      "RV_VMUL": 64,
+      "RV_VMULS": 16,
+      "RV_VSTI": 16,
+      "RV_VSUB": 64
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 96,
+    "vector_loads": 64,
+    "vector_stores": 16,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "NORAML": 16
+    },
+    "loops": [
+      {
+        "pc": "0x13b33118",
+        "detail": "Sn[3]=0x4, Sn2[4]=0x1000, instr_num : 88, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 1.1106576121022727e-06,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 4.0,
+  "elapsed_seconds": 37.33683188201394,
+  "camodel_speedup_percent": -2.158273381294973,
+  "prediction": {
+    "case": "u4",
+    "title": "bce U4",
+    "cce_source_sha256": "2c52012f9fe4940c60fb54b61a77263048c89100cd709fe56e6025878c339dd5",
+    "camodel_vf_cycles": [
+      284
+    ],
+    "camodel_vf_cycles_sum": 284,
+    "vfsim_cycles": 259,
+    "prediction_accuracy_percent": 91.19718309859155,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 284,
+        "expected_counts": {
+          "PLT": 16,
+          "VDUP": 16,
+          "VLDS": 64,
+          "VMINS": 16,
+          "VABS": 16,
+          "VMULS": 16,
+          "VEXP": 16,
+          "VADDS": 32,
+          "VLN": 16,
+          "VSUB": 64,
+          "VMUL": 64,
+          "VSTS": 16
+        },
+        "json_counts": {
+          "PLT": 16,
+          "VDUP": 16,
+          "VLDS": 64,
+          "VMINS": 16,
+          "VABS": 16,
+          "VMULS": 16,
+          "VEXP": 16,
+          "VADDS": 32,
+          "VLN": 16,
+          "VSUB": 64,
+          "VMUL": 64,
+          "VSTS": 16
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOV": 5
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 259,
+        "camodel_cycles": 284
+      }
+    ],
+    "timing_warning_count": 38,
+    "timing_warning_kinds": [
+      "compatible_forwarding_pair_fallback",
+      "compatible_ii_pair_fallback",
+      "compatible_isa_form_fallback",
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 272,
+    "average_compute_ipc": 0.9577464788732394,
+    "dual_issue_cycles": 132,
+    "peak_compute_issue_per_cycle": 2
+  },
+  "unroll_effective": true
+}

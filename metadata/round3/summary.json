@@ -1,0 +1,1322 @@
+[
+  {
+    "case": "groupnorm_swish_dx",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 6144,
+      "dtype": "fp32",
+      "original_vectors_per_iteration": 2
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          1645
+        ],
+        "total_vf_cycles": 1645,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 96,
+          "RV_SADDI": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 2,
+          "RV_VADD": 192,
+          "RV_VADDS": 192,
+          "RV_VDIV": 192,
+          "RV_VEXP": 96,
+          "RV_VLD": 192,
+          "RV_VLDI": 5,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 576,
+          "RV_VMULS": 192,
+          "RV_VST": 96,
+          "RV_VSUB": 192
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          1645
+        ],
+        "total_vf_cycles": 1645,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 96,
+          "RV_SADDI": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 2,
+          "RV_VADD": 192,
+          "RV_VADDS": 192,
+          "RV_VDIV": 192,
+          "RV_VEXP": 96,
+          "RV_VLD": 192,
+          "RV_VLDI": 5,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 576,
+          "RV_VMULS": 192,
+          "RV_VST": 96,
+          "RV_VSUB": 192
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.8030963744308792e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.8030963744308792e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 53,
+      "vector_loads": 197,
+      "vector_stores": 96,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "BRC_B32": 5,
+        "NORAML": 4
+      },
+      "loops": [
+        {
+          "pc": "0x13b40224",
+          "detail": "Sn[66]=0x30, instr_num : 42, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "logsigmoid",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32"
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          544
+        ],
+        "total_vf_cycles": 544,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VABS_FP": 48,
+          "RV_VADDS": 96,
+          "RV_VBR": 1,
+          "RV_VCMPS_NE": 48,
+          "RV_VDIV": 48,
+          "RV_VEXP": 48,
+          "RV_VLD": 48,
+          "RV_VLN": 48,
+          "RV_VLOOPv2": 1,
+          "RV_VMIN": 48,
+          "RV_VMUL": 48,
+          "RV_VMULS": 48,
+          "RV_VSEL": 48,
+          "RV_VST": 48,
+          "RV_VSUB": 48
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          567
+        ],
+        "total_vf_cycles": 567,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VABS_FP": 48,
+          "RV_VADDS": 96,
+          "RV_VCMPS_NE": 48,
+          "RV_VDIV": 48,
+          "RV_VDUPS": 1,
+          "RV_VEXP": 48,
+          "RV_VLD": 48,
+          "RV_VLN": 48,
+          "RV_VLOOPv2": 1,
+          "RV_VMIN": 48,
+          "RV_VMUL": 48,
+          "RV_VMULS": 48,
+          "RV_VSEL": 48,
+          "RV_VST": 48,
+          "RV_VSUB": 48
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 4.765726639988088e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 4.765726639988088e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 21,
+      "vector_loads": 48,
+      "vector_stores": 48,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "NORAML": 1
+      },
+      "loops": [
+        {
+          "pc": "0x13b34110",
+          "detail": "Sn[5]=0x30, Sn2[6]=0x0, instr_num : 15, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "layernorm_dx",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32"
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          319
+        ],
+        "total_vf_cycles": 319,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VLD": 240,
+          "RV_VLDI": 1,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 144,
+          "RV_VMULS": 96,
+          "RV_VST": 48,
+          "RV_VSUB": 96
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          319
+        ],
+        "total_vf_cycles": 319,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VLD": 240,
+          "RV_VLDI": 1,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 144,
+          "RV_VMULS": 96,
+          "RV_VST": 48,
+          "RV_VSUB": 96
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.4883130750042994e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.4883130750042994e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 20,
+      "vector_loads": 241,
+      "vector_stores": 48,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "NORAML": 3,
+        "BRC_B32": 3
+      },
+      "loops": [
+        {
+          "pc": "0x13b37214",
+          "detail": "Sn[7]=0x30, Sn2[8]=0x6000, instr_num : 13, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "softplus",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32"
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          101,
+          114,
+          170,
+          160,
+          172,
+          190,
+          135,
+          168,
+          160,
+          172,
+          190,
+          137
+        ],
+        "total_vf_cycles": 1869,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 576,
+          "RV_SEND": 12,
+          "RV_SMOVI": 12,
+          "RV_VADD": 96,
+          "RV_VADDS": 144,
+          "RV_VEXP": 96,
+          "RV_VLD": 672,
+          "RV_VLN": 96,
+          "RV_VLOOPv2": 12,
+          "RV_VMAXS": 48,
+          "RV_VMINS": 48,
+          "RV_VMULS": 48,
+          "RV_VST": 576
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          515
+        ],
+        "total_vf_cycles": 515,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VADD": 96,
+          "RV_VADDS": 144,
+          "RV_VEXP": 96,
+          "RV_VLD": 48,
+          "RV_VLN": 96,
+          "RV_VLOOPv2": 1,
+          "RV_VMAXS": 48,
+          "RV_VMINS": 48,
+          "RV_VMULS": 48,
+          "RV_VST": 48
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.2038155041693699e-06,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.2038155041693699e-06,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 19,
+      "vector_loads": 48,
+      "vector_stores": 48,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "NORAML": 1
+      },
+      "loops": [
+        {
+          "pc": "0x13b34108",
+          "detail": "Sn[5]=0x30, Sn2[6]=0x0, instr_num : 15, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "moe_softplus",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32"
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          771
+        ],
+        "total_vf_cycles": 771,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VABS_FP": 48,
+          "RV_VADD": 48,
+          "RV_VADDS": 96,
+          "RV_VCMPS_LT": 48,
+          "RV_VDIV": 48,
+          "RV_VDUPS": 50,
+          "RV_VEXP": 48,
+          "RV_VLD": 48,
+          "RV_VLN": 48,
+          "RV_VLOOPv2": 1,
+          "RV_VMAX": 48,
+          "RV_VMUL": 48,
+          "RV_VMULS": 144,
+          "RV_VSEL": 48,
+          "RV_VSQRT": 48,
+          "RV_VST": 144,
+          "RV_VSUB": 48
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          771
+        ],
+        "total_vf_cycles": 771,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VABS_FP": 48,
+          "RV_VADD": 48,
+          "RV_VADDS": 96,
+          "RV_VCMPS_LT": 48,
+          "RV_VDIV": 48,
+          "RV_VDUPS": 50,
+          "RV_VEXP": 48,
+          "RV_VLD": 48,
+          "RV_VLN": 48,
+          "RV_VLOOPv2": 1,
+          "RV_VMAX": 48,
+          "RV_VMUL": 48,
+          "RV_VMULS": 144,
+          "RV_VSEL": 48,
+          "RV_VSQRT": 48,
+          "RV_VST": 144,
+          "RV_VSUB": 48
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 4.658522666095566e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 4.658522666095566e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 29,
+      "vector_loads": 48,
+      "vector_stores": 144,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "NORAML": 1
+      },
+      "loops": [
+        {
+          "pc": "0x13b3a214",
+          "detail": "Sn[5]=0x30, Sn2[6]=0x0, instr_num : 22, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "causal_conv",
+    "status": "passed",
+    "constants": {
+      "iterations": 24,
+      "elements": 9408,
+      "dtype": "fp16",
+      "shape": [
+        49,
+        192
+      ],
+      "original_outputs_per_iteration": 4
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          1266
+        ],
+        "total_vf_cycles": 1266,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 1,
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_SMOV": 2,
+          "RV_SMOVI": 23,
+          "RV_VADD": 784,
+          "RV_VCVT_F2F": 604,
+          "RV_VDUPS": 2,
+          "RV_VLDI": 408,
+          "RV_VLOOPv2": 2,
+          "RV_VMUL": 588,
+          "RV_VSTI": 196
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          1266
+        ],
+        "total_vf_cycles": 1266,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 1,
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_SMOV": 2,
+          "RV_SMOVI": 23,
+          "RV_VADD": 784,
+          "RV_VCVT_F2F": 604,
+          "RV_VDUPS": 2,
+          "RV_VLDI": 408,
+          "RV_VLOOPv2": 2,
+          "RV_VMUL": 588,
+          "RV_VSTI": 196
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 220,
+      "vector_loads": 408,
+      "vector_stores": 196,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "UNPK_B16": 40
+      },
+      "loops": [
+        {
+          "pc": "0x13b38268",
+          "detail": "Sn[3]=0x18, Sn2[4]=0x4e00, instr_num : 52, layer: 0001, last: 0,"
+        },
+        {
+          "pc": "0x13b38420",
+          "detail": "Sn[3]=0x18, Sn2[4]=0x4e00, instr_num : 52, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "rope_grad",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 6144,
+      "dtype": "fp32",
+      "shape": [
+        1,
+        1,
+        48,
+        128
+      ]
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          439
+        ],
+        "total_vf_cycles": 439,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_SEND": 1,
+          "RV_SMOV": 48,
+          "RV_SMOVI": 1,
+          "RV_SNOP": 48,
+          "RV_VADD": 48,
+          "RV_VLD": 288,
+          "RV_VLOOPv2": 49,
+          "RV_VMUL": 192,
+          "RV_VST": 96,
+          "RV_VSUB": 48
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          439
+        ],
+        "total_vf_cycles": 439,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_SEND": 1,
+          "RV_SMOV": 48,
+          "RV_SMOVI": 1,
+          "RV_SNOP": 48,
+          "RV_VADD": 48,
+          "RV_VLD": 288,
+          "RV_VLOOPv2": 49,
+          "RV_VMUL": 192,
+          "RV_VST": 96,
+          "RV_VSUB": 48
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 9.795556721314824e-08,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 9.795556721314824e-08,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 22,
+      "vector_loads": 288,
+      "vector_stores": 96,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "NORAML": 6
+      },
+      "loops": [
+        {
+          "pc": "0x13b46208",
+          "detail": "Sn[7]=0x30, Sn2[8]=0x0, instr_num : 18, layer: 0010, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        },
+        {
+          "pc": "0x13b46210",
+          "detail": "Sn[6]=0x1, Sn2[7]=0x30, instr_num : 15, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "rmsnorm_dx",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32"
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          218
+        ],
+        "total_vf_cycles": 218,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VLD": 144,
+          "RV_VLDI": 2,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 192,
+          "RV_VST": 48,
+          "RV_VSUB": 48
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          218
+        ],
+        "total_vf_cycles": 218,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 48,
+          "RV_SEND": 1,
+          "RV_SMOVI": 1,
+          "RV_VLD": 144,
+          "RV_VLDI": 2,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 192,
+          "RV_VST": 48,
+          "RV_VSUB": 48
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.3767944961884382e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.3767944961884382e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 16,
+      "vector_loads": 146,
+      "vector_stores": 48,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "BRC_B32": 2,
+        "NORAML": 3
+      },
+      "loops": [
+        {
+          "pc": "0x13b3a110",
+          "detail": "Sn[5]=0x30, Sn2[6]=0x9000, instr_num : 10, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "softmax_ce",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32",
+      "logical_shape": [
+        48,
+        128
+      ],
+      "modeled_tail_shape": [
+        48,
+        64
+      ],
+      "preceding_partial": "First 64 columns, one-hot labels; stats over all 128 columns"
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          356
+        ],
+        "total_vf_cycles": 356,
+        "dynamic_rv_opcounts": {
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_VADD": 48,
+          "RV_VDIV": 48,
+          "RV_VEXP": 48,
+          "RV_VLD": 288,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 48,
+          "RV_VST": 96,
+          "RV_VSUB": 144
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          356
+        ],
+        "total_vf_cycles": 356,
+        "dynamic_rv_opcounts": {
+          "RV_PSET": 1,
+          "RV_SEND": 1,
+          "RV_VADD": 48,
+          "RV_VDIV": 48,
+          "RV_VEXP": 48,
+          "RV_VLD": 288,
+          "RV_VLOOPv2": 1,
+          "RV_VMUL": 48,
+          "RV_VST": 96,
+          "RV_VSUB": 144
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 7.152557373046875e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 7.152557373046875e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 20,
+      "vector_loads": 288,
+      "vector_stores": 96,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "BRC_B32": 3,
+        "NORAML": 3
+      },
+      "loops": [
+        {
+          "pc": "0x13b3d20c",
+          "detail": "Sn[7]=0x30, Sn2[8]=0x6000, instr_num : 15, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "mhc_partial",
+    "status": "passed",
+    "constants": {
+      "iterations": 48,
+      "elements": 3072,
+      "dtype": "fp32",
+      "shape": [
+        4,
+        48,
+        64
+      ],
+      "group_k": 4
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          1145
+        ],
+        "total_vf_cycles": 1145,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 2,
+          "RV_SADD": 240,
+          "RV_SADDI": 48,
+          "RV_SEND": 1,
+          "RV_SMOV": 145,
+          "RV_SMOVI": 8,
+          "RV_VADD": 672,
+          "RV_VADDS": 48,
+          "RV_VDIV": 48,
+          "RV_VDUPS": 3,
+          "RV_VLD": 192,
+          "RV_VLDA": 192,
+          "RV_VLDUI": 192,
+          "RV_VLOOPv2": 1,
+          "RV_VMULS": 48,
+          "RV_VSQRT": 48,
+          "RV_VSTAI": 96,
+          "RV_VSTUI": 96
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          1145
+        ],
+        "total_vf_cycles": 1145,
+        "dynamic_rv_opcounts": {
+          "RV_PLT": 2,
+          "RV_SADD": 240,
+          "RV_SADDI": 48,
+          "RV_SEND": 1,
+          "RV_SMOV": 145,
+          "RV_SMOVI": 8,
+          "RV_VADD": 672,
+          "RV_VADDS": 48,
+          "RV_VDIV": 48,
+          "RV_VDUPS": 3,
+          "RV_VLD": 192,
+          "RV_VLDA": 192,
+          "RV_VLDUI": 192,
+          "RV_VLOOPv2": 1,
+          "RV_VMULS": 48,
+          "RV_VSQRT": 48,
+          "RV_VSTAI": 96,
+          "RV_VSTUI": 96
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 2.086162567138672e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 2.086162567138672e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 61,
+      "vector_loads": 192,
+      "vector_stores": 0,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 0,
+      "static_load_pc_counts": {
+        "BRC_B32": 4
+      },
+      "loops": [
+        {
+          "pc": "0x13b3d240",
+          "detail": "Sn[7]=0x30, Sn2[8]=0x0, instr_num : 43, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  },
+  {
+    "case": "compressor_softmax",
+    "status": "passed",
+    "constants": {
+      "iterations": 1,
+      "elements": 4096,
+      "dtype": "fp32",
+      "shape": [
+        4,
+        8,
+        128
+      ],
+      "layout": "DND [Sc,Reduce,Row]",
+      "original_sc_per_iteration": 4
+    },
+    "engines": {
+      "ascendc": {
+        "vf_cycles": [
+          1182
+        ],
+        "total_vf_cycles": 1182,
+        "dynamic_rv_opcounts": {
+          "RV_PSET": 2,
+          "RV_SEND": 1,
+          "RV_SMEM_BAR": 60,
+          "RV_SMOVI": 1,
+          "RV_SMOVK": 1,
+          "RV_VADD": 72,
+          "RV_VBR": 1,
+          "RV_VDIV": 64,
+          "RV_VDUPS": 1,
+          "RV_VEXPDIF": 64,
+          "RV_VLD": 192,
+          "RV_VLDI": 42,
+          "RV_VLOOPv2": 3,
+          "RV_VMAX": 72,
+          "RV_VMOV": 133,
+          "RV_VST": 128,
+          "RV_VSTI": 17
+        }
+      },
+      "cce": {
+        "vf_cycles": [
+          1183
+        ],
+        "total_vf_cycles": 1183,
+        "dynamic_rv_opcounts": {
+          "RV_PSET": 2,
+          "RV_SEND": 1,
+          "RV_SMEM_BAR": 60,
+          "RV_SMOVI": 1,
+          "RV_SMOVK": 1,
+          "RV_VADD": 72,
+          "RV_VDIV": 64,
+          "RV_VDUPS": 2,
+          "RV_VEXPDIF": 64,
+          "RV_VLD": 192,
+          "RV_VLDI": 42,
+          "RV_VLOOPv2": 3,
+          "RV_VMAX": 72,
+          "RV_VMOV": 133,
+          "RV_VST": 128,
+          "RV_VSTI": 17
+        }
+      }
+    },
+    "validation": {
+      "bitwise_identical": true,
+      "guard_ok": true,
+      "cce_vs_ascendc": {
+        "ok": true,
+        "max_abs_error": 0.0,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "ascendc_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.1773819430516141e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      },
+      "cce_vs_formula": {
+        "ok": true,
+        "max_abs_error": 1.1773819430516141e-07,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    "stream": {
+      "vf_count": 1,
+      "static_vf_words": 250,
+      "vector_loads": 234,
+      "vector_stores": 145,
+      "predicate_loads": 0,
+      "predicate_stores": 0,
+      "scalar_spill_loads": 0,
+      "scalar_spill_stores": 0,
+      "membars": 60,
+      "static_load_pc_counts": {
+        "NORAML": 52
+      },
+      "loops": [
+        {
+          "pc": "0x13b36260",
+          "detail": "Sn[6]=0x4, Sn2[7]=0x8, instr_num : 32, layer: 0001, last: 0,"
+        },
+        {
+          "pc": "0x13b36384",
+          "detail": "Sn[6]=0x4, Sn2[7]=0x8, instr_num : 114, layer: 0001, last: 0,"
+        },
+        {
+          "pc": "0x13b36580",
+          "detail": "Sn[7]=0x8, Sn2[8]=0xffff, instr_num : 24, layer: 0001, last: 1,"
+        }
+      ]
+    }
+  }
+]

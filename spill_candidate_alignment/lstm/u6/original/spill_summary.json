@@ -1,0 +1,324 @@
+{
+  "case": "lstm",
+  "unroll": 6,
+  "method": "manual",
+  "selected_loop": "i",
+  "source_sha256": "54b1854a4824888bf719370358a042861d5b04e883ba3c6a2c2fc2cec20bc205",
+  "baseline_source_sha256": "7d73c660ea6c9b94a6b5a45e39653f7d930033c3eabec93674b04493590fd617",
+  "metrics": {
+    "vf_cycles": [
+      531
+    ],
+    "total_vf_cycles": 531,
+    "dynamic_rv_opcounts": {
+      "RV_PLT": 16,
+      "RV_PSET": 2,
+      "RV_SEND": 1,
+      "RV_SMEM_BAR": 20,
+      "RV_SMOVI": 33,
+      "RV_SMOVK": 1,
+      "RV_VDUPS": 1,
+      "RV_VLD": 80,
+      "RV_VLDI": 10,
+      "RV_VLOOPv2": 2,
+      "RV_VMUL": 144,
+      "RV_VST": 48,
+      "RV_VSTI": 10,
+      "RV_VSUB": 48
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 209,
+    "vector_loads": 90,
+    "vector_stores": 58,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 20,
+    "static_load_pc_counts": {
+      "NORAML": 40
+    },
+    "loops": [
+      {
+        "pc": "0x13b36278",
+        "detail": "Sn[6]=0x2, Sn2[7]=0x4, instr_num : 146, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b364e8",
+        "detail": "Sn[7]=0x4, Sn2[8]=0x0, instr_num : 21, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 6.354126014240791e-08,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": true,
+    "address_audit_complete": true,
+    "vector_spill_detected": true,
+    "paired_vector_byte_addresses": [
+      269024,
+      269280,
+      269536,
+      269792,
+      270048
+    ],
+    "spill_vector_loads": 10,
+    "spill_vector_stores": 10,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 10,
+    "extra_vector_stores": 10,
+    "added_accesses": [
+      {
+        "direction": "load",
+        "byte_address": 269024,
+        "mode": "NORAML",
+        "count": 2
+      },
+      {
+        "direction": "load",
+        "byte_address": 269280,
+        "mode": "NORAML",
+        "count": 2
+      },
+      {
+        "direction": "load",
+        "byte_address": 269536,
+        "mode": "NORAML",
+        "count": 2
+      },
+      {
+        "direction": "load",
+        "byte_address": 269792,
+        "mode": "NORAML",
+        "count": 2
+      },
+      {
+        "direction": "load",
+        "byte_address": 270048,
+        "mode": "NORAML",
+        "count": 2
+      },
+      {
+        "direction": "store",
+        "byte_address": 269024,
+        "mode": "NORM_B8",
+        "count": 2
+      },
+      {
+        "direction": "store",
+        "byte_address": 269280,
+        "mode": "NORM_B8",
+        "count": 2
+      },
+      {
+        "direction": "store",
+        "byte_address": 269536,
+        "mode": "NORM_B8",
+        "count": 2
+      },
+      {
+        "direction": "store",
+        "byte_address": 269792,
+        "mode": "NORM_B8",
+        "count": 2
+      },
+      {
+        "direction": "store",
+        "byte_address": 270048,
+        "mode": "NORM_B8",
+        "count": 2
+      }
+    ],
+    "removed_accesses": [],
+    "vector_evidence": [
+      {
+        "pc": "0x13b362e4",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=247, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b362f0",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=239, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b362fc",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=231, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b36308",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=223, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b36314",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=215, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b36470",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=247, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3647c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=239, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b36488",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=231, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b36494",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=223, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b364a0",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=215, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b362e4",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=247, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b362f0",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=239, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b362fc",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=231, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b36308",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=223, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b36314",
+        "opcode": "RV_VSTI",
+        "detail": "Vd[1], Sn[95]=0x40000, #offset=215, Pg[0], #p=0, dist:NORM_B8, "
+      },
+      {
+        "pc": "0x13b36470",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=247, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b3647c",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=239, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b36488",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=231, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b36494",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=223, dist:NORAML, #p=0, "
+      },
+      {
+        "pc": "0x13b364a0",
+        "opcode": "RV_VLDI",
+        "detail": "Vd[7], Sn[95]=0x40000, #offset=215, dist:NORAML, #p=0, "
+      }
+    ],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 7.0,
+  "unroll_effective": true,
+  "elapsed_seconds": 43.17158325097989,
+  "camodel_speedup_percent": -188.58695652173913,
+  "prediction": {
+    "case": "u6",
+    "title": "lstm U6",
+    "cce_source_sha256": "54b1854a4824888bf719370358a042861d5b04e883ba3c6a2c2fc2cec20bc205",
+    "camodel_vf_cycles": [
+      531
+    ],
+    "camodel_vf_cycles_sum": 531,
+    "vfsim_cycles": 495,
+    "prediction_accuracy_percent": 93.22033898305084,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 531,
+        "expected_counts": {
+          "PSET_B8": 1,
+          "PSET_B32": 1,
+          "VDUP": 1,
+          "PLT": 16,
+          "VLDS": 90,
+          "MEMBAR": 20,
+          "VSTS": 58,
+          "VSUB": 48,
+          "VMUL": 144
+        },
+        "json_counts": {
+          "PSET_B8": 1,
+          "PSET_B32": 1,
+          "VDUP": 1,
+          "PLT": 16,
+          "VLDS": 90,
+          "MEMBAR": 20,
+          "VSTS": 58,
+          "VSUB": 48,
+          "VMUL": 144
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVK": 1,
+          "RV_SMOVI": 32
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 495,
+        "camodel_cycles": 531
+      }
+    ],
+    "timing_warning_count": 14,
+    "timing_warning_kinds": [
+      "compatible_forwarding_pair_fallback",
+      "compatible_isa_form_fallback",
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 211,
+    "average_compute_ipc": 0.3973634651600753,
+    "dual_issue_cycles": 78,
+    "peak_compute_issue_per_cycle": 2
+  }
+}

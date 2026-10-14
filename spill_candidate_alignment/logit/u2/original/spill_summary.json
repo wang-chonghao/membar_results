@@ -1,0 +1,171 @@
+{
+  "case": "logit",
+  "unroll": 2,
+  "method": "manual",
+  "selected_loop": "i",
+  "source_sha256": "f269196dec6e4329cd94bda6d3c2f0dbc574ca877615443dd11def1f7a2fffd1",
+  "baseline_source_sha256": "32883525a8e395c167d90b58c6a5cf04356e16feebe69ce94d3a4a8eb80811f8",
+  "metrics": {
+    "vf_cycles": [
+      231
+    ],
+    "total_vf_cycles": 231,
+    "dynamic_rv_opcounts": {
+      "RV_PAND": 16,
+      "RV_PLT": 16,
+      "RV_PSET": 1,
+      "RV_SEND": 1,
+      "RV_SMOV": 8,
+      "RV_SMOVI": 1,
+      "RV_SSUBI": 16,
+      "RV_VADDS": 16,
+      "RV_VCMP_EQ": 16,
+      "RV_VCMP_GE": 16,
+      "RV_VCMP_LE": 16,
+      "RV_VCMP_LT": 16,
+      "RV_VDIV": 16,
+      "RV_VDUPS": 4,
+      "RV_VLD": 32,
+      "RV_VLOOPv2": 1,
+      "RV_VMUL": 32,
+      "RV_VMULS": 48,
+      "RV_VSEL": 64,
+      "RV_VST": 16
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 52,
+    "vector_loads": 32,
+    "vector_stores": 16,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "NORAML": 4
+    },
+    "loops": [
+      {
+        "pc": "0x13b3121c",
+        "detail": "Sn[5]=0x8, Sn2[6]=0x0, instr_num : 43, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 8.42143593615674e-06,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 2.0,
+  "elapsed_seconds": 33.2966570929857,
+  "camodel_speedup_percent": -2.212389380530966,
+  "prediction": {
+    "case": "u2",
+    "title": "logit U2",
+    "cce_source_sha256": "f269196dec6e4329cd94bda6d3c2f0dbc574ca877615443dd11def1f7a2fffd1",
+    "camodel_vf_cycles": [
+      231
+    ],
+    "camodel_vf_cycles_sum": 231,
+    "vfsim_cycles": 234,
+    "prediction_accuracy_percent": 98.7012987012987,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 231,
+        "expected_counts": {
+          "PSET_B32": 1,
+          "VDUP": 4,
+          "PLT": 16,
+          "VLDS": 32,
+          "VMULS": 48,
+          "VADDS": 16,
+          "VMUL": 32,
+          "VCMP_LT": 16,
+          "VSEL": 64,
+          "VDIV": 16,
+          "VCMP_GE": 16,
+          "VCMP_LE": 16,
+          "PAND": 16,
+          "VCMP_EQ": 16,
+          "VSTS": 16
+        },
+        "json_counts": {
+          "PSET_B32": 1,
+          "VDUP": 4,
+          "PLT": 16,
+          "VLDS": 32,
+          "VMULS": 48,
+          "VADDS": 16,
+          "VMUL": 32,
+          "VCMP_LT": 16,
+          "VSEL": 64,
+          "VDIV": 16,
+          "VCMP_GE": 16,
+          "VCMP_LE": 16,
+          "PAND": 16,
+          "VCMP_EQ": 16,
+          "VSTS": 16
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVI": 1,
+          "RV_SSUBI": 16,
+          "RV_SMOV": 8
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 234,
+        "camodel_cycles": 231
+      }
+    ],
+    "timing_warning_count": 69,
+    "timing_warning_kinds": [
+      "compatible_ii_pair_fallback",
+      "compatible_isa_form_fallback",
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 277,
+    "average_compute_ipc": 1.199134199134199,
+    "dual_issue_cycles": 126,
+    "peak_compute_issue_per_cycle": 2
+  },
+  "unroll_effective": true
+}

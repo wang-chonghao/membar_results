@@ -1,0 +1,1679 @@
+// Compiled-stream audit listing, not a source-level optimization.
+// Dynamic loops are flattened; scalar address arithmetic uses decoded byte addresses.
+// Recompiling this listing may cause new scheduling/spill; prediction uses canonical.json.
+#include <stdint.h>
+#include "kernel_operator.h"
+__aicore__ inline void compiled_vf_replay() {
+    __VEC_SCOPE__ {
+        vector_bool p1;
+        vector_bool p2;
+        vector_bool p3;
+        vector_bool p4;
+        vector_bool p5;
+        vector_bool p6;
+        vector_bool p7;
+        vector_f32 v0_f32;
+        vector_f32 v10_f32;
+        vector_f32 v11_f32;
+        vector_f32 v12_f32;
+        vector_f32 v13_f32;
+        vector_f32 v14_f32;
+        vector_f32 v15_f32;
+        vector_f32 v16_f32;
+        vector_f32 v17_f32;
+        vector_f32 v18_f32;
+        vector_f32 v19_f32;
+        vector_f32 v1_f32;
+        vector_f32 v20_f32;
+        vector_f32 v21_f32;
+        vector_f32 v22_f32;
+        vector_f32 v23_f32;
+        vector_f32 v2_f32;
+        vector_f32 v3_f32;
+        vector_f32 v4_f32;
+        vector_f32 v5_f32;
+        vector_f32 v6_f32;
+        vector_f32 v7_f32;
+        vector_f32 v8_f32;
+        vector_f32 v9_f32;
+        // PC=0x13b3120c dynamic_id=82 iteration=()
+        // RV_PSET Dtype: B32  Pd[1], #pattern=0, 
+        p1 = pset_b32(PAT_ALL);
+        // PC=0x13b31210 dynamic_id=83 iteration=()
+        // RV_VDUPS Dtype: B32  Vd[0], Sn[0]=0x0, Sn2[1]=0x0, #pm=1, Pg[1], 
+        vdup(v0_f32, 0x0.0p+0f, p1, MODE_ZEROING);
+        // PC=0x13b31214 dynamic_id=84 iteration=()
+        // RV_VDUPS Dtype: B32  Vd[1], Sn[6]=0x0, Sn2[7]=0x3f80, #pm=1, Pg[1], 
+        vdup(v1_f32, 0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b31218 dynamic_id=85 iteration=()
+        // RV_VDUPS Dtype: B32  Vd[2], Sn[8]=0x0, Sn2[9]=0x7fc0, #pm=1, Pg[1], 
+        vdup(v2_f32, __builtin_nanf(""), p1, MODE_ZEROING);
+        // PC=0x13b3121c dynamic_id=86 iteration=()
+        // RV_VDUPS Dtype: B32  Vd[3], Sn[10]=0x0, Sn2[11]=0x80, #pm=1, Pg[1], 
+        vdup(v3_f32, 0x1.0000000000000p-126f, p1, MODE_ZEROING);
+        // PC=0x13b3125c dynamic_id=104 iteration=(('iter_13b31234', 0),)
+        // RV_PLT Dtype: B32  Pd[1], Sn[71]=0x3c0, 
+        uint32_t mask_count_5 = 1024;
+        p1 = plt_b32(mask_count_5, POST_UPDATE);
+        // PC=0x13b31260 dynamic_id=106 iteration=(('iter_13b31234', 0),)
+        // RV_PLT Dtype: B32  Pd[2], Sn[72]=0x380, 
+        uint32_t mask_count_6 = 960;
+        p2 = plt_b32(mask_count_6, POST_UPDATE);
+        // PC=0x13b31264 dynamic_id=108 iteration=(('iter_13b31234', 0),)
+        // RV_PLT Dtype: B32  Pd[3], Sn[73]=0x340, 
+        uint32_t mask_count_7 = 896;
+        p3 = plt_b32(mask_count_7, POST_UPDATE);
+        // PC=0x13b31268 dynamic_id=110 iteration=(('iter_13b31234', 0),)
+        // RV_PLT Dtype: B32  Pd[4], Sn[70]=0x300, 
+        uint32_t mask_count_8 = 832;
+        p4 = plt_b32(mask_count_8, POST_UPDATE);
+        // PC=0x13b3126c dynamic_id=112 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v4_f32, (__ubuf__ float*)0x0, 0, NORM);
+        // PC=0x13b31270 dynamic_id=115 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v5_f32, (__ubuf__ float*)0x100, 0, NORM);
+        // PC=0x13b31274 dynamic_id=118 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v6_f32, (__ubuf__ float*)0x200, 0, NORM);
+        // PC=0x13b31278 dynamic_id=120 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v7_f32, (__ubuf__ float*)0x300, 0, NORM);
+        // PC=0x13b3127c dynamic_id=123 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[8], Sn[20]=0x1000, Sn2[21]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v8_f32, (__ubuf__ float*)0x1000, 0, NORM);
+        // PC=0x13b31280 dynamic_id=125 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[9], Sn[22]=0x1100, Sn2[23]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v9_f32, (__ubuf__ float*)0x1100, 0, NORM);
+        // PC=0x13b31284 dynamic_id=128 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[10], Sn[24]=0x1200, Sn2[25]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v10_f32, (__ubuf__ float*)0x1200, 0, NORM);
+        // PC=0x13b31288 dynamic_id=130 iteration=(('iter_13b31234', 0),)
+        // RV_VLD Vd[11], Sn[26]=0x1300, Sn2[27]=0x0, Am[0]=0x0, dist:NORAML, 
+        vlds(v11_f32, (__ubuf__ float*)0x1300, 0, NORM);
+        // PC=0x13b3128c dynamic_id=131 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[12], Vn[4], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[1], 
+        vmuls(v12_f32, v4_f32, -0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b31290 dynamic_id=133 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[13], Vn[5], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[2], 
+        vmuls(v13_f32, v5_f32, -0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b31294 dynamic_id=135 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[14], Vn[6], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[3], 
+        vmuls(v14_f32, v6_f32, -0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b31298 dynamic_id=137 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[15], Vn[7], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[4], 
+        vmuls(v15_f32, v7_f32, -0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b3129c dynamic_id=138 iteration=(('iter_13b31234', 0),)
+        // RV_VADDS Dtype: F32  Vd[12], Vn[12], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[1], 
+        vadds(v12_f32, v12_f32, 0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b312a0 dynamic_id=139 iteration=(('iter_13b31234', 0),)
+        // RV_VADDS Dtype: F32  Vd[13], Vn[13], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[2], 
+        vadds(v13_f32, v13_f32, 0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b312a4 dynamic_id=140 iteration=(('iter_13b31234', 0),)
+        // RV_VADDS Dtype: F32  Vd[14], Vn[14], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[3], 
+        vadds(v14_f32, v14_f32, 0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b312a8 dynamic_id=141 iteration=(('iter_13b31234', 0),)
+        // RV_VADDS Dtype: F32  Vd[15], Vn[15], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[4], 
+        vadds(v15_f32, v15_f32, 0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b312ac dynamic_id=143 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[16], Vn[4], Vm[12], Pg[1], 
+        vmul(v16_f32, v4_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312b0 dynamic_id=144 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[17], Vn[5], Vm[13], Pg[2], 
+        vmul(v17_f32, v5_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312b4 dynamic_id=145 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[18], Vn[6], Vm[14], Pg[3], 
+        vmul(v18_f32, v6_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312b8 dynamic_id=146 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[19], Vn[7], Vm[15], Pg[4], 
+        vmul(v19_f32, v7_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312bc dynamic_id=147 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[4], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v4_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312c0 dynamic_id=149 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[5], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v5_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312c4 dynamic_id=150 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[6], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v6_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312c8 dynamic_id=151 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[7], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v7_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312cc dynamic_id=152 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[12], Vn[20], Vm[12], Pg[1], 
+        vmul(v12_f32, v20_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312d0 dynamic_id=153 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[13], Vn[21], Vm[13], Pg[2], 
+        vmul(v13_f32, v21_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312d4 dynamic_id=155 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[14], Vn[22], Vm[14], Pg[3], 
+        vmul(v14_f32, v22_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312d8 dynamic_id=156 iteration=(('iter_13b31234', 0),)
+        // RV_VMUL Dtype: F32  Vd[15], Vn[23], Vm[15], Pg[4], 
+        vmul(v15_f32, v23_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312dc dynamic_id=157 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[8], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v8_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312e0 dynamic_id=158 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[9], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v9_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312e4 dynamic_id=159 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[10], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v10_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312e8 dynamic_id=161 iteration=(('iter_13b31234', 0),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[11], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v11_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312ec dynamic_id=162 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LT Dtype: F32  Pd[6], Vn[4], Vm[3], Pg[1], 
+        vcmp_lt(p6, v4_f32, v3_f32, p1);
+        // PC=0x13b312f0 dynamic_id=163 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b312f4 dynamic_id=164 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[6], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b312f8 dynamic_id=165 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LT Dtype: F32  Pd[5], Vn[5], Vm[3], Pg[2], 
+        vcmp_lt(p5, v5_f32, v3_f32, p2);
+        // PC=0x13b312fc dynamic_id=167 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[6], Vm[3], Pg[3], 
+        vcmp_lt(p7, v6_f32, v3_f32, p3);
+        // PC=0x13b31300 dynamic_id=168 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31304 dynamic_id=169 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[7], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p7, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31308 dynamic_id=170 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[7], Vm[3], Pg[4], 
+        vcmp_lt(p7, v7_f32, v3_f32, p4);
+        // PC=0x13b3130c dynamic_id=171 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[12], Vn[12], Vm[16], Pg[6], 
+        vsel(v12_f32, v12_f32, v16_f32, p6);
+        // PC=0x13b31310 dynamic_id=172 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[13], Vn[13], Vm[17], Pg[5], 
+        vsel(v13_f32, v13_f32, v17_f32, p5);
+        // PC=0x13b31314 dynamic_id=173 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31318 dynamic_id=174 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3131c dynamic_id=175 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[14], Vn[14], Vm[18], Pg[6], 
+        vsel(v14_f32, v14_f32, v18_f32, p6);
+        // PC=0x13b31320 dynamic_id=176 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[15], Vn[15], Vm[19], Pg[7], 
+        vsel(v15_f32, v15_f32, v19_f32, p7);
+        // PC=0x13b31324 dynamic_id=177 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31328 dynamic_id=178 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3132c dynamic_id=179 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[20], Vm[8], Pg[6], 
+        vsel(v8_f32, v20_f32, v8_f32, p6);
+        // PC=0x13b31330 dynamic_id=180 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[21], Vm[9], Pg[5], 
+        vsel(v9_f32, v21_f32, v9_f32, p5);
+        // PC=0x13b31334 dynamic_id=181 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31338 dynamic_id=182 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3133c dynamic_id=183 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[22], Vm[10], Pg[5], 
+        vsel(v10_f32, v22_f32, v10_f32, p5);
+        // PC=0x13b31340 dynamic_id=184 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[23], Vm[11], Pg[7], 
+        vsel(v11_f32, v23_f32, v11_f32, p7);
+        // PC=0x13b31344 dynamic_id=186 iteration=(('iter_13b31234', 0),)
+        // RV_VDIV Dtype: F32  Vd[8], Vn[8], Vm[12], Pg[1], 
+        vdiv(v8_f32, v8_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b31348 dynamic_id=187 iteration=(('iter_13b31234', 0),)
+        // RV_VDIV Dtype: F32  Vd[9], Vn[9], Vm[13], Pg[2], 
+        vdiv(v9_f32, v9_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b3134c dynamic_id=188 iteration=(('iter_13b31234', 0),)
+        // RV_VDIV Dtype: F32  Vd[10], Vn[10], Vm[14], Pg[3], 
+        vdiv(v10_f32, v10_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b31350 dynamic_id=189 iteration=(('iter_13b31234', 0),)
+        // RV_VDIV Dtype: F32  Vd[11], Vn[11], Vm[15], Pg[4], 
+        vdiv(v11_f32, v11_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b31354 dynamic_id=191 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[4], Vm[0], Pg[1], 
+        vcmp_ge(p5, v4_f32, v0_f32, p1);
+        // PC=0x13b31358 dynamic_id=192 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3135c dynamic_id=193 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31360 dynamic_id=194 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[5], Vm[0], Pg[2], 
+        vcmp_ge(p5, v5_f32, v0_f32, p2);
+        // PC=0x13b31364 dynamic_id=195 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31368 dynamic_id=196 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3136c dynamic_id=197 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[6], Vm[0], Pg[3], 
+        vcmp_ge(p5, v6_f32, v0_f32, p3);
+        // PC=0x13b31370 dynamic_id=198 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31374 dynamic_id=199 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=252, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b31378 dynamic_id=200 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[7], Vm[0], Pg[4], 
+        vcmp_ge(p5, v7_f32, v0_f32, p4);
+        // PC=0x13b3137c dynamic_id=201 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31380 dynamic_id=202 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=251, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b31384 dynamic_id=203 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[4], Vm[1], Pg[1], 
+        vcmp_le(p5, v4_f32, v1_f32, p1);
+        // PC=0x13b31388 dynamic_id=204 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3138c dynamic_id=205 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=250, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b31390 dynamic_id=206 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[5], Vm[1], Pg[2], 
+        vcmp_le(p5, v5_f32, v1_f32, p2);
+        // PC=0x13b31394 dynamic_id=207 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31398 dynamic_id=208 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=249, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b3139c dynamic_id=209 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LE Dtype: F32  Pd[7], Vn[6], Vm[1], Pg[3], 
+        vcmp_le(p7, v6_f32, v1_f32, p3);
+        // PC=0x13b313a0 dynamic_id=210 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[7], Vm[1], Pg[4], 
+        vcmp_le(p5, v7_f32, v1_f32, p4);
+        // PC=0x13b313a4 dynamic_id=211 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313a8 dynamic_id=212 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=248, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b313ac dynamic_id=214 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b0 dynamic_id=215 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313b4 dynamic_id=216 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b8 dynamic_id=217 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=250, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b313bc dynamic_id=218 iteration=(('iter_13b31234', 0),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[1], 
+        pand(p5, p5, p6, p1);
+        // PC=0x13b313c0 dynamic_id=220 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313c4 dynamic_id=221 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313c8 dynamic_id=222 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313cc dynamic_id=223 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313d0 dynamic_id=224 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313d4 dynamic_id=226 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=249, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b313d8 dynamic_id=227 iteration=(('iter_13b31234', 0),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[2], 
+        pand(p5, p5, p6, p2);
+        // PC=0x13b313dc dynamic_id=228 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313e0 dynamic_id=229 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313e4 dynamic_id=230 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313e8 dynamic_id=231 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=252, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b313ec dynamic_id=232 iteration=(('iter_13b31234', 0),)
+        // RV_PAND Dtype: B8  Pd[7], Pn[5], Pm[7], Pg[3], 
+        pand(p7, p5, p7, p3);
+        // PC=0x13b313f0 dynamic_id=234 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313f4 dynamic_id=235 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=251, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b313f8 dynamic_id=236 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313fc dynamic_id=237 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=248, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b31400 dynamic_id=238 iteration=(('iter_13b31234', 0),)
+        // RV_PAND Dtype: B8  Pd[6], Pn[5], Pm[6], Pg[4], 
+        pand(p6, p5, p6, p4);
+        // PC=0x13b31404 dynamic_id=239 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31408 dynamic_id=240 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3140c dynamic_id=242 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[8], Vm[0], Pg[5], 
+        vsel(v8_f32, v8_f32, v0_f32, p5);
+        // PC=0x13b31410 dynamic_id=243 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31414 dynamic_id=244 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31418 dynamic_id=294 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[9], Vm[0], Pg[5], 
+        vsel(v9_f32, v9_f32, v0_f32, p5);
+        // PC=0x13b3141c dynamic_id=295 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[10], Vm[0], Pg[7], 
+        vsel(v10_f32, v10_f32, v0_f32, p7);
+        // PC=0x13b31420 dynamic_id=301 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[11], Vm[0], Pg[6], 
+        vsel(v11_f32, v11_f32, v0_f32, p6);
+        // PC=0x13b31424 dynamic_id=308 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[4], Vm[4], Pg[1], 
+        vcmp_eq(p5, v4_f32, v4_f32, p1);
+        // PC=0x13b31428 dynamic_id=314 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3142c dynamic_id=321 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31430 dynamic_id=322 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_EQ Dtype: F32  Pd[6], Vn[5], Vm[5], Pg[2], 
+        vcmp_eq(p6, v5_f32, v5_f32, p2);
+        // PC=0x13b31434 dynamic_id=325 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_EQ Dtype: F32  Pd[7], Vn[6], Vm[6], Pg[3], 
+        vcmp_eq(p7, v6_f32, v6_f32, p3);
+        // PC=0x13b31438 dynamic_id=329 iteration=(('iter_13b31234', 0),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[7], Vm[7], Pg[4], 
+        vcmp_eq(p5, v7_f32, v7_f32, p4);
+        // PC=0x13b3143c dynamic_id=330 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31440 dynamic_id=331 iteration=(('iter_13b31234', 0),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31444 dynamic_id=334 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31448 dynamic_id=335 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3144c dynamic_id=336 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[4], Vn[8], Vm[2], Pg[5], 
+        vsel(v4_f32, v8_f32, v2_f32, p5);
+        // PC=0x13b31450 dynamic_id=337 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[5], Vn[9], Vm[2], Pg[6], 
+        vsel(v5_f32, v9_f32, v2_f32, p6);
+        // PC=0x13b31454 dynamic_id=338 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[6], Vn[10], Vm[2], Pg[7], 
+        vsel(v6_f32, v10_f32, v2_f32, p7);
+        // PC=0x13b31458 dynamic_id=340 iteration=(('iter_13b31234', 0),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b3145c dynamic_id=341 iteration=(('iter_13b31234', 0),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31460 dynamic_id=342 iteration=(('iter_13b31234', 0),)
+        // RV_VSEL Dtype: B32  Vd[7], Vn[11], Vm[2], Pg[5], 
+        vsel(v7_f32, v11_f32, v2_f32, p5);
+        // PC=0x13b31464 dynamic_id=343 iteration=(('iter_13b31234', 0),)
+        // RV_VST Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0x0, Pg[1], dist:NORM_B32, 
+        vsts(v4_f32, (__ubuf__ float*)0x0, 0, NORM_B32, p1);
+        // PC=0x13b31468 dynamic_id=344 iteration=(('iter_13b31234', 0),)
+        // RV_VST Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0x0, Pg[2], dist:NORM_B32, 
+        vsts(v5_f32, (__ubuf__ float*)0x100, 0, NORM_B32, p2);
+        // PC=0x13b3146c dynamic_id=346 iteration=(('iter_13b31234', 0),)
+        // RV_VST Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0x0, Pg[3], dist:NORM_B32, 
+        vsts(v6_f32, (__ubuf__ float*)0x200, 0, NORM_B32, p3);
+        // PC=0x13b31470 dynamic_id=347 iteration=(('iter_13b31234', 0),)
+        // RV_VST Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0x0, Pg[4], dist:NORM_B32, 
+        vsts(v7_f32, (__ubuf__ float*)0x300, 0, NORM_B32, p4);
+        // PC=0x13b3125c dynamic_id=532 iteration=(('iter_13b31234', 1),)
+        // RV_PLT Dtype: B32  Pd[1], Sn[71]=0x2c0, 
+        uint32_t mask_count_139 = 768;
+        p1 = plt_b32(mask_count_139, POST_UPDATE);
+        // PC=0x13b31260 dynamic_id=534 iteration=(('iter_13b31234', 1),)
+        // RV_PLT Dtype: B32  Pd[2], Sn[72]=0x280, 
+        uint32_t mask_count_140 = 704;
+        p2 = plt_b32(mask_count_140, POST_UPDATE);
+        // PC=0x13b31264 dynamic_id=535 iteration=(('iter_13b31234', 1),)
+        // RV_PLT Dtype: B32  Pd[3], Sn[73]=0x240, 
+        uint32_t mask_count_141 = 640;
+        p3 = plt_b32(mask_count_141, POST_UPDATE);
+        // PC=0x13b31268 dynamic_id=538 iteration=(('iter_13b31234', 1),)
+        // RV_PLT Dtype: B32  Pd[4], Sn[70]=0x200, 
+        uint32_t mask_count_142 = 576;
+        p4 = plt_b32(mask_count_142, POST_UPDATE);
+        // PC=0x13b3126c dynamic_id=540 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v4_f32, (__ubuf__ float*)0x400, 0, NORM);
+        // PC=0x13b31270 dynamic_id=543 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v5_f32, (__ubuf__ float*)0x500, 0, NORM);
+        // PC=0x13b31274 dynamic_id=546 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v6_f32, (__ubuf__ float*)0x600, 0, NORM);
+        // PC=0x13b31278 dynamic_id=548 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v7_f32, (__ubuf__ float*)0x700, 0, NORM);
+        // PC=0x13b3127c dynamic_id=551 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[8], Sn[20]=0x1000, Sn2[21]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v8_f32, (__ubuf__ float*)0x1400, 0, NORM);
+        // PC=0x13b31280 dynamic_id=553 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[9], Sn[22]=0x1100, Sn2[23]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v9_f32, (__ubuf__ float*)0x1500, 0, NORM);
+        // PC=0x13b31284 dynamic_id=556 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[10], Sn[24]=0x1200, Sn2[25]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v10_f32, (__ubuf__ float*)0x1600, 0, NORM);
+        // PC=0x13b31288 dynamic_id=558 iteration=(('iter_13b31234', 1),)
+        // RV_VLD Vd[11], Sn[26]=0x1300, Sn2[27]=0x0, Am[0]=0x400, dist:NORAML, 
+        vlds(v11_f32, (__ubuf__ float*)0x1700, 0, NORM);
+        // PC=0x13b3128c dynamic_id=559 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[12], Vn[4], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[1], 
+        vmuls(v12_f32, v4_f32, -0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b31290 dynamic_id=561 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[13], Vn[5], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[2], 
+        vmuls(v13_f32, v5_f32, -0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b31294 dynamic_id=563 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[14], Vn[6], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[3], 
+        vmuls(v14_f32, v6_f32, -0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b31298 dynamic_id=565 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[15], Vn[7], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[4], 
+        vmuls(v15_f32, v7_f32, -0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b3129c dynamic_id=566 iteration=(('iter_13b31234', 1),)
+        // RV_VADDS Dtype: F32  Vd[12], Vn[12], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[1], 
+        vadds(v12_f32, v12_f32, 0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b312a0 dynamic_id=567 iteration=(('iter_13b31234', 1),)
+        // RV_VADDS Dtype: F32  Vd[13], Vn[13], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[2], 
+        vadds(v13_f32, v13_f32, 0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b312a4 dynamic_id=568 iteration=(('iter_13b31234', 1),)
+        // RV_VADDS Dtype: F32  Vd[14], Vn[14], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[3], 
+        vadds(v14_f32, v14_f32, 0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b312a8 dynamic_id=593 iteration=(('iter_13b31234', 1),)
+        // RV_VADDS Dtype: F32  Vd[15], Vn[15], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[4], 
+        vadds(v15_f32, v15_f32, 0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b312ac dynamic_id=599 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[16], Vn[4], Vm[12], Pg[1], 
+        vmul(v16_f32, v4_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312b0 dynamic_id=606 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[17], Vn[5], Vm[13], Pg[2], 
+        vmul(v17_f32, v5_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312b4 dynamic_id=609 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[18], Vn[6], Vm[14], Pg[3], 
+        vmul(v18_f32, v6_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312b8 dynamic_id=613 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[19], Vn[7], Vm[15], Pg[4], 
+        vmul(v19_f32, v7_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312bc dynamic_id=614 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[4], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v4_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312c0 dynamic_id=615 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[5], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v5_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312c4 dynamic_id=616 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[6], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v6_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312c8 dynamic_id=617 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[7], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v7_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312cc dynamic_id=619 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[12], Vn[20], Vm[12], Pg[1], 
+        vmul(v12_f32, v20_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312d0 dynamic_id=620 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[13], Vn[21], Vm[13], Pg[2], 
+        vmul(v13_f32, v21_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312d4 dynamic_id=621 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[14], Vn[22], Vm[14], Pg[3], 
+        vmul(v14_f32, v22_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312d8 dynamic_id=622 iteration=(('iter_13b31234', 1),)
+        // RV_VMUL Dtype: F32  Vd[15], Vn[23], Vm[15], Pg[4], 
+        vmul(v15_f32, v23_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312dc dynamic_id=623 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[8], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v8_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312e0 dynamic_id=625 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[9], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v9_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312e4 dynamic_id=626 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[10], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v10_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312e8 dynamic_id=627 iteration=(('iter_13b31234', 1),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[11], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v11_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312ec dynamic_id=628 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LT Dtype: F32  Pd[6], Vn[4], Vm[3], Pg[1], 
+        vcmp_lt(p6, v4_f32, v3_f32, p1);
+        // PC=0x13b312f0 dynamic_id=629 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b312f4 dynamic_id=631 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[6], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b312f8 dynamic_id=632 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LT Dtype: F32  Pd[5], Vn[5], Vm[3], Pg[2], 
+        vcmp_lt(p5, v5_f32, v3_f32, p2);
+        // PC=0x13b312fc dynamic_id=633 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[6], Vm[3], Pg[3], 
+        vcmp_lt(p7, v6_f32, v3_f32, p3);
+        // PC=0x13b31300 dynamic_id=634 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31304 dynamic_id=635 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[7], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p7, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31308 dynamic_id=637 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[7], Vm[3], Pg[4], 
+        vcmp_lt(p7, v7_f32, v3_f32, p4);
+        // PC=0x13b3130c dynamic_id=638 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[12], Vn[12], Vm[16], Pg[6], 
+        vsel(v12_f32, v12_f32, v16_f32, p6);
+        // PC=0x13b31310 dynamic_id=639 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[13], Vn[13], Vm[17], Pg[5], 
+        vsel(v13_f32, v13_f32, v17_f32, p5);
+        // PC=0x13b31314 dynamic_id=640 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31318 dynamic_id=641 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3131c dynamic_id=643 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[14], Vn[14], Vm[18], Pg[6], 
+        vsel(v14_f32, v14_f32, v18_f32, p6);
+        // PC=0x13b31320 dynamic_id=669 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[15], Vn[15], Vm[19], Pg[7], 
+        vsel(v15_f32, v15_f32, v19_f32, p7);
+        // PC=0x13b31324 dynamic_id=670 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31328 dynamic_id=671 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3132c dynamic_id=672 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[20], Vm[8], Pg[6], 
+        vsel(v8_f32, v20_f32, v8_f32, p6);
+        // PC=0x13b31330 dynamic_id=678 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[21], Vm[9], Pg[5], 
+        vsel(v9_f32, v21_f32, v9_f32, p5);
+        // PC=0x13b31334 dynamic_id=679 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31338 dynamic_id=680 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3133c dynamic_id=681 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[22], Vm[10], Pg[5], 
+        vsel(v10_f32, v22_f32, v10_f32, p5);
+        // PC=0x13b31340 dynamic_id=682 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[23], Vm[11], Pg[7], 
+        vsel(v11_f32, v23_f32, v11_f32, p7);
+        // PC=0x13b31344 dynamic_id=689 iteration=(('iter_13b31234', 1),)
+        // RV_VDIV Dtype: F32  Vd[8], Vn[8], Vm[12], Pg[1], 
+        vdiv(v8_f32, v8_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b31348 dynamic_id=695 iteration=(('iter_13b31234', 1),)
+        // RV_VDIV Dtype: F32  Vd[9], Vn[9], Vm[13], Pg[2], 
+        vdiv(v9_f32, v9_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b3134c dynamic_id=696 iteration=(('iter_13b31234', 1),)
+        // RV_VDIV Dtype: F32  Vd[10], Vn[10], Vm[14], Pg[3], 
+        vdiv(v10_f32, v10_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b31350 dynamic_id=697 iteration=(('iter_13b31234', 1),)
+        // RV_VDIV Dtype: F32  Vd[11], Vn[11], Vm[15], Pg[4], 
+        vdiv(v11_f32, v11_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b31354 dynamic_id=705 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[4], Vm[0], Pg[1], 
+        vcmp_ge(p5, v4_f32, v0_f32, p1);
+        // PC=0x13b31358 dynamic_id=710 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3135c dynamic_id=711 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31360 dynamic_id=713 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[5], Vm[0], Pg[2], 
+        vcmp_ge(p5, v5_f32, v0_f32, p2);
+        // PC=0x13b31364 dynamic_id=720 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31368 dynamic_id=725 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3136c dynamic_id=726 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[6], Vm[0], Pg[3], 
+        vcmp_ge(p5, v6_f32, v0_f32, p3);
+        // PC=0x13b31370 dynamic_id=728 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31374 dynamic_id=735 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=252, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b31378 dynamic_id=739 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[7], Vm[0], Pg[4], 
+        vcmp_ge(p5, v7_f32, v0_f32, p4);
+        // PC=0x13b3137c dynamic_id=742 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31380 dynamic_id=759 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=251, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b31384 dynamic_id=763 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[4], Vm[1], Pg[1], 
+        vcmp_le(p5, v4_f32, v1_f32, p1);
+        // PC=0x13b31388 dynamic_id=786 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3138c dynamic_id=790 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=250, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b31390 dynamic_id=803 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[5], Vm[1], Pg[2], 
+        vcmp_le(p5, v5_f32, v1_f32, p2);
+        // PC=0x13b31394 dynamic_id=807 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31398 dynamic_id=816 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=249, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b3139c dynamic_id=820 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LE Dtype: F32  Pd[7], Vn[6], Vm[1], Pg[3], 
+        vcmp_le(p7, v6_f32, v1_f32, p3);
+        // PC=0x13b313a0 dynamic_id=822 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[7], Vm[1], Pg[4], 
+        vcmp_le(p5, v7_f32, v1_f32, p4);
+        // PC=0x13b313a4 dynamic_id=823 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313a8 dynamic_id=824 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=248, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b313ac dynamic_id=826 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b0 dynamic_id=827 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313b4 dynamic_id=828 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b8 dynamic_id=830 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=250, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b313bc dynamic_id=831 iteration=(('iter_13b31234', 1),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[1], 
+        pand(p5, p5, p6, p1);
+        // PC=0x13b313c0 dynamic_id=832 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313c4 dynamic_id=834 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313c8 dynamic_id=835 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313cc dynamic_id=837 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313d0 dynamic_id=838 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313d4 dynamic_id=840 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=249, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b313d8 dynamic_id=841 iteration=(('iter_13b31234', 1),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[2], 
+        pand(p5, p5, p6, p2);
+        // PC=0x13b313dc dynamic_id=843 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313e0 dynamic_id=844 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313e4 dynamic_id=846 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313e8 dynamic_id=847 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=252, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b313ec dynamic_id=848 iteration=(('iter_13b31234', 1),)
+        // RV_PAND Dtype: B8  Pd[7], Pn[5], Pm[7], Pg[3], 
+        pand(p7, p5, p7, p3);
+        // PC=0x13b313f0 dynamic_id=850 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313f4 dynamic_id=851 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=251, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b313f8 dynamic_id=852 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313fc dynamic_id=853 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=248, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b31400 dynamic_id=855 iteration=(('iter_13b31234', 1),)
+        // RV_PAND Dtype: B8  Pd[6], Pn[5], Pm[6], Pg[4], 
+        pand(p6, p5, p6, p4);
+        // PC=0x13b31404 dynamic_id=856 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31408 dynamic_id=857 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3140c dynamic_id=859 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[8], Vm[0], Pg[5], 
+        vsel(v8_f32, v8_f32, v0_f32, p5);
+        // PC=0x13b31410 dynamic_id=860 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31414 dynamic_id=862 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31418 dynamic_id=918 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[9], Vm[0], Pg[5], 
+        vsel(v9_f32, v9_f32, v0_f32, p5);
+        // PC=0x13b3141c dynamic_id=919 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[10], Vm[0], Pg[7], 
+        vsel(v10_f32, v10_f32, v0_f32, p7);
+        // PC=0x13b31420 dynamic_id=925 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[11], Vm[0], Pg[6], 
+        vsel(v11_f32, v11_f32, v0_f32, p6);
+        // PC=0x13b31424 dynamic_id=932 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[4], Vm[4], Pg[1], 
+        vcmp_eq(p5, v4_f32, v4_f32, p1);
+        // PC=0x13b31428 dynamic_id=938 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3142c dynamic_id=945 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31430 dynamic_id=946 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_EQ Dtype: F32  Pd[6], Vn[5], Vm[5], Pg[2], 
+        vcmp_eq(p6, v5_f32, v5_f32, p2);
+        // PC=0x13b31434 dynamic_id=949 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_EQ Dtype: F32  Pd[7], Vn[6], Vm[6], Pg[3], 
+        vcmp_eq(p7, v6_f32, v6_f32, p3);
+        // PC=0x13b31438 dynamic_id=953 iteration=(('iter_13b31234', 1),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[7], Vm[7], Pg[4], 
+        vcmp_eq(p5, v7_f32, v7_f32, p4);
+        // PC=0x13b3143c dynamic_id=954 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31440 dynamic_id=955 iteration=(('iter_13b31234', 1),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31444 dynamic_id=958 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31448 dynamic_id=959 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3144c dynamic_id=960 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[4], Vn[8], Vm[2], Pg[5], 
+        vsel(v4_f32, v8_f32, v2_f32, p5);
+        // PC=0x13b31450 dynamic_id=961 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[5], Vn[9], Vm[2], Pg[6], 
+        vsel(v5_f32, v9_f32, v2_f32, p6);
+        // PC=0x13b31454 dynamic_id=962 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[6], Vn[10], Vm[2], Pg[7], 
+        vsel(v6_f32, v10_f32, v2_f32, p7);
+        // PC=0x13b31458 dynamic_id=964 iteration=(('iter_13b31234', 1),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b3145c dynamic_id=965 iteration=(('iter_13b31234', 1),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31460 dynamic_id=966 iteration=(('iter_13b31234', 1),)
+        // RV_VSEL Dtype: B32  Vd[7], Vn[11], Vm[2], Pg[5], 
+        vsel(v7_f32, v11_f32, v2_f32, p5);
+        // PC=0x13b31464 dynamic_id=967 iteration=(('iter_13b31234', 1),)
+        // RV_VST Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0x400, Pg[1], dist:NORM_B32, 
+        vsts(v4_f32, (__ubuf__ float*)0x400, 0, NORM_B32, p1);
+        // PC=0x13b31468 dynamic_id=968 iteration=(('iter_13b31234', 1),)
+        // RV_VST Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0x400, Pg[2], dist:NORM_B32, 
+        vsts(v5_f32, (__ubuf__ float*)0x500, 0, NORM_B32, p2);
+        // PC=0x13b3146c dynamic_id=970 iteration=(('iter_13b31234', 1),)
+        // RV_VST Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0x400, Pg[3], dist:NORM_B32, 
+        vsts(v6_f32, (__ubuf__ float*)0x600, 0, NORM_B32, p3);
+        // PC=0x13b31470 dynamic_id=971 iteration=(('iter_13b31234', 1),)
+        // RV_VST Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0x400, Pg[4], dist:NORM_B32, 
+        vsts(v7_f32, (__ubuf__ float*)0x700, 0, NORM_B32, p4);
+        // PC=0x13b3125c dynamic_id=1156 iteration=(('iter_13b31234', 2),)
+        // RV_PLT Dtype: B32  Pd[1], Sn[71]=0x1c0, 
+        uint32_t mask_count_273 = 512;
+        p1 = plt_b32(mask_count_273, POST_UPDATE);
+        // PC=0x13b31260 dynamic_id=1158 iteration=(('iter_13b31234', 2),)
+        // RV_PLT Dtype: B32  Pd[2], Sn[72]=0x180, 
+        uint32_t mask_count_274 = 448;
+        p2 = plt_b32(mask_count_274, POST_UPDATE);
+        // PC=0x13b31264 dynamic_id=1159 iteration=(('iter_13b31234', 2),)
+        // RV_PLT Dtype: B32  Pd[3], Sn[73]=0x140, 
+        uint32_t mask_count_275 = 384;
+        p3 = plt_b32(mask_count_275, POST_UPDATE);
+        // PC=0x13b31268 dynamic_id=1162 iteration=(('iter_13b31234', 2),)
+        // RV_PLT Dtype: B32  Pd[4], Sn[70]=0x100, 
+        uint32_t mask_count_276 = 320;
+        p4 = plt_b32(mask_count_276, POST_UPDATE);
+        // PC=0x13b3126c dynamic_id=1164 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v4_f32, (__ubuf__ float*)0x800, 0, NORM);
+        // PC=0x13b31270 dynamic_id=1167 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v5_f32, (__ubuf__ float*)0x900, 0, NORM);
+        // PC=0x13b31274 dynamic_id=1170 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v6_f32, (__ubuf__ float*)0xa00, 0, NORM);
+        // PC=0x13b31278 dynamic_id=1172 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v7_f32, (__ubuf__ float*)0xb00, 0, NORM);
+        // PC=0x13b3127c dynamic_id=1175 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[8], Sn[20]=0x1000, Sn2[21]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v8_f32, (__ubuf__ float*)0x1800, 0, NORM);
+        // PC=0x13b31280 dynamic_id=1177 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[9], Sn[22]=0x1100, Sn2[23]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v9_f32, (__ubuf__ float*)0x1900, 0, NORM);
+        // PC=0x13b31284 dynamic_id=1180 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[10], Sn[24]=0x1200, Sn2[25]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v10_f32, (__ubuf__ float*)0x1a00, 0, NORM);
+        // PC=0x13b31288 dynamic_id=1182 iteration=(('iter_13b31234', 2),)
+        // RV_VLD Vd[11], Sn[26]=0x1300, Sn2[27]=0x0, Am[0]=0x800, dist:NORAML, 
+        vlds(v11_f32, (__ubuf__ float*)0x1b00, 0, NORM);
+        // PC=0x13b3128c dynamic_id=1183 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[12], Vn[4], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[1], 
+        vmuls(v12_f32, v4_f32, -0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b31290 dynamic_id=1185 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[13], Vn[5], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[2], 
+        vmuls(v13_f32, v5_f32, -0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b31294 dynamic_id=1187 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[14], Vn[6], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[3], 
+        vmuls(v14_f32, v6_f32, -0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b31298 dynamic_id=1189 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[15], Vn[7], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[4], 
+        vmuls(v15_f32, v7_f32, -0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b3129c dynamic_id=1190 iteration=(('iter_13b31234', 2),)
+        // RV_VADDS Dtype: F32  Vd[12], Vn[12], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[1], 
+        vadds(v12_f32, v12_f32, 0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b312a0 dynamic_id=1191 iteration=(('iter_13b31234', 2),)
+        // RV_VADDS Dtype: F32  Vd[13], Vn[13], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[2], 
+        vadds(v13_f32, v13_f32, 0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b312a4 dynamic_id=1192 iteration=(('iter_13b31234', 2),)
+        // RV_VADDS Dtype: F32  Vd[14], Vn[14], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[3], 
+        vadds(v14_f32, v14_f32, 0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b312a8 dynamic_id=1217 iteration=(('iter_13b31234', 2),)
+        // RV_VADDS Dtype: F32  Vd[15], Vn[15], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[4], 
+        vadds(v15_f32, v15_f32, 0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b312ac dynamic_id=1223 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[16], Vn[4], Vm[12], Pg[1], 
+        vmul(v16_f32, v4_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312b0 dynamic_id=1230 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[17], Vn[5], Vm[13], Pg[2], 
+        vmul(v17_f32, v5_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312b4 dynamic_id=1233 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[18], Vn[6], Vm[14], Pg[3], 
+        vmul(v18_f32, v6_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312b8 dynamic_id=1237 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[19], Vn[7], Vm[15], Pg[4], 
+        vmul(v19_f32, v7_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312bc dynamic_id=1238 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[4], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v4_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312c0 dynamic_id=1239 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[5], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v5_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312c4 dynamic_id=1240 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[6], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v6_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312c8 dynamic_id=1241 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[7], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v7_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312cc dynamic_id=1243 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[12], Vn[20], Vm[12], Pg[1], 
+        vmul(v12_f32, v20_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312d0 dynamic_id=1244 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[13], Vn[21], Vm[13], Pg[2], 
+        vmul(v13_f32, v21_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312d4 dynamic_id=1245 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[14], Vn[22], Vm[14], Pg[3], 
+        vmul(v14_f32, v22_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312d8 dynamic_id=1246 iteration=(('iter_13b31234', 2),)
+        // RV_VMUL Dtype: F32  Vd[15], Vn[23], Vm[15], Pg[4], 
+        vmul(v15_f32, v23_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312dc dynamic_id=1247 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[8], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v8_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312e0 dynamic_id=1249 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[9], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v9_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312e4 dynamic_id=1250 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[10], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v10_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312e8 dynamic_id=1251 iteration=(('iter_13b31234', 2),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[11], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v11_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312ec dynamic_id=1252 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LT Dtype: F32  Pd[6], Vn[4], Vm[3], Pg[1], 
+        vcmp_lt(p6, v4_f32, v3_f32, p1);
+        // PC=0x13b312f0 dynamic_id=1253 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b312f4 dynamic_id=1255 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[6], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b312f8 dynamic_id=1256 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LT Dtype: F32  Pd[5], Vn[5], Vm[3], Pg[2], 
+        vcmp_lt(p5, v5_f32, v3_f32, p2);
+        // PC=0x13b312fc dynamic_id=1257 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[6], Vm[3], Pg[3], 
+        vcmp_lt(p7, v6_f32, v3_f32, p3);
+        // PC=0x13b31300 dynamic_id=1258 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31304 dynamic_id=1259 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[7], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p7, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31308 dynamic_id=1261 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[7], Vm[3], Pg[4], 
+        vcmp_lt(p7, v7_f32, v3_f32, p4);
+        // PC=0x13b3130c dynamic_id=1262 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[12], Vn[12], Vm[16], Pg[6], 
+        vsel(v12_f32, v12_f32, v16_f32, p6);
+        // PC=0x13b31310 dynamic_id=1263 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[13], Vn[13], Vm[17], Pg[5], 
+        vsel(v13_f32, v13_f32, v17_f32, p5);
+        // PC=0x13b31314 dynamic_id=1264 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31318 dynamic_id=1265 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3131c dynamic_id=1267 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[14], Vn[14], Vm[18], Pg[6], 
+        vsel(v14_f32, v14_f32, v18_f32, p6);
+        // PC=0x13b31320 dynamic_id=1293 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[15], Vn[15], Vm[19], Pg[7], 
+        vsel(v15_f32, v15_f32, v19_f32, p7);
+        // PC=0x13b31324 dynamic_id=1294 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31328 dynamic_id=1295 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3132c dynamic_id=1296 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[20], Vm[8], Pg[6], 
+        vsel(v8_f32, v20_f32, v8_f32, p6);
+        // PC=0x13b31330 dynamic_id=1302 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[21], Vm[9], Pg[5], 
+        vsel(v9_f32, v21_f32, v9_f32, p5);
+        // PC=0x13b31334 dynamic_id=1303 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31338 dynamic_id=1304 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3133c dynamic_id=1305 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[22], Vm[10], Pg[5], 
+        vsel(v10_f32, v22_f32, v10_f32, p5);
+        // PC=0x13b31340 dynamic_id=1306 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[23], Vm[11], Pg[7], 
+        vsel(v11_f32, v23_f32, v11_f32, p7);
+        // PC=0x13b31344 dynamic_id=1313 iteration=(('iter_13b31234', 2),)
+        // RV_VDIV Dtype: F32  Vd[8], Vn[8], Vm[12], Pg[1], 
+        vdiv(v8_f32, v8_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b31348 dynamic_id=1319 iteration=(('iter_13b31234', 2),)
+        // RV_VDIV Dtype: F32  Vd[9], Vn[9], Vm[13], Pg[2], 
+        vdiv(v9_f32, v9_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b3134c dynamic_id=1320 iteration=(('iter_13b31234', 2),)
+        // RV_VDIV Dtype: F32  Vd[10], Vn[10], Vm[14], Pg[3], 
+        vdiv(v10_f32, v10_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b31350 dynamic_id=1321 iteration=(('iter_13b31234', 2),)
+        // RV_VDIV Dtype: F32  Vd[11], Vn[11], Vm[15], Pg[4], 
+        vdiv(v11_f32, v11_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b31354 dynamic_id=1329 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[4], Vm[0], Pg[1], 
+        vcmp_ge(p5, v4_f32, v0_f32, p1);
+        // PC=0x13b31358 dynamic_id=1334 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3135c dynamic_id=1335 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31360 dynamic_id=1337 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[5], Vm[0], Pg[2], 
+        vcmp_ge(p5, v5_f32, v0_f32, p2);
+        // PC=0x13b31364 dynamic_id=1344 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31368 dynamic_id=1349 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3136c dynamic_id=1350 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[6], Vm[0], Pg[3], 
+        vcmp_ge(p5, v6_f32, v0_f32, p3);
+        // PC=0x13b31370 dynamic_id=1352 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31374 dynamic_id=1359 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=252, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b31378 dynamic_id=1363 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[7], Vm[0], Pg[4], 
+        vcmp_ge(p5, v7_f32, v0_f32, p4);
+        // PC=0x13b3137c dynamic_id=1366 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31380 dynamic_id=1383 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=251, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b31384 dynamic_id=1387 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[4], Vm[1], Pg[1], 
+        vcmp_le(p5, v4_f32, v1_f32, p1);
+        // PC=0x13b31388 dynamic_id=1410 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3138c dynamic_id=1414 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=250, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b31390 dynamic_id=1427 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[5], Vm[1], Pg[2], 
+        vcmp_le(p5, v5_f32, v1_f32, p2);
+        // PC=0x13b31394 dynamic_id=1431 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31398 dynamic_id=1440 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=249, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b3139c dynamic_id=1444 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LE Dtype: F32  Pd[7], Vn[6], Vm[1], Pg[3], 
+        vcmp_le(p7, v6_f32, v1_f32, p3);
+        // PC=0x13b313a0 dynamic_id=1446 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[7], Vm[1], Pg[4], 
+        vcmp_le(p5, v7_f32, v1_f32, p4);
+        // PC=0x13b313a4 dynamic_id=1447 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313a8 dynamic_id=1448 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=248, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b313ac dynamic_id=1450 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b0 dynamic_id=1451 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313b4 dynamic_id=1452 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b8 dynamic_id=1454 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=250, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b313bc dynamic_id=1455 iteration=(('iter_13b31234', 2),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[1], 
+        pand(p5, p5, p6, p1);
+        // PC=0x13b313c0 dynamic_id=1456 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313c4 dynamic_id=1458 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313c8 dynamic_id=1459 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313cc dynamic_id=1461 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313d0 dynamic_id=1462 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313d4 dynamic_id=1464 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=249, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b313d8 dynamic_id=1465 iteration=(('iter_13b31234', 2),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[2], 
+        pand(p5, p5, p6, p2);
+        // PC=0x13b313dc dynamic_id=1467 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313e0 dynamic_id=1468 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313e4 dynamic_id=1470 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313e8 dynamic_id=1471 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=252, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b313ec dynamic_id=1472 iteration=(('iter_13b31234', 2),)
+        // RV_PAND Dtype: B8  Pd[7], Pn[5], Pm[7], Pg[3], 
+        pand(p7, p5, p7, p3);
+        // PC=0x13b313f0 dynamic_id=1474 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313f4 dynamic_id=1475 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=251, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b313f8 dynamic_id=1476 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313fc dynamic_id=1477 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=248, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b31400 dynamic_id=1479 iteration=(('iter_13b31234', 2),)
+        // RV_PAND Dtype: B8  Pd[6], Pn[5], Pm[6], Pg[4], 
+        pand(p6, p5, p6, p4);
+        // PC=0x13b31404 dynamic_id=1480 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31408 dynamic_id=1481 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3140c dynamic_id=1483 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[8], Vm[0], Pg[5], 
+        vsel(v8_f32, v8_f32, v0_f32, p5);
+        // PC=0x13b31410 dynamic_id=1484 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31414 dynamic_id=1486 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31418 dynamic_id=1542 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[9], Vm[0], Pg[5], 
+        vsel(v9_f32, v9_f32, v0_f32, p5);
+        // PC=0x13b3141c dynamic_id=1543 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[10], Vm[0], Pg[7], 
+        vsel(v10_f32, v10_f32, v0_f32, p7);
+        // PC=0x13b31420 dynamic_id=1549 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[11], Vm[0], Pg[6], 
+        vsel(v11_f32, v11_f32, v0_f32, p6);
+        // PC=0x13b31424 dynamic_id=1556 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[4], Vm[4], Pg[1], 
+        vcmp_eq(p5, v4_f32, v4_f32, p1);
+        // PC=0x13b31428 dynamic_id=1562 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3142c dynamic_id=1569 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31430 dynamic_id=1570 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_EQ Dtype: F32  Pd[6], Vn[5], Vm[5], Pg[2], 
+        vcmp_eq(p6, v5_f32, v5_f32, p2);
+        // PC=0x13b31434 dynamic_id=1573 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_EQ Dtype: F32  Pd[7], Vn[6], Vm[6], Pg[3], 
+        vcmp_eq(p7, v6_f32, v6_f32, p3);
+        // PC=0x13b31438 dynamic_id=1577 iteration=(('iter_13b31234', 2),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[7], Vm[7], Pg[4], 
+        vcmp_eq(p5, v7_f32, v7_f32, p4);
+        // PC=0x13b3143c dynamic_id=1578 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31440 dynamic_id=1579 iteration=(('iter_13b31234', 2),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31444 dynamic_id=1582 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31448 dynamic_id=1583 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3144c dynamic_id=1584 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[4], Vn[8], Vm[2], Pg[5], 
+        vsel(v4_f32, v8_f32, v2_f32, p5);
+        // PC=0x13b31450 dynamic_id=1585 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[5], Vn[9], Vm[2], Pg[6], 
+        vsel(v5_f32, v9_f32, v2_f32, p6);
+        // PC=0x13b31454 dynamic_id=1586 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[6], Vn[10], Vm[2], Pg[7], 
+        vsel(v6_f32, v10_f32, v2_f32, p7);
+        // PC=0x13b31458 dynamic_id=1588 iteration=(('iter_13b31234', 2),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b3145c dynamic_id=1589 iteration=(('iter_13b31234', 2),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31460 dynamic_id=1590 iteration=(('iter_13b31234', 2),)
+        // RV_VSEL Dtype: B32  Vd[7], Vn[11], Vm[2], Pg[5], 
+        vsel(v7_f32, v11_f32, v2_f32, p5);
+        // PC=0x13b31464 dynamic_id=1591 iteration=(('iter_13b31234', 2),)
+        // RV_VST Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0x800, Pg[1], dist:NORM_B32, 
+        vsts(v4_f32, (__ubuf__ float*)0x800, 0, NORM_B32, p1);
+        // PC=0x13b31468 dynamic_id=1592 iteration=(('iter_13b31234', 2),)
+        // RV_VST Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0x800, Pg[2], dist:NORM_B32, 
+        vsts(v5_f32, (__ubuf__ float*)0x900, 0, NORM_B32, p2);
+        // PC=0x13b3146c dynamic_id=1594 iteration=(('iter_13b31234', 2),)
+        // RV_VST Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0x800, Pg[3], dist:NORM_B32, 
+        vsts(v6_f32, (__ubuf__ float*)0xa00, 0, NORM_B32, p3);
+        // PC=0x13b31470 dynamic_id=1595 iteration=(('iter_13b31234', 2),)
+        // RV_VST Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0x800, Pg[4], dist:NORM_B32, 
+        vsts(v7_f32, (__ubuf__ float*)0xb00, 0, NORM_B32, p4);
+        // PC=0x13b3125c dynamic_id=1780 iteration=(('iter_13b31234', 3),)
+        // RV_PLT Dtype: B32  Pd[1], Sn[71]=0xc0, 
+        uint32_t mask_count_407 = 256;
+        p1 = plt_b32(mask_count_407, POST_UPDATE);
+        // PC=0x13b31260 dynamic_id=1782 iteration=(('iter_13b31234', 3),)
+        // RV_PLT Dtype: B32  Pd[2], Sn[72]=0x80, 
+        uint32_t mask_count_408 = 192;
+        p2 = plt_b32(mask_count_408, POST_UPDATE);
+        // PC=0x13b31264 dynamic_id=1783 iteration=(('iter_13b31234', 3),)
+        // RV_PLT Dtype: B32  Pd[3], Sn[73]=0x40, 
+        uint32_t mask_count_409 = 128;
+        p3 = plt_b32(mask_count_409, POST_UPDATE);
+        // PC=0x13b31268 dynamic_id=1786 iteration=(('iter_13b31234', 3),)
+        // RV_PLT Dtype: B32  Pd[4], Sn[70]=0x0, 
+        uint32_t mask_count_410 = 64;
+        p4 = plt_b32(mask_count_410, POST_UPDATE);
+        // PC=0x13b3126c dynamic_id=1788 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v4_f32, (__ubuf__ float*)0xc00, 0, NORM);
+        // PC=0x13b31270 dynamic_id=1791 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v5_f32, (__ubuf__ float*)0xd00, 0, NORM);
+        // PC=0x13b31274 dynamic_id=1794 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v6_f32, (__ubuf__ float*)0xe00, 0, NORM);
+        // PC=0x13b31278 dynamic_id=1796 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v7_f32, (__ubuf__ float*)0xf00, 0, NORM);
+        // PC=0x13b3127c dynamic_id=1799 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[8], Sn[20]=0x1000, Sn2[21]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v8_f32, (__ubuf__ float*)0x1c00, 0, NORM);
+        // PC=0x13b31280 dynamic_id=1801 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[9], Sn[22]=0x1100, Sn2[23]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v9_f32, (__ubuf__ float*)0x1d00, 0, NORM);
+        // PC=0x13b31284 dynamic_id=1804 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[10], Sn[24]=0x1200, Sn2[25]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v10_f32, (__ubuf__ float*)0x1e00, 0, NORM);
+        // PC=0x13b31288 dynamic_id=1806 iteration=(('iter_13b31234', 3),)
+        // RV_VLD Vd[11], Sn[26]=0x1300, Sn2[27]=0x0, Am[0]=0xc00, dist:NORAML, 
+        vlds(v11_f32, (__ubuf__ float*)0x1f00, 0, NORM);
+        // PC=0x13b3128c dynamic_id=1807 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[12], Vn[4], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[1], 
+        vmuls(v12_f32, v4_f32, -0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b31290 dynamic_id=1809 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[13], Vn[5], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[2], 
+        vmuls(v13_f32, v5_f32, -0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b31294 dynamic_id=1811 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[14], Vn[6], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[3], 
+        vmuls(v14_f32, v6_f32, -0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b31298 dynamic_id=1813 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[15], Vn[7], Sm[28]=0x0, Sm2[29]=0xbf80, Pg[4], 
+        vmuls(v15_f32, v7_f32, -0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b3129c dynamic_id=1814 iteration=(('iter_13b31234', 3),)
+        // RV_VADDS Dtype: F32  Vd[12], Vn[12], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[1], 
+        vadds(v12_f32, v12_f32, 0x1.0000000000000p+0f, p1, MODE_ZEROING);
+        // PC=0x13b312a0 dynamic_id=1815 iteration=(('iter_13b31234', 3),)
+        // RV_VADDS Dtype: F32  Vd[13], Vn[13], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[2], 
+        vadds(v13_f32, v13_f32, 0x1.0000000000000p+0f, p2, MODE_ZEROING);
+        // PC=0x13b312a4 dynamic_id=1816 iteration=(('iter_13b31234', 3),)
+        // RV_VADDS Dtype: F32  Vd[14], Vn[14], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[3], 
+        vadds(v14_f32, v14_f32, 0x1.0000000000000p+0f, p3, MODE_ZEROING);
+        // PC=0x13b312a8 dynamic_id=1841 iteration=(('iter_13b31234', 3),)
+        // RV_VADDS Dtype: F32  Vd[15], Vn[15], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[4], 
+        vadds(v15_f32, v15_f32, 0x1.0000000000000p+0f, p4, MODE_ZEROING);
+        // PC=0x13b312ac dynamic_id=1847 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[16], Vn[4], Vm[12], Pg[1], 
+        vmul(v16_f32, v4_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312b0 dynamic_id=1854 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[17], Vn[5], Vm[13], Pg[2], 
+        vmul(v17_f32, v5_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312b4 dynamic_id=1857 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[18], Vn[6], Vm[14], Pg[3], 
+        vmul(v18_f32, v6_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312b8 dynamic_id=1861 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[19], Vn[7], Vm[15], Pg[4], 
+        vmul(v19_f32, v7_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312bc dynamic_id=1862 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[4], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v4_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312c0 dynamic_id=1863 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[5], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v5_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312c4 dynamic_id=1864 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[6], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v6_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312c8 dynamic_id=1865 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[7], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v7_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312cc dynamic_id=1867 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[12], Vn[20], Vm[12], Pg[1], 
+        vmul(v12_f32, v20_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b312d0 dynamic_id=1868 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[13], Vn[21], Vm[13], Pg[2], 
+        vmul(v13_f32, v21_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b312d4 dynamic_id=1869 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[14], Vn[22], Vm[14], Pg[3], 
+        vmul(v14_f32, v22_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b312d8 dynamic_id=1870 iteration=(('iter_13b31234', 3),)
+        // RV_VMUL Dtype: F32  Vd[15], Vn[23], Vm[15], Pg[4], 
+        vmul(v15_f32, v23_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b312dc dynamic_id=1871 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[20], Vn[8], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[1], 
+        vmuls(v20_f32, v8_f32, 0x1.0000000000000p+23f, p1, MODE_ZEROING);
+        // PC=0x13b312e0 dynamic_id=1873 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[21], Vn[9], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[2], 
+        vmuls(v21_f32, v9_f32, 0x1.0000000000000p+23f, p2, MODE_ZEROING);
+        // PC=0x13b312e4 dynamic_id=1874 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[22], Vn[10], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[3], 
+        vmuls(v22_f32, v10_f32, 0x1.0000000000000p+23f, p3, MODE_ZEROING);
+        // PC=0x13b312e8 dynamic_id=1875 iteration=(('iter_13b31234', 3),)
+        // RV_VMULS Dtype: F32  Vd[23], Vn[11], Sm[30]=0x0, Sm2[31]=0x4b00, Pg[4], 
+        vmuls(v23_f32, v11_f32, 0x1.0000000000000p+23f, p4, MODE_ZEROING);
+        // PC=0x13b312ec dynamic_id=1876 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LT Dtype: F32  Pd[6], Vn[4], Vm[3], Pg[1], 
+        vcmp_lt(p6, v4_f32, v3_f32, p1);
+        // PC=0x13b312f0 dynamic_id=1877 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b312f4 dynamic_id=1879 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[6], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b312f8 dynamic_id=1880 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LT Dtype: F32  Pd[5], Vn[5], Vm[3], Pg[2], 
+        vcmp_lt(p5, v5_f32, v3_f32, p2);
+        // PC=0x13b312fc dynamic_id=1881 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[6], Vm[3], Pg[3], 
+        vcmp_lt(p7, v6_f32, v3_f32, p3);
+        // PC=0x13b31300 dynamic_id=1882 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31304 dynamic_id=1883 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[7], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p7, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31308 dynamic_id=1885 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LT Dtype: F32  Pd[7], Vn[7], Vm[3], Pg[4], 
+        vcmp_lt(p7, v7_f32, v3_f32, p4);
+        // PC=0x13b3130c dynamic_id=1886 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[12], Vn[12], Vm[16], Pg[6], 
+        vsel(v12_f32, v12_f32, v16_f32, p6);
+        // PC=0x13b31310 dynamic_id=1887 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[13], Vn[13], Vm[17], Pg[5], 
+        vsel(v13_f32, v13_f32, v17_f32, p5);
+        // PC=0x13b31314 dynamic_id=1888 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31318 dynamic_id=1889 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3131c dynamic_id=1891 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[14], Vn[14], Vm[18], Pg[6], 
+        vsel(v14_f32, v14_f32, v18_f32, p6);
+        // PC=0x13b31320 dynamic_id=1917 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[15], Vn[15], Vm[19], Pg[7], 
+        vsel(v15_f32, v15_f32, v19_f32, p7);
+        // PC=0x13b31324 dynamic_id=1918 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31328 dynamic_id=1919 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3132c dynamic_id=1920 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[20], Vm[8], Pg[6], 
+        vsel(v8_f32, v20_f32, v8_f32, p6);
+        // PC=0x13b31330 dynamic_id=1926 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[21], Vm[9], Pg[5], 
+        vsel(v9_f32, v21_f32, v9_f32, p5);
+        // PC=0x13b31334 dynamic_id=1927 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31338 dynamic_id=1928 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3133c dynamic_id=1929 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[22], Vm[10], Pg[5], 
+        vsel(v10_f32, v22_f32, v10_f32, p5);
+        // PC=0x13b31340 dynamic_id=1930 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[23], Vm[11], Pg[7], 
+        vsel(v11_f32, v23_f32, v11_f32, p7);
+        // PC=0x13b31344 dynamic_id=1937 iteration=(('iter_13b31234', 3),)
+        // RV_VDIV Dtype: F32  Vd[8], Vn[8], Vm[12], Pg[1], 
+        vdiv(v8_f32, v8_f32, v12_f32, p1, MODE_ZEROING);
+        // PC=0x13b31348 dynamic_id=1943 iteration=(('iter_13b31234', 3),)
+        // RV_VDIV Dtype: F32  Vd[9], Vn[9], Vm[13], Pg[2], 
+        vdiv(v9_f32, v9_f32, v13_f32, p2, MODE_ZEROING);
+        // PC=0x13b3134c dynamic_id=1944 iteration=(('iter_13b31234', 3),)
+        // RV_VDIV Dtype: F32  Vd[10], Vn[10], Vm[14], Pg[3], 
+        vdiv(v10_f32, v10_f32, v14_f32, p3, MODE_ZEROING);
+        // PC=0x13b31350 dynamic_id=1945 iteration=(('iter_13b31234', 3),)
+        // RV_VDIV Dtype: F32  Vd[11], Vn[11], Vm[15], Pg[4], 
+        vdiv(v11_f32, v11_f32, v15_f32, p4, MODE_ZEROING);
+        // PC=0x13b31354 dynamic_id=1953 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[4], Vm[0], Pg[1], 
+        vcmp_ge(p5, v4_f32, v0_f32, p1);
+        // PC=0x13b31358 dynamic_id=1958 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3135c dynamic_id=1959 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31360 dynamic_id=1961 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[5], Vm[0], Pg[2], 
+        vcmp_ge(p5, v5_f32, v0_f32, p2);
+        // PC=0x13b31364 dynamic_id=1968 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31368 dynamic_id=1973 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3136c dynamic_id=1974 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[6], Vm[0], Pg[3], 
+        vcmp_ge(p5, v6_f32, v0_f32, p3);
+        // PC=0x13b31370 dynamic_id=1976 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31374 dynamic_id=1983 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=252, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b31378 dynamic_id=1987 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_GE Dtype: F32  Pd[5], Vn[7], Vm[0], Pg[4], 
+        vcmp_ge(p5, v7_f32, v0_f32, p4);
+        // PC=0x13b3137c dynamic_id=1990 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31380 dynamic_id=2007 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=251, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b31384 dynamic_id=2011 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[4], Vm[1], Pg[1], 
+        vcmp_le(p5, v4_f32, v1_f32, p1);
+        // PC=0x13b31388 dynamic_id=2034 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3138c dynamic_id=2038 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=250, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b31390 dynamic_id=2051 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[5], Vm[1], Pg[2], 
+        vcmp_le(p5, v5_f32, v1_f32, p2);
+        // PC=0x13b31394 dynamic_id=2055 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31398 dynamic_id=2064 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=249, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b3139c dynamic_id=2068 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LE Dtype: F32  Pd[7], Vn[6], Vm[1], Pg[3], 
+        vcmp_le(p7, v6_f32, v1_f32, p3);
+        // PC=0x13b313a0 dynamic_id=2070 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_LE Dtype: F32  Pd[5], Vn[7], Vm[1], Pg[4], 
+        vcmp_le(p5, v7_f32, v1_f32, p4);
+        // PC=0x13b313a4 dynamic_id=2071 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313a8 dynamic_id=2072 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=248, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b313ac dynamic_id=2074 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b0 dynamic_id=2075 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313b4 dynamic_id=2076 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313b8 dynamic_id=2078 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=250, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff40, 0, NORM);
+        // PC=0x13b313bc dynamic_id=2079 iteration=(('iter_13b31234', 3),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[1], 
+        pand(p5, p5, p6, p1);
+        // PC=0x13b313c0 dynamic_id=2080 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313c4 dynamic_id=2082 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b313c8 dynamic_id=2083 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313cc dynamic_id=2085 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313d0 dynamic_id=2086 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313d4 dynamic_id=2088 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=249, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff20, 0, NORM);
+        // PC=0x13b313d8 dynamic_id=2089 iteration=(('iter_13b31234', 3),)
+        // RV_PAND Dtype: B8  Pd[5], Pn[5], Pm[6], Pg[2], 
+        pand(p5, p5, p6, p2);
+        // PC=0x13b313dc dynamic_id=2091 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b313e0 dynamic_id=2092 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b313e4 dynamic_id=2094 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313e8 dynamic_id=2095 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=252, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff80, 0, NORM);
+        // PC=0x13b313ec dynamic_id=2096 iteration=(('iter_13b31234', 3),)
+        // RV_PAND Dtype: B8  Pd[7], Pn[5], Pm[7], Pg[3], 
+        pand(p7, p5, p7, p3);
+        // PC=0x13b313f0 dynamic_id=2098 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313f4 dynamic_id=2099 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=251, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ff60, 0, NORM);
+        // PC=0x13b313f8 dynamic_id=2100 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b313fc dynamic_id=2101 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[6], Sn[95]=0x40000, #offset=248, dist:NORAML, #p=0, 
+        plds(p6, (__ubuf__ uint8_t*)0x3ff00, 0, NORM);
+        // PC=0x13b31400 dynamic_id=2103 iteration=(('iter_13b31234', 3),)
+        // RV_PAND Dtype: B8  Pd[6], Pn[5], Pm[6], Pg[4], 
+        pand(p6, p5, p6, p4);
+        // PC=0x13b31404 dynamic_id=2104 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31408 dynamic_id=2105 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b3140c dynamic_id=2107 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[8], Vn[8], Vm[0], Pg[5], 
+        vsel(v8_f32, v8_f32, v0_f32, p5);
+        // PC=0x13b31410 dynamic_id=2108 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31414 dynamic_id=2110 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31418 dynamic_id=2166 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[9], Vn[9], Vm[0], Pg[5], 
+        vsel(v9_f32, v9_f32, v0_f32, p5);
+        // PC=0x13b3141c dynamic_id=2167 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[10], Vn[10], Vm[0], Pg[7], 
+        vsel(v10_f32, v10_f32, v0_f32, p7);
+        // PC=0x13b31420 dynamic_id=2173 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[11], Vn[11], Vm[0], Pg[6], 
+        vsel(v11_f32, v11_f32, v0_f32, p6);
+        // PC=0x13b31424 dynamic_id=2180 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[4], Vm[4], Pg[1], 
+        vcmp_eq(p5, v4_f32, v4_f32, p1);
+        // PC=0x13b31428 dynamic_id=2186 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b3142c dynamic_id=2193 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=253, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b31430 dynamic_id=2194 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_EQ Dtype: F32  Pd[6], Vn[5], Vm[5], Pg[2], 
+        vcmp_eq(p6, v5_f32, v5_f32, p2);
+        // PC=0x13b31434 dynamic_id=2197 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_EQ Dtype: F32  Pd[7], Vn[6], Vm[6], Pg[3], 
+        vcmp_eq(p7, v6_f32, v6_f32, p3);
+        // PC=0x13b31438 dynamic_id=2201 iteration=(('iter_13b31234', 3),)
+        // RV_VCMP_EQ Dtype: F32  Pd[5], Vn[7], Vm[7], Pg[4], 
+        vcmp_eq(p5, v7_f32, v7_f32, p4);
+        // PC=0x13b3143c dynamic_id=2202 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VLD_VST
+        mem_bar(VLD_VST);
+        // PC=0x13b31440 dynamic_id=2203 iteration=(('iter_13b31234', 3),)
+        // RV_PSTI Pd[5], Sn[95]=0x40000, #offset=254, #p=0, dist:NORAML, 
+        psts(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31444 dynamic_id=2206 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b31448 dynamic_id=2207 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=253, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffa0, 0, NORM);
+        // PC=0x13b3144c dynamic_id=2208 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[4], Vn[8], Vm[2], Pg[5], 
+        vsel(v4_f32, v8_f32, v2_f32, p5);
+        // PC=0x13b31450 dynamic_id=2209 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[5], Vn[9], Vm[2], Pg[6], 
+        vsel(v5_f32, v9_f32, v2_f32, p6);
+        // PC=0x13b31454 dynamic_id=2210 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[6], Vn[10], Vm[2], Pg[7], 
+        vsel(v6_f32, v10_f32, v2_f32, p7);
+        // PC=0x13b31458 dynamic_id=2212 iteration=(('iter_13b31234', 3),)
+        // RV_SMEM_BAR type: VST_VLD
+        mem_bar(VST_VLD);
+        // PC=0x13b3145c dynamic_id=2213 iteration=(('iter_13b31234', 3),)
+        // RV_PLDI Pd[5], Sn[95]=0x40000, #offset=254, dist:NORAML, #p=0, 
+        plds(p5, (__ubuf__ uint8_t*)0x3ffc0, 0, NORM);
+        // PC=0x13b31460 dynamic_id=2214 iteration=(('iter_13b31234', 3),)
+        // RV_VSEL Dtype: B32  Vd[7], Vn[11], Vm[2], Pg[5], 
+        vsel(v7_f32, v11_f32, v2_f32, p5);
+        // PC=0x13b31464 dynamic_id=2215 iteration=(('iter_13b31234', 3),)
+        // RV_VST Vd[4], Sn[12]=0x0, Sn2[13]=0x0, Am[0]=0xc00, Pg[1], dist:NORM_B32, 
+        vsts(v4_f32, (__ubuf__ float*)0xc00, 0, NORM_B32, p1);
+        // PC=0x13b31468 dynamic_id=2216 iteration=(('iter_13b31234', 3),)
+        // RV_VST Vd[5], Sn[14]=0x100, Sn2[15]=0x0, Am[0]=0xc00, Pg[2], dist:NORM_B32, 
+        vsts(v5_f32, (__ubuf__ float*)0xd00, 0, NORM_B32, p2);
+        // PC=0x13b3146c dynamic_id=2218 iteration=(('iter_13b31234', 3),)
+        // RV_VST Vd[6], Sn[16]=0x200, Sn2[17]=0x0, Am[0]=0xc00, Pg[3], dist:NORM_B32, 
+        vsts(v6_f32, (__ubuf__ float*)0xe00, 0, NORM_B32, p3);
+        // PC=0x13b31470 dynamic_id=2219 iteration=(('iter_13b31234', 3),)
+        // RV_VST Vd[7], Sn[18]=0x300, Sn2[19]=0x0, Am[0]=0xc00, Pg[4], dist:NORM_B32, 
+        vsts(v7_f32, (__ubuf__ float*)0xf00, 0, NORM_B32, p4);
+    }
+}

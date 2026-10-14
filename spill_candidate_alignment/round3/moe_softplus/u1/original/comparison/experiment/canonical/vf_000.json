@@ -1,0 +1,1852 @@
+{
+  "schema_version": 2,
+  "context": [
+    {
+      "kind": "instruction",
+      "instruction_id": "moe_softplus.vf0.pc13b3a204.0",
+      "opcode": "PSET_B32",
+      "instruction_class": "compute",
+      "form": "b32",
+      "inputs": [],
+      "outputs": [
+        {
+          "value_id": "p1.def0",
+          "role": "destination",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "dependencies": [],
+      "attributes": {
+        "rv_opcode": "RV_PSET",
+        "rv_pc": "0x13b3a204",
+        "rv_detail": "Dtype: B32  Pd[1], #pattern=0, ",
+        "replay_dynamic_id": 76,
+        "rv_dtype": "B32",
+        "pattern": "PAT_ALL"
+      },
+      "source_location": {
+        "source": "CAModel decoded instruction",
+        "line": null,
+        "column": null,
+        "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+      }
+    },
+    {
+      "kind": "instruction",
+      "instruction_id": "moe_softplus.vf0.pc13b3a208.1",
+      "opcode": "VDUP",
+      "instruction_class": "compute",
+      "form": "b32",
+      "inputs": [
+        {
+          "value_id": "constant.uint32.3f800000.def1",
+          "role": "source",
+          "dtype": null,
+          "memory_access": null
+        },
+        {
+          "value_id": "p1.def0",
+          "role": "predicate",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "outputs": [
+        {
+          "value_id": "v0.def2",
+          "role": "destination",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "dependencies": [],
+      "attributes": {
+        "rv_opcode": "RV_VDUPS",
+        "rv_pc": "0x13b3a208",
+        "rv_detail": "Dtype: B32  Vd[0], Sn[6]=0x0, Sn2[7]=0x3f80, #pm=1, Pg[1], ",
+        "replay_dynamic_id": 77,
+        "rv_dtype": "B32"
+      },
+      "source_location": {
+        "source": "CAModel decoded instruction",
+        "line": null,
+        "column": null,
+        "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+      }
+    },
+    {
+      "kind": "instruction",
+      "instruction_id": "moe_softplus.vf0.pc13b3a20c.2",
+      "opcode": "VDUP",
+      "instruction_class": "compute",
+      "form": "b32",
+      "inputs": [
+        {
+          "value_id": "constant.uint32.0.def3",
+          "role": "source",
+          "dtype": null,
+          "memory_access": null
+        },
+        {
+          "value_id": "p1.def0",
+          "role": "predicate",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "outputs": [
+        {
+          "value_id": "v1.def4",
+          "role": "destination",
+          "dtype": null,
+          "memory_access": null
+        }
+      ],
+      "dependencies": [],
+      "attributes": {
+        "rv_opcode": "RV_VDUPS",
+        "rv_pc": "0x13b3a20c",
+        "rv_detail": "Dtype: B32  Vd[1], Sn[0]=0x0, Sn2[1]=0x0, #pm=1, Pg[1], ",
+        "replay_dynamic_id": 78,
+        "rv_dtype": "B32"
+      },
+      "source_location": {
+        "source": "CAModel decoded instruction",
+        "line": null,
+        "column": null,
+        "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+      }
+    },
+    {
+      "kind": "loop",
+      "loop_id": "moe_softplus.vf0.pc13b3a214.3",
+      "induction": {
+        "variable_id": "iter_13b3a214",
+        "start": 0,
+        "step": 1
+      },
+      "count": 48,
+      "unroll": 1,
+      "carried_values": [
+        {
+          "logical_id": "p1",
+          "entry_value_id": null,
+          "back_edge_value_id": "p1.def6",
+          "exit_value_id": "p1.def36"
+        },
+        {
+          "logical_id": "counter.s64",
+          "entry_value_id": "counter.s64.def5",
+          "back_edge_value_id": "counter.s64.def7",
+          "exit_value_id": "counter.s64.def37"
+        },
+        {
+          "logical_id": "memory.fp32",
+          "entry_value_id": "memory.fp32.def8",
+          "back_edge_value_id": "memory.fp32.def35",
+          "exit_value_id": "memory.fp32.def38"
+        },
+        {
+          "logical_id": "v2",
+          "entry_value_id": null,
+          "back_edge_value_id": "v2.def26",
+          "exit_value_id": "v2.def39"
+        },
+        {
+          "logical_id": "v3",
+          "entry_value_id": null,
+          "back_edge_value_id": "v3.def31",
+          "exit_value_id": "v3.def40"
+        },
+        {
+          "logical_id": "constant.fp32.bf800000",
+          "entry_value_id": "constant.fp32.bf800000.def11",
+          "back_edge_value_id": "constant.fp32.bf800000.def11",
+          "exit_value_id": "constant.fp32.bf800000.def41"
+        },
+        {
+          "logical_id": "constant.fp32.3b800000",
+          "entry_value_id": "constant.fp32.3b800000.def14",
+          "back_edge_value_id": "constant.fp32.3b800000.def14",
+          "exit_value_id": "constant.fp32.3b800000.def42"
+        },
+        {
+          "logical_id": "p2",
+          "entry_value_id": null,
+          "back_edge_value_id": "p2.def15",
+          "exit_value_id": "p2.def43"
+        },
+        {
+          "logical_id": "constant.fp32.3f000000",
+          "entry_value_id": "constant.fp32.3f000000.def16",
+          "back_edge_value_id": "constant.fp32.3f000000.def16",
+          "exit_value_id": "constant.fp32.3f000000.def44"
+        },
+        {
+          "logical_id": "v4",
+          "entry_value_id": null,
+          "back_edge_value_id": "v4.def32",
+          "exit_value_id": "v4.def45"
+        },
+        {
+          "logical_id": "constant.fp32.3f800000",
+          "entry_value_id": "constant.fp32.3f800000.def20",
+          "back_edge_value_id": "constant.fp32.3f800000.def20",
+          "exit_value_id": "constant.fp32.3f800000.def46"
+        },
+        {
+          "logical_id": "constant.fp32.38d1b717",
+          "entry_value_id": "constant.fp32.38d1b717.def27",
+          "back_edge_value_id": "constant.fp32.38d1b717.def27",
+          "exit_value_id": "constant.fp32.38d1b717.def47"
+        },
+        {
+          "logical_id": "constant.fp32.3fa00000",
+          "entry_value_id": "constant.fp32.3fa00000.def30",
+          "back_edge_value_id": "constant.fp32.3fa00000.def30",
+          "exit_value_id": "constant.fp32.3fa00000.def48"
+        }
+      ],
+      "body": [
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a218.4",
+          "opcode": "PLT",
+          "instruction_class": "compute",
+          "form": "b32",
+          "inputs": [
+            {
+              "value_id": "counter.s64.def5",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "p1.def6",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "counter.s64.def7",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_PLT",
+            "rv_pc": "0x13b3a218",
+            "rv_detail": "Dtype: B32  Pd[1], Sn[64]=0xbc0, ",
+            "replay_dynamic_id": 81,
+            "rv_dtype": "B32",
+            "scalar_counter_step": 64,
+            "first_observed_count_before_update": 3072
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a21c.5",
+          "opcode": "VLDS",
+          "instruction_class": "load",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "memory.fp32.def8",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 0,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3a214",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "read",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def9",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLD",
+            "rv_pc": "0x13b3a21c",
+            "rv_detail": "Vd[2], Sn[8]=0x0, Sn2[9]=0x0, Am[0]=0x0, dist:NORAML, ",
+            "replay_dynamic_id": 82
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a220.6",
+          "opcode": "VABS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def9",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def10",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VABS_FP",
+            "rv_pc": "0x13b3a220",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[2], Pg[1], ",
+            "replay_dynamic_id": 83,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a224.7",
+          "opcode": "VMULS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def10",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.bf800000.def11",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def12",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMULS",
+            "rv_pc": "0x13b3a224",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[3], Sm[10]=0x0, Sm2[11]=0xbf80, Pg[1], ",
+            "replay_dynamic_id": 84,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a228.8",
+          "opcode": "VEXP",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def12",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def13",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VEXP",
+            "rv_pc": "0x13b3a228",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[3], Pg[1], ",
+            "replay_dynamic_id": 85,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a22c.9",
+          "opcode": "VCMPS_LT",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def13",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.3b800000.def14",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "p2.def15",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VCMPS_LT",
+            "rv_pc": "0x13b3a22c",
+            "rv_detail": "Dtype: F32  Pd[2], Vn[3], Sm[12]=0x0, Sm2[13]=0x3b80, Pg[1], ",
+            "replay_dynamic_id": 86,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a230.10",
+          "opcode": "VMULS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def13",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.3f000000.def16",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def17",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMULS",
+            "rv_pc": "0x13b3a230",
+            "rv_detail": "Dtype: F32  Vd[4], Vn[3], Sm[14]=0x0, Sm2[15]=0x3f00, Pg[1], ",
+            "replay_dynamic_id": 87,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a234.11",
+          "opcode": "VSUB",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v0.def2",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v4.def17",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def18",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSUB",
+            "rv_pc": "0x13b3a234",
+            "rv_detail": "Dtype: F32  Vd[4], Vn[0], Vm[4], Pg[1], ",
+            "replay_dynamic_id": 88,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a238.12",
+          "opcode": "VMUL",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def13",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v4.def18",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def19",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMUL",
+            "rv_pc": "0x13b3a238",
+            "rv_detail": "Dtype: F32  Vd[4], Vn[3], Vm[4], Pg[1], ",
+            "replay_dynamic_id": 89,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a23c.13",
+          "opcode": "VADDS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def13",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.3f800000.def20",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def21",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VADDS",
+            "rv_pc": "0x13b3a23c",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[3], Sm[6]=0x0, Sm2[7]=0x3f80, Pg[1], ",
+            "replay_dynamic_id": 90,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a240.14",
+          "opcode": "VLN",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def21",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def22",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VLN",
+            "rv_pc": "0x13b3a240",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[3], Pg[1], ",
+            "replay_dynamic_id": 91,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a244.15",
+          "opcode": "VSEL",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v4.def19",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v3.def22",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p2.def15",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def23",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSEL",
+            "rv_pc": "0x13b3a244",
+            "rv_detail": "Dtype: B32  Vd[3], Vn[4], Vm[3], Pg[2], ",
+            "replay_dynamic_id": 92,
+            "rv_dtype": "B32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a248.16",
+          "opcode": "VMAX",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def9",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v1.def4",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def24",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMAX",
+            "rv_pc": "0x13b3a248",
+            "rv_detail": "Dtype: F32  Vd[2], Vn[2], Vm[1], Pg[1], ",
+            "replay_dynamic_id": 93,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a24c.17",
+          "opcode": "VADD",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def24",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v3.def23",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def25",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VADD",
+            "rv_pc": "0x13b3a24c",
+            "rv_detail": "Dtype: F32  Vd[2], Vn[2], Vm[3], Pg[1], ",
+            "replay_dynamic_id": 94,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a250.18",
+          "opcode": "VSQRT",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def25",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v2.def26",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VSQRT",
+            "rv_pc": "0x13b3a250",
+            "rv_detail": "Dtype: F32  Vd[2], Vn[2], Pg[1], ",
+            "replay_dynamic_id": 95,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a254.19",
+          "opcode": "VADDS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def26",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.38d1b717.def27",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def28",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VADDS",
+            "rv_pc": "0x13b3a254",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[2], Sm[16]=0xb717, Sm2[17]=0x38d1, Pg[1], ",
+            "replay_dynamic_id": 96,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a258.20",
+          "opcode": "VDIV",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def26",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "v3.def28",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def29",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VDIV",
+            "rv_pc": "0x13b3a258",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[2], Vm[3], Pg[1], ",
+            "replay_dynamic_id": 97,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a25c.21",
+          "opcode": "VMULS",
+          "instruction_class": "compute",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def29",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "constant.fp32.3fa00000.def30",
+              "role": "scalar",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v3.def31",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VMULS",
+            "rv_pc": "0x13b3a25c",
+            "rv_detail": "Dtype: F32  Vd[3], Vn[3], Sm[18]=0x0, Sm2[19]=0x3fa0, Pg[1], ",
+            "replay_dynamic_id": 99,
+            "rv_dtype": "F32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a260.22",
+          "opcode": "VDUP",
+          "instruction_class": "compute",
+          "form": "b32",
+          "inputs": [
+            {
+              "value_id": "constant.uint32.0.def3",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "v4.def32",
+              "role": "destination",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VDUPS",
+            "rv_pc": "0x13b3a260",
+            "rv_detail": "Dtype: B32  Vd[4], Sn[0]=0x0, Sn2[1]=0x0, #pm=1, Pg[1], ",
+            "replay_dynamic_id": 100,
+            "rv_dtype": "B32"
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a264.23",
+          "opcode": "VSTS",
+          "instruction_class": "store",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v3.def31",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "memory.fp32.def33",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 3072,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3a214",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "write",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VST",
+            "rv_pc": "0x13b3a264",
+            "rv_detail": "Vd[3], Sn[20]=0x3000, Sn2[21]=0x0, Am[0]=0x0, Pg[1], dist:NORM_B32, ",
+            "replay_dynamic_id": 101
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a268.24",
+          "opcode": "VSTS",
+          "instruction_class": "store",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v4.def32",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "memory.fp32.def34",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 6144,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3a214",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "write",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VST",
+            "rv_pc": "0x13b3a268",
+            "rv_detail": "Vd[4], Sn[22]=0x6000, Sn2[23]=0x0, Am[0]=0x0, Pg[1], dist:NORM_B32, ",
+            "replay_dynamic_id": 102
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        },
+        {
+          "kind": "instruction",
+          "instruction_id": "moe_softplus.vf0.pc13b3a26c.25",
+          "opcode": "VSTS",
+          "instruction_class": "store",
+          "form": "fp32",
+          "inputs": [
+            {
+              "value_id": "v2.def26",
+              "role": "source",
+              "dtype": null,
+              "memory_access": null
+            },
+            {
+              "value_id": "p1.def6",
+              "role": "predicate",
+              "dtype": null,
+              "memory_access": null
+            }
+          ],
+          "outputs": [
+            {
+              "value_id": "memory.fp32.def35",
+              "role": "memory",
+              "dtype": null,
+              "memory_access": {
+                "base_object_id": "ub",
+                "offset": {
+                  "constant": 9216,
+                  "terms": [
+                    {
+                      "variable_id": "iter_13b3a214",
+                      "coefficient": 64
+                    }
+                  ]
+                },
+                "access_kind": "write",
+                "span": 64,
+                "alias_group": null,
+                "address_state_id": null,
+                "update_mode": "none",
+                "post_update_delta_bytes": null,
+                "address_unit_bytes": null
+              }
+            }
+          ],
+          "dependencies": [],
+          "attributes": {
+            "rv_opcode": "RV_VST",
+            "rv_pc": "0x13b3a26c",
+            "rv_detail": "Vd[2], Sn[24]=0x9000, Sn2[25]=0x0, Am[0]=0x0, Pg[1], dist:NORM_B32, ",
+            "replay_dynamic_id": 103
+          },
+          "source_location": {
+            "source": "CAModel decoded instruction",
+            "line": null,
+            "column": null,
+            "path": "/mnt/e/vfsimulator/cce_code/spill_candidates_round3/cases/moe_softplus/cce/kernel.cce"
+          }
+        }
+      ],
+      "source_location": null
+    }
+  ],
+  "values": {
+    "p1.def0": {
+      "definition_id": "p1.def0",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a204.0",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.uint32.3f800000.def1": {
+      "definition_id": "constant.uint32.3f800000.def1",
+      "logical_id": "constant.uint32.3f800000",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v0.def2": {
+      "definition_id": "v0.def2",
+      "logical_id": "v0",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a208.1",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.uint32.0.def3": {
+      "definition_id": "constant.uint32.0.def3",
+      "logical_id": "constant.uint32.0",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v1.def4": {
+      "definition_id": "v1.def4",
+      "logical_id": "v1",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a20c.2",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "counter.s64.def5": {
+      "definition_id": "counter.s64.def5",
+      "logical_id": "counter.s64",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "p1.def6": {
+      "definition_id": "p1.def6",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a218.4",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "counter.s64.def7": {
+      "definition_id": "counter.s64.def7",
+      "logical_id": "counter.s64",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a218.4",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def8": {
+      "definition_id": "memory.fp32.def8",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "v2.def9": {
+      "definition_id": "v2.def9",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a21c.5",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def10": {
+      "definition_id": "v3.def10",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a220.6",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.bf800000.def11": {
+      "definition_id": "constant.fp32.bf800000.def11",
+      "logical_id": "constant.fp32.bf800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def12": {
+      "definition_id": "v3.def12",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a224.7",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def13": {
+      "definition_id": "v3.def13",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a228.8",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3b800000.def14": {
+      "definition_id": "constant.fp32.3b800000.def14",
+      "logical_id": "constant.fp32.3b800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "p2.def15": {
+      "definition_id": "p2.def15",
+      "logical_id": "p2",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a22c.9",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3f000000.def16": {
+      "definition_id": "constant.fp32.3f000000.def16",
+      "logical_id": "constant.fp32.3f000000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def17": {
+      "definition_id": "v4.def17",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a230.10",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def18": {
+      "definition_id": "v4.def18",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a234.11",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def19": {
+      "definition_id": "v4.def19",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a238.12",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3f800000.def20": {
+      "definition_id": "constant.fp32.3f800000.def20",
+      "logical_id": "constant.fp32.3f800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def21": {
+      "definition_id": "v3.def21",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a23c.13",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def22": {
+      "definition_id": "v3.def22",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a240.14",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def23": {
+      "definition_id": "v3.def23",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a244.15",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def24": {
+      "definition_id": "v2.def24",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a248.16",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def25": {
+      "definition_id": "v2.def25",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a24c.17",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v2.def26": {
+      "definition_id": "v2.def26",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a250.18",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.38d1b717.def27": {
+      "definition_id": "constant.fp32.38d1b717.def27",
+      "logical_id": "constant.fp32.38d1b717",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def28": {
+      "definition_id": "v3.def28",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a254.19",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def29": {
+      "definition_id": "v3.def29",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a258.20",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3fa00000.def30": {
+      "definition_id": "constant.fp32.3fa00000.def30",
+      "logical_id": "constant.fp32.3fa00000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": null,
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def31": {
+      "definition_id": "v3.def31",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a25c.21",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def32": {
+      "definition_id": "v4.def32",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a260.22",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def33": {
+      "definition_id": "memory.fp32.def33",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a264.23",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "memory.fp32.def34": {
+      "definition_id": "memory.fp32.def34",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a268.24",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "memory.fp32.def35": {
+      "definition_id": "memory.fp32.def35",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a26c.25",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "p1.def36": {
+      "definition_id": "p1.def36",
+      "logical_id": "p1",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "counter.s64.def37": {
+      "definition_id": "counter.s64.def37",
+      "logical_id": "counter.s64",
+      "storage": "Scalar",
+      "dtype": "uint32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "memory.fp32.def38": {
+      "definition_id": "memory.fp32.def38",
+      "logical_id": "memory.fp32",
+      "storage": "UB",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": "ub",
+      "source_location": null
+    },
+    "v2.def39": {
+      "definition_id": "v2.def39",
+      "logical_id": "v2",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v3.def40": {
+      "definition_id": "v3.def40",
+      "logical_id": "v3",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.bf800000.def41": {
+      "definition_id": "constant.fp32.bf800000.def41",
+      "logical_id": "constant.fp32.bf800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3b800000.def42": {
+      "definition_id": "constant.fp32.3b800000.def42",
+      "logical_id": "constant.fp32.3b800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "p2.def43": {
+      "definition_id": "p2.def43",
+      "logical_id": "p2",
+      "storage": "PredicateRegister",
+      "dtype": "bool",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3f000000.def44": {
+      "definition_id": "constant.fp32.3f000000.def44",
+      "logical_id": "constant.fp32.3f000000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "v4.def45": {
+      "definition_id": "v4.def45",
+      "logical_id": "v4",
+      "storage": "Register",
+      "dtype": "fp32",
+      "shape": [
+        64
+      ],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3f800000.def46": {
+      "definition_id": "constant.fp32.3f800000.def46",
+      "logical_id": "constant.fp32.3f800000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.38d1b717.def47": {
+      "definition_id": "constant.fp32.38d1b717.def47",
+      "logical_id": "constant.fp32.38d1b717",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    },
+    "constant.fp32.3fa00000.def48": {
+      "definition_id": "constant.fp32.3fa00000.def48",
+      "logical_id": "constant.fp32.3fa00000",
+      "storage": "Scalar",
+      "dtype": "fp32",
+      "shape": [],
+      "producer_node_id": "moe_softplus.vf0.pc13b3a214.3",
+      "storage_object_id": null,
+      "source_location": null
+    }
+  },
+  "storage_objects": {
+    "ub": {
+      "object_id": "ub",
+      "storage": "UB",
+      "shape": [
+        262144
+      ],
+      "source_location": null
+    }
+  },
+  "params": {},
+  "uarch": {},
+  "source": {
+    "adapter": "compiled_cce_replay",
+    "case": "moe_softplus",
+    "vf_index": 0,
+    "scalar_timing_modeled": false
+  }
+}

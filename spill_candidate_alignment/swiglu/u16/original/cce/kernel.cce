@@ -1,0 +1,1638 @@
+/**
+ * Copyright (c) 2026 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+__simd_callee__ inline void ClampMask(vector_bool& gateInRangeMask, vector_f32& gate,
+                                      float clampLimit, vector_bool& activeMask) {
+    vcmps_lt(gateInRangeMask, gate, clampLimit, activeMask);
+}
+__simd_callee__ inline void SelectMask(vector_f32& floatMask, vector_bool& conditionMask,
+                                       vector_f32& ones, vector_f32& zeros) {
+    vsel(floatMask, ones, zeros, conditionMask);
+}
+__simd_callee__ inline void ClipMask(vector_bool& upBelowUpperMask, vector_bool& upAboveLowerMask,
+                                     vector_f32& negativeUp, vector_f32& up, float clampLimit,
+                                     vector_bool& activeMask) {
+    vcmps_lt(upBelowUpperMask, up, clampLimit, activeMask);
+    vmuls(negativeUp, up, float(-1.0), activeMask, MODE_ZEROING);
+    vcmps_lt(upAboveLowerMask, negativeUp, clampLimit, activeMask);
+}
+__simd_callee__ inline void ClampClip(vector_f32& gate, vector_f32& up, float clampLimit,
+                                      vector_bool& activeMask) {
+    vmins(gate, gate, clampLimit, activeMask, MODE_ZEROING);
+    vmins(up, up, clampLimit, activeMask, MODE_ZEROING);
+    vmaxs(up, up, float(-clampLimit), activeMask, MODE_ZEROING);
+}
+__simd_callee__ inline void Sigmoid(vector_f32& sigmoid, vector_f32& gate, vector_f32& ones,
+                                    vector_bool& activeMask) {
+    vector_f32 negativeGate;
+    vector_f32 expNegativeGate;
+    vector_f32 onePlusExp;
+    vmuls(negativeGate, gate, float(-1.0), activeMask, MODE_ZEROING);
+    vexp(expNegativeGate, negativeGate, activeMask, MODE_ZEROING);
+    vadds(onePlusExp, expNegativeGate, float(1.0), activeMask, MODE_ZEROING);
+    vdiv(sigmoid, ones, onePlusExp, activeMask, MODE_ZEROING);
+}
+__simd_callee__ inline void Silu(vector_f32& gate, vector_f32& sigmoid, vector_f32& zeros,
+                                 vector_bool& activeMask) {
+    vector_bool negInfMask;
+    vector_bool belowPositiveMinMask;
+    vector_bool negativeNormalMask;
+    vector_f32 rawSilu;
+    vector_f32 positiveSideFlushedSilu;
+    vector_f32 flushedSilu;
+    vcmps_eq(negInfMask, gate, -__builtin_inff(), activeMask);
+    vmul(rawSilu, gate, sigmoid, activeMask, MODE_ZEROING);
+
+    vcmps_lt(belowPositiveMinMask, rawSilu, FLT_MIN, activeMask);
+    vsel(positiveSideFlushedSilu, zeros, rawSilu, belowPositiveMinMask);
+    vcmps_le(negativeNormalMask, rawSilu, -FLT_MIN, activeMask);
+    vsel(flushedSilu, rawSilu, positiveSideFlushedSilu, negativeNormalMask);
+    vsel(gate, zeros, flushedSilu, negInfMask);
+}
+__simd_callee__ inline void SiluPrime(vector_f32& siluPrime, vector_f32& siluTimesSigmoid,
+                                      vector_f32& sigmoid, vector_f32& silu, vector_f32& ones,
+                                      vector_bool& activeMask) {
+    vector_bool posInfMask;
+    vector_f32 rawSiluPrime;
+    vcmps_eq(posInfMask, silu, __builtin_inff(), activeMask);
+    vmul(siluTimesSigmoid, silu, sigmoid, activeMask, MODE_ZEROING);
+    vadd(rawSiluPrime, sigmoid, silu, activeMask, MODE_ZEROING);
+    vsub(rawSiluPrime, rawSiluPrime, siluTimesSigmoid, activeMask, MODE_ZEROING);
+    vsel(siluPrime, ones, rawSiluPrime, posInfMask);
+}
+__simd_callee__ inline void ComputeGradGate(vector_f32& gradGate, vector_f32& gradY,
+                                            vector_f32& siluPrime, vector_f32& up,
+                                            vector_f32& weight, vector_f32& gateClampMask,
+                                            float rowMaskValue, vector_bool& activeMask) {
+    vmul(gradGate, gradY, siluPrime, activeMask, MODE_ZEROING);
+    vmul(gradGate, gradGate, up, activeMask, MODE_ZEROING);
+
+    vmul(gradGate, gradGate, weight, activeMask, MODE_ZEROING);
+
+    vmul(gradGate, gradGate, gateClampMask, activeMask, MODE_ZEROING);
+}
+__simd_callee__ inline void ComputeGradUp(vector_f32& gradUp, vector_f32& gradY, vector_f32& silu,
+                                          vector_f32& weight, vector_f32& upClampMask,
+                                          float rowMaskValue, vector_bool& activeMask) {
+    vmul(gradUp, gradY, silu, activeMask, MODE_ZEROING);
+
+    vmul(gradUp, gradUp, weight, activeMask, MODE_ZEROING);
+
+    vmul(gradUp, gradUp, upClampMask, activeMask, MODE_ZEROING);
+}
+__aicore__ inline void candidate_vf(__ubuf__ float* gradYAddress, __ubuf__ float* gateAddress,
+                                    __ubuf__ float* upAddress, __ubuf__ float* weightAddress,
+                                    __ubuf__ float* yOriginAddress, __ubuf__ float* gradGateAddress,
+                                    __ubuf__ float* gradUpAddress,
+                                    __ubuf__ float* gradWeightProductAddress) {
+    constexpr uint32_t FP32_VECTOR_LENGTH = 64;
+    uint32_t elementCount = 1024;
+    float clampLimit = 2.0f, rowMaskValue = 1.0f;
+    __VEC_SCOPE__ {
+        vector_bool activeMask;
+        vector_bool fullMask = pset_b32(PAT_ALL);
+        vector_f32 ones;
+        vector_f32 zeros;
+        vdup(ones, float(1.0), fullMask, MODE_ZEROING);
+        vdup(zeros, float(0.0), fullMask, MODE_ZEROING);
+        vector_f32 weight;
+
+        vlds(weight, weightAddress, 0, BRC_B32);
+
+        vector_f32 gradY;
+        vector_f32 gate;
+        vector_f32 up;
+        vector_f32 sigmoid;
+        vector_f32 siluPrime;
+        vector_f32 siluTimesSigmoid;
+        vector_f32 gradGate;
+        vector_f32 gradUp;
+        vector_f32 gateClampMask;
+        vector_f32 upClampMask;
+        vector_f32 gradWeightProduct;
+        vector_f32 gradGateOutput;
+        vector_f32 gradUpOutput;
+        uint16_t repeatCount =
+            static_cast<uint16_t>((elementCount + FP32_VECTOR_LENGTH - 1) / FP32_VECTOR_LENGTH);
+        {
+            vector_bool activeMask_u0;
+            vector_bool activeMask_u1;
+            vector_bool activeMask_u2;
+            vector_bool activeMask_u3;
+            vector_bool activeMask_u4;
+            vector_bool activeMask_u5;
+            vector_bool activeMask_u6;
+            vector_bool activeMask_u7;
+            vector_bool activeMask_u8;
+            vector_bool activeMask_u9;
+            vector_bool activeMask_u10;
+            vector_bool activeMask_u11;
+            vector_bool activeMask_u12;
+            vector_bool activeMask_u13;
+            vector_bool activeMask_u14;
+            vector_bool activeMask_u15;
+            vector_f32 gate_u0;
+            vector_f32 gate_u1;
+            vector_f32 gate_u2;
+            vector_f32 gate_u3;
+            vector_f32 gate_u4;
+            vector_f32 gate_u5;
+            vector_f32 gate_u6;
+            vector_f32 gate_u7;
+            vector_f32 gate_u8;
+            vector_f32 gate_u9;
+            vector_f32 gate_u10;
+            vector_f32 gate_u11;
+            vector_f32 gate_u12;
+            vector_f32 gate_u13;
+            vector_f32 gate_u14;
+            vector_f32 gate_u15;
+            vector_f32 gateClampMask_u0;
+            vector_f32 gateClampMask_u1;
+            vector_f32 gateClampMask_u2;
+            vector_f32 gateClampMask_u3;
+            vector_f32 gateClampMask_u4;
+            vector_f32 gateClampMask_u5;
+            vector_f32 gateClampMask_u6;
+            vector_f32 gateClampMask_u7;
+            vector_f32 gateClampMask_u8;
+            vector_f32 gateClampMask_u9;
+            vector_f32 gateClampMask_u10;
+            vector_f32 gateClampMask_u11;
+            vector_f32 gateClampMask_u12;
+            vector_f32 gateClampMask_u13;
+            vector_f32 gateClampMask_u14;
+            vector_f32 gateClampMask_u15;
+            vector_bool gateInRangeMask_u0;
+            vector_bool gateInRangeMask_u1;
+            vector_bool gateInRangeMask_u2;
+            vector_bool gateInRangeMask_u3;
+            vector_bool gateInRangeMask_u4;
+            vector_bool gateInRangeMask_u5;
+            vector_bool gateInRangeMask_u6;
+            vector_bool gateInRangeMask_u7;
+            vector_bool gateInRangeMask_u8;
+            vector_bool gateInRangeMask_u9;
+            vector_bool gateInRangeMask_u10;
+            vector_bool gateInRangeMask_u11;
+            vector_bool gateInRangeMask_u12;
+            vector_bool gateInRangeMask_u13;
+            vector_bool gateInRangeMask_u14;
+            vector_bool gateInRangeMask_u15;
+            vector_f32 gradGate_u0;
+            vector_f32 gradGate_u1;
+            vector_f32 gradGate_u2;
+            vector_f32 gradGate_u3;
+            vector_f32 gradGate_u4;
+            vector_f32 gradGate_u5;
+            vector_f32 gradGate_u6;
+            vector_f32 gradGate_u7;
+            vector_f32 gradGate_u8;
+            vector_f32 gradGate_u9;
+            vector_f32 gradGate_u10;
+            vector_f32 gradGate_u11;
+            vector_f32 gradGate_u12;
+            vector_f32 gradGate_u13;
+            vector_f32 gradGate_u14;
+            vector_f32 gradGate_u15;
+            vector_f32 gradUp_u0;
+            vector_f32 gradUp_u1;
+            vector_f32 gradUp_u2;
+            vector_f32 gradUp_u3;
+            vector_f32 gradUp_u4;
+            vector_f32 gradUp_u5;
+            vector_f32 gradUp_u6;
+            vector_f32 gradUp_u7;
+            vector_f32 gradUp_u8;
+            vector_f32 gradUp_u9;
+            vector_f32 gradUp_u10;
+            vector_f32 gradUp_u11;
+            vector_f32 gradUp_u12;
+            vector_f32 gradUp_u13;
+            vector_f32 gradUp_u14;
+            vector_f32 gradUp_u15;
+            vector_f32 gradWeightProduct_u0;
+            vector_f32 gradWeightProduct_u1;
+            vector_f32 gradWeightProduct_u2;
+            vector_f32 gradWeightProduct_u3;
+            vector_f32 gradWeightProduct_u4;
+            vector_f32 gradWeightProduct_u5;
+            vector_f32 gradWeightProduct_u6;
+            vector_f32 gradWeightProduct_u7;
+            vector_f32 gradWeightProduct_u8;
+            vector_f32 gradWeightProduct_u9;
+            vector_f32 gradWeightProduct_u10;
+            vector_f32 gradWeightProduct_u11;
+            vector_f32 gradWeightProduct_u12;
+            vector_f32 gradWeightProduct_u13;
+            vector_f32 gradWeightProduct_u14;
+            vector_f32 gradWeightProduct_u15;
+            vector_f32 gradY_u0;
+            vector_f32 gradY_u1;
+            vector_f32 gradY_u2;
+            vector_f32 gradY_u3;
+            vector_f32 gradY_u4;
+            vector_f32 gradY_u5;
+            vector_f32 gradY_u6;
+            vector_f32 gradY_u7;
+            vector_f32 gradY_u8;
+            vector_f32 gradY_u9;
+            vector_f32 gradY_u10;
+            vector_f32 gradY_u11;
+            vector_f32 gradY_u12;
+            vector_f32 gradY_u13;
+            vector_f32 gradY_u14;
+            vector_f32 gradY_u15;
+            vector_f32 helper_7_expNegativeGate_u0;
+            vector_f32 helper_7_expNegativeGate_u1;
+            vector_f32 helper_7_expNegativeGate_u2;
+            vector_f32 helper_7_expNegativeGate_u3;
+            vector_f32 helper_7_expNegativeGate_u4;
+            vector_f32 helper_7_expNegativeGate_u5;
+            vector_f32 helper_7_expNegativeGate_u6;
+            vector_f32 helper_7_expNegativeGate_u7;
+            vector_f32 helper_7_expNegativeGate_u8;
+            vector_f32 helper_7_expNegativeGate_u9;
+            vector_f32 helper_7_expNegativeGate_u10;
+            vector_f32 helper_7_expNegativeGate_u11;
+            vector_f32 helper_7_expNegativeGate_u12;
+            vector_f32 helper_7_expNegativeGate_u13;
+            vector_f32 helper_7_expNegativeGate_u14;
+            vector_f32 helper_7_expNegativeGate_u15;
+            vector_f32 helper_7_negativeGate_u0;
+            vector_f32 helper_7_negativeGate_u1;
+            vector_f32 helper_7_negativeGate_u2;
+            vector_f32 helper_7_negativeGate_u3;
+            vector_f32 helper_7_negativeGate_u4;
+            vector_f32 helper_7_negativeGate_u5;
+            vector_f32 helper_7_negativeGate_u6;
+            vector_f32 helper_7_negativeGate_u7;
+            vector_f32 helper_7_negativeGate_u8;
+            vector_f32 helper_7_negativeGate_u9;
+            vector_f32 helper_7_negativeGate_u10;
+            vector_f32 helper_7_negativeGate_u11;
+            vector_f32 helper_7_negativeGate_u12;
+            vector_f32 helper_7_negativeGate_u13;
+            vector_f32 helper_7_negativeGate_u14;
+            vector_f32 helper_7_negativeGate_u15;
+            vector_f32 helper_7_onePlusExp_u0;
+            vector_f32 helper_7_onePlusExp_u1;
+            vector_f32 helper_7_onePlusExp_u2;
+            vector_f32 helper_7_onePlusExp_u3;
+            vector_f32 helper_7_onePlusExp_u4;
+            vector_f32 helper_7_onePlusExp_u5;
+            vector_f32 helper_7_onePlusExp_u6;
+            vector_f32 helper_7_onePlusExp_u7;
+            vector_f32 helper_7_onePlusExp_u8;
+            vector_f32 helper_7_onePlusExp_u9;
+            vector_f32 helper_7_onePlusExp_u10;
+            vector_f32 helper_7_onePlusExp_u11;
+            vector_f32 helper_7_onePlusExp_u12;
+            vector_f32 helper_7_onePlusExp_u13;
+            vector_f32 helper_7_onePlusExp_u14;
+            vector_f32 helper_7_onePlusExp_u15;
+            vector_bool helper_8_belowPositiveMinMask_u0;
+            vector_bool helper_8_belowPositiveMinMask_u1;
+            vector_bool helper_8_belowPositiveMinMask_u2;
+            vector_bool helper_8_belowPositiveMinMask_u3;
+            vector_bool helper_8_belowPositiveMinMask_u4;
+            vector_bool helper_8_belowPositiveMinMask_u5;
+            vector_bool helper_8_belowPositiveMinMask_u6;
+            vector_bool helper_8_belowPositiveMinMask_u7;
+            vector_bool helper_8_belowPositiveMinMask_u8;
+            vector_bool helper_8_belowPositiveMinMask_u9;
+            vector_bool helper_8_belowPositiveMinMask_u10;
+            vector_bool helper_8_belowPositiveMinMask_u11;
+            vector_bool helper_8_belowPositiveMinMask_u12;
+            vector_bool helper_8_belowPositiveMinMask_u13;
+            vector_bool helper_8_belowPositiveMinMask_u14;
+            vector_bool helper_8_belowPositiveMinMask_u15;
+            vector_f32 helper_8_flushedSilu_u0;
+            vector_f32 helper_8_flushedSilu_u1;
+            vector_f32 helper_8_flushedSilu_u2;
+            vector_f32 helper_8_flushedSilu_u3;
+            vector_f32 helper_8_flushedSilu_u4;
+            vector_f32 helper_8_flushedSilu_u5;
+            vector_f32 helper_8_flushedSilu_u6;
+            vector_f32 helper_8_flushedSilu_u7;
+            vector_f32 helper_8_flushedSilu_u8;
+            vector_f32 helper_8_flushedSilu_u9;
+            vector_f32 helper_8_flushedSilu_u10;
+            vector_f32 helper_8_flushedSilu_u11;
+            vector_f32 helper_8_flushedSilu_u12;
+            vector_f32 helper_8_flushedSilu_u13;
+            vector_f32 helper_8_flushedSilu_u14;
+            vector_f32 helper_8_flushedSilu_u15;
+            vector_bool helper_8_negInfMask_u0;
+            vector_bool helper_8_negInfMask_u1;
+            vector_bool helper_8_negInfMask_u2;
+            vector_bool helper_8_negInfMask_u3;
+            vector_bool helper_8_negInfMask_u4;
+            vector_bool helper_8_negInfMask_u5;
+            vector_bool helper_8_negInfMask_u6;
+            vector_bool helper_8_negInfMask_u7;
+            vector_bool helper_8_negInfMask_u8;
+            vector_bool helper_8_negInfMask_u9;
+            vector_bool helper_8_negInfMask_u10;
+            vector_bool helper_8_negInfMask_u11;
+            vector_bool helper_8_negInfMask_u12;
+            vector_bool helper_8_negInfMask_u13;
+            vector_bool helper_8_negInfMask_u14;
+            vector_bool helper_8_negInfMask_u15;
+            vector_bool helper_8_negativeNormalMask_u0;
+            vector_bool helper_8_negativeNormalMask_u1;
+            vector_bool helper_8_negativeNormalMask_u2;
+            vector_bool helper_8_negativeNormalMask_u3;
+            vector_bool helper_8_negativeNormalMask_u4;
+            vector_bool helper_8_negativeNormalMask_u5;
+            vector_bool helper_8_negativeNormalMask_u6;
+            vector_bool helper_8_negativeNormalMask_u7;
+            vector_bool helper_8_negativeNormalMask_u8;
+            vector_bool helper_8_negativeNormalMask_u9;
+            vector_bool helper_8_negativeNormalMask_u10;
+            vector_bool helper_8_negativeNormalMask_u11;
+            vector_bool helper_8_negativeNormalMask_u12;
+            vector_bool helper_8_negativeNormalMask_u13;
+            vector_bool helper_8_negativeNormalMask_u14;
+            vector_bool helper_8_negativeNormalMask_u15;
+            vector_f32 helper_8_positiveSideFlushedSilu_u0;
+            vector_f32 helper_8_positiveSideFlushedSilu_u1;
+            vector_f32 helper_8_positiveSideFlushedSilu_u2;
+            vector_f32 helper_8_positiveSideFlushedSilu_u3;
+            vector_f32 helper_8_positiveSideFlushedSilu_u4;
+            vector_f32 helper_8_positiveSideFlushedSilu_u5;
+            vector_f32 helper_8_positiveSideFlushedSilu_u6;
+            vector_f32 helper_8_positiveSideFlushedSilu_u7;
+            vector_f32 helper_8_positiveSideFlushedSilu_u8;
+            vector_f32 helper_8_positiveSideFlushedSilu_u9;
+            vector_f32 helper_8_positiveSideFlushedSilu_u10;
+            vector_f32 helper_8_positiveSideFlushedSilu_u11;
+            vector_f32 helper_8_positiveSideFlushedSilu_u12;
+            vector_f32 helper_8_positiveSideFlushedSilu_u13;
+            vector_f32 helper_8_positiveSideFlushedSilu_u14;
+            vector_f32 helper_8_positiveSideFlushedSilu_u15;
+            vector_f32 helper_8_rawSilu_u0;
+            vector_f32 helper_8_rawSilu_u1;
+            vector_f32 helper_8_rawSilu_u2;
+            vector_f32 helper_8_rawSilu_u3;
+            vector_f32 helper_8_rawSilu_u4;
+            vector_f32 helper_8_rawSilu_u5;
+            vector_f32 helper_8_rawSilu_u6;
+            vector_f32 helper_8_rawSilu_u7;
+            vector_f32 helper_8_rawSilu_u8;
+            vector_f32 helper_8_rawSilu_u9;
+            vector_f32 helper_8_rawSilu_u10;
+            vector_f32 helper_8_rawSilu_u11;
+            vector_f32 helper_8_rawSilu_u12;
+            vector_f32 helper_8_rawSilu_u13;
+            vector_f32 helper_8_rawSilu_u14;
+            vector_f32 helper_8_rawSilu_u15;
+            vector_bool helper_9_posInfMask_u0;
+            vector_bool helper_9_posInfMask_u1;
+            vector_bool helper_9_posInfMask_u2;
+            vector_bool helper_9_posInfMask_u3;
+            vector_bool helper_9_posInfMask_u4;
+            vector_bool helper_9_posInfMask_u5;
+            vector_bool helper_9_posInfMask_u6;
+            vector_bool helper_9_posInfMask_u7;
+            vector_bool helper_9_posInfMask_u8;
+            vector_bool helper_9_posInfMask_u9;
+            vector_bool helper_9_posInfMask_u10;
+            vector_bool helper_9_posInfMask_u11;
+            vector_bool helper_9_posInfMask_u12;
+            vector_bool helper_9_posInfMask_u13;
+            vector_bool helper_9_posInfMask_u14;
+            vector_bool helper_9_posInfMask_u15;
+            vector_f32 helper_9_rawSiluPrime_u0;
+            vector_f32 helper_9_rawSiluPrime_u1;
+            vector_f32 helper_9_rawSiluPrime_u2;
+            vector_f32 helper_9_rawSiluPrime_u3;
+            vector_f32 helper_9_rawSiluPrime_u4;
+            vector_f32 helper_9_rawSiluPrime_u5;
+            vector_f32 helper_9_rawSiluPrime_u6;
+            vector_f32 helper_9_rawSiluPrime_u7;
+            vector_f32 helper_9_rawSiluPrime_u8;
+            vector_f32 helper_9_rawSiluPrime_u9;
+            vector_f32 helper_9_rawSiluPrime_u10;
+            vector_f32 helper_9_rawSiluPrime_u11;
+            vector_f32 helper_9_rawSiluPrime_u12;
+            vector_f32 helper_9_rawSiluPrime_u13;
+            vector_f32 helper_9_rawSiluPrime_u14;
+            vector_f32 helper_9_rawSiluPrime_u15;
+            vector_f32 lowerBoundMask_u0;
+            vector_f32 lowerBoundMask_u1;
+            vector_f32 lowerBoundMask_u2;
+            vector_f32 lowerBoundMask_u3;
+            vector_f32 lowerBoundMask_u4;
+            vector_f32 lowerBoundMask_u5;
+            vector_f32 lowerBoundMask_u6;
+            vector_f32 lowerBoundMask_u7;
+            vector_f32 lowerBoundMask_u8;
+            vector_f32 lowerBoundMask_u9;
+            vector_f32 lowerBoundMask_u10;
+            vector_f32 lowerBoundMask_u11;
+            vector_f32 lowerBoundMask_u12;
+            vector_f32 lowerBoundMask_u13;
+            vector_f32 lowerBoundMask_u14;
+            vector_f32 lowerBoundMask_u15;
+            vector_f32 negativeUp_u0;
+            vector_f32 negativeUp_u1;
+            vector_f32 negativeUp_u2;
+            vector_f32 negativeUp_u3;
+            vector_f32 negativeUp_u4;
+            vector_f32 negativeUp_u5;
+            vector_f32 negativeUp_u6;
+            vector_f32 negativeUp_u7;
+            vector_f32 negativeUp_u8;
+            vector_f32 negativeUp_u9;
+            vector_f32 negativeUp_u10;
+            vector_f32 negativeUp_u11;
+            vector_f32 negativeUp_u12;
+            vector_f32 negativeUp_u13;
+            vector_f32 negativeUp_u14;
+            vector_f32 negativeUp_u15;
+            vector_f32 sigmoid_u0;
+            vector_f32 sigmoid_u1;
+            vector_f32 sigmoid_u2;
+            vector_f32 sigmoid_u3;
+            vector_f32 sigmoid_u4;
+            vector_f32 sigmoid_u5;
+            vector_f32 sigmoid_u6;
+            vector_f32 sigmoid_u7;
+            vector_f32 sigmoid_u8;
+            vector_f32 sigmoid_u9;
+            vector_f32 sigmoid_u10;
+            vector_f32 sigmoid_u11;
+            vector_f32 sigmoid_u12;
+            vector_f32 sigmoid_u13;
+            vector_f32 sigmoid_u14;
+            vector_f32 sigmoid_u15;
+            vector_f32 siluPrime_u0;
+            vector_f32 siluPrime_u1;
+            vector_f32 siluPrime_u2;
+            vector_f32 siluPrime_u3;
+            vector_f32 siluPrime_u4;
+            vector_f32 siluPrime_u5;
+            vector_f32 siluPrime_u6;
+            vector_f32 siluPrime_u7;
+            vector_f32 siluPrime_u8;
+            vector_f32 siluPrime_u9;
+            vector_f32 siluPrime_u10;
+            vector_f32 siluPrime_u11;
+            vector_f32 siluPrime_u12;
+            vector_f32 siluPrime_u13;
+            vector_f32 siluPrime_u14;
+            vector_f32 siluPrime_u15;
+            vector_f32 siluTimesSigmoid_u0;
+            vector_f32 siluTimesSigmoid_u1;
+            vector_f32 siluTimesSigmoid_u2;
+            vector_f32 siluTimesSigmoid_u3;
+            vector_f32 siluTimesSigmoid_u4;
+            vector_f32 siluTimesSigmoid_u5;
+            vector_f32 siluTimesSigmoid_u6;
+            vector_f32 siluTimesSigmoid_u7;
+            vector_f32 siluTimesSigmoid_u8;
+            vector_f32 siluTimesSigmoid_u9;
+            vector_f32 siluTimesSigmoid_u10;
+            vector_f32 siluTimesSigmoid_u11;
+            vector_f32 siluTimesSigmoid_u12;
+            vector_f32 siluTimesSigmoid_u13;
+            vector_f32 siluTimesSigmoid_u14;
+            vector_f32 siluTimesSigmoid_u15;
+            vector_f32 up_u0;
+            vector_f32 up_u1;
+            vector_f32 up_u2;
+            vector_f32 up_u3;
+            vector_f32 up_u4;
+            vector_f32 up_u5;
+            vector_f32 up_u6;
+            vector_f32 up_u7;
+            vector_f32 up_u8;
+            vector_f32 up_u9;
+            vector_f32 up_u10;
+            vector_f32 up_u11;
+            vector_f32 up_u12;
+            vector_f32 up_u13;
+            vector_f32 up_u14;
+            vector_f32 up_u15;
+            vector_bool upAboveLowerMask_u0;
+            vector_bool upAboveLowerMask_u1;
+            vector_bool upAboveLowerMask_u2;
+            vector_bool upAboveLowerMask_u3;
+            vector_bool upAboveLowerMask_u4;
+            vector_bool upAboveLowerMask_u5;
+            vector_bool upAboveLowerMask_u6;
+            vector_bool upAboveLowerMask_u7;
+            vector_bool upAboveLowerMask_u8;
+            vector_bool upAboveLowerMask_u9;
+            vector_bool upAboveLowerMask_u10;
+            vector_bool upAboveLowerMask_u11;
+            vector_bool upAboveLowerMask_u12;
+            vector_bool upAboveLowerMask_u13;
+            vector_bool upAboveLowerMask_u14;
+            vector_bool upAboveLowerMask_u15;
+            vector_bool upBelowUpperMask_u0;
+            vector_bool upBelowUpperMask_u1;
+            vector_bool upBelowUpperMask_u2;
+            vector_bool upBelowUpperMask_u3;
+            vector_bool upBelowUpperMask_u4;
+            vector_bool upBelowUpperMask_u5;
+            vector_bool upBelowUpperMask_u6;
+            vector_bool upBelowUpperMask_u7;
+            vector_bool upBelowUpperMask_u8;
+            vector_bool upBelowUpperMask_u9;
+            vector_bool upBelowUpperMask_u10;
+            vector_bool upBelowUpperMask_u11;
+            vector_bool upBelowUpperMask_u12;
+            vector_bool upBelowUpperMask_u13;
+            vector_bool upBelowUpperMask_u14;
+            vector_bool upBelowUpperMask_u15;
+            vector_f32 upClampMask_u0;
+            vector_f32 upClampMask_u1;
+            vector_f32 upClampMask_u2;
+            vector_f32 upClampMask_u3;
+            vector_f32 upClampMask_u4;
+            vector_f32 upClampMask_u5;
+            vector_f32 upClampMask_u6;
+            vector_f32 upClampMask_u7;
+            vector_f32 upClampMask_u8;
+            vector_f32 upClampMask_u9;
+            vector_f32 upClampMask_u10;
+            vector_f32 upClampMask_u11;
+            vector_f32 upClampMask_u12;
+            vector_f32 upClampMask_u13;
+            vector_f32 upClampMask_u14;
+            vector_f32 upClampMask_u15;
+            vector_f32 upperBoundMask_u0;
+            vector_f32 upperBoundMask_u1;
+            vector_f32 upperBoundMask_u2;
+            vector_f32 upperBoundMask_u3;
+            vector_f32 upperBoundMask_u4;
+            vector_f32 upperBoundMask_u5;
+            vector_f32 upperBoundMask_u6;
+            vector_f32 upperBoundMask_u7;
+            vector_f32 upperBoundMask_u8;
+            vector_f32 upperBoundMask_u9;
+            vector_f32 upperBoundMask_u10;
+            vector_f32 upperBoundMask_u11;
+            vector_f32 upperBoundMask_u12;
+            vector_f32 upperBoundMask_u13;
+            vector_f32 upperBoundMask_u14;
+            vector_f32 upperBoundMask_u15;
+#pragma unroll 1
+            for (uint16_t repeatIndex = 0; repeatIndex < 16; repeatIndex += 16) {
+                uint32_t offset_u0 = (repeatIndex + 0) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u1 = (repeatIndex + 1) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u2 = (repeatIndex + 2) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u3 = (repeatIndex + 3) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u4 = (repeatIndex + 4) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u5 = (repeatIndex + 5) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u6 = (repeatIndex + 6) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u7 = (repeatIndex + 7) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u8 = (repeatIndex + 8) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u9 = (repeatIndex + 9) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u10 = (repeatIndex + 10) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u11 = (repeatIndex + 11) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u12 = (repeatIndex + 12) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u13 = (repeatIndex + 13) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u14 = (repeatIndex + 14) * FP32_VECTOR_LENGTH;
+                uint32_t offset_u15 = (repeatIndex + 15) * FP32_VECTOR_LENGTH;
+                uint32_t currentElementCount_u0 = (elementCount - offset_u0 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u0);
+                uint32_t currentElementCount_u1 = (elementCount - offset_u1 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u1);
+                uint32_t currentElementCount_u2 = (elementCount - offset_u2 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u2);
+                uint32_t currentElementCount_u3 = (elementCount - offset_u3 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u3);
+                uint32_t currentElementCount_u4 = (elementCount - offset_u4 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u4);
+                uint32_t currentElementCount_u5 = (elementCount - offset_u5 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u5);
+                uint32_t currentElementCount_u6 = (elementCount - offset_u6 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u6);
+                uint32_t currentElementCount_u7 = (elementCount - offset_u7 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u7);
+                uint32_t currentElementCount_u8 = (elementCount - offset_u8 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u8);
+                uint32_t currentElementCount_u9 = (elementCount - offset_u9 > FP32_VECTOR_LENGTH)
+                                                      ? FP32_VECTOR_LENGTH
+                                                      : (elementCount - offset_u9);
+                uint32_t currentElementCount_u10 = (elementCount - offset_u10 > FP32_VECTOR_LENGTH)
+                                                       ? FP32_VECTOR_LENGTH
+                                                       : (elementCount - offset_u10);
+                uint32_t currentElementCount_u11 = (elementCount - offset_u11 > FP32_VECTOR_LENGTH)
+                                                       ? FP32_VECTOR_LENGTH
+                                                       : (elementCount - offset_u11);
+                uint32_t currentElementCount_u12 = (elementCount - offset_u12 > FP32_VECTOR_LENGTH)
+                                                       ? FP32_VECTOR_LENGTH
+                                                       : (elementCount - offset_u12);
+                uint32_t currentElementCount_u13 = (elementCount - offset_u13 > FP32_VECTOR_LENGTH)
+                                                       ? FP32_VECTOR_LENGTH
+                                                       : (elementCount - offset_u13);
+                uint32_t currentElementCount_u14 = (elementCount - offset_u14 > FP32_VECTOR_LENGTH)
+                                                       ? FP32_VECTOR_LENGTH
+                                                       : (elementCount - offset_u14);
+                uint32_t currentElementCount_u15 = (elementCount - offset_u15 > FP32_VECTOR_LENGTH)
+                                                       ? FP32_VECTOR_LENGTH
+                                                       : (elementCount - offset_u15);
+                if (currentElementCount_u0 == FP32_VECTOR_LENGTH) {
+                    activeMask_u0 = fullMask;
+                } else {
+                    activeMask_u0 = plt_b32(currentElementCount_u0, POST_UPDATE);
+                }
+                if (currentElementCount_u1 == FP32_VECTOR_LENGTH) {
+                    activeMask_u1 = fullMask;
+                } else {
+                    activeMask_u1 = plt_b32(currentElementCount_u1, POST_UPDATE);
+                }
+                if (currentElementCount_u2 == FP32_VECTOR_LENGTH) {
+                    activeMask_u2 = fullMask;
+                } else {
+                    activeMask_u2 = plt_b32(currentElementCount_u2, POST_UPDATE);
+                }
+                if (currentElementCount_u3 == FP32_VECTOR_LENGTH) {
+                    activeMask_u3 = fullMask;
+                } else {
+                    activeMask_u3 = plt_b32(currentElementCount_u3, POST_UPDATE);
+                }
+                if (currentElementCount_u4 == FP32_VECTOR_LENGTH) {
+                    activeMask_u4 = fullMask;
+                } else {
+                    activeMask_u4 = plt_b32(currentElementCount_u4, POST_UPDATE);
+                }
+                if (currentElementCount_u5 == FP32_VECTOR_LENGTH) {
+                    activeMask_u5 = fullMask;
+                } else {
+                    activeMask_u5 = plt_b32(currentElementCount_u5, POST_UPDATE);
+                }
+                if (currentElementCount_u6 == FP32_VECTOR_LENGTH) {
+                    activeMask_u6 = fullMask;
+                } else {
+                    activeMask_u6 = plt_b32(currentElementCount_u6, POST_UPDATE);
+                }
+                if (currentElementCount_u7 == FP32_VECTOR_LENGTH) {
+                    activeMask_u7 = fullMask;
+                } else {
+                    activeMask_u7 = plt_b32(currentElementCount_u7, POST_UPDATE);
+                }
+                if (currentElementCount_u8 == FP32_VECTOR_LENGTH) {
+                    activeMask_u8 = fullMask;
+                } else {
+                    activeMask_u8 = plt_b32(currentElementCount_u8, POST_UPDATE);
+                }
+                if (currentElementCount_u9 == FP32_VECTOR_LENGTH) {
+                    activeMask_u9 = fullMask;
+                } else {
+                    activeMask_u9 = plt_b32(currentElementCount_u9, POST_UPDATE);
+                }
+                if (currentElementCount_u10 == FP32_VECTOR_LENGTH) {
+                    activeMask_u10 = fullMask;
+                } else {
+                    activeMask_u10 = plt_b32(currentElementCount_u10, POST_UPDATE);
+                }
+                if (currentElementCount_u11 == FP32_VECTOR_LENGTH) {
+                    activeMask_u11 = fullMask;
+                } else {
+                    activeMask_u11 = plt_b32(currentElementCount_u11, POST_UPDATE);
+                }
+                if (currentElementCount_u12 == FP32_VECTOR_LENGTH) {
+                    activeMask_u12 = fullMask;
+                } else {
+                    activeMask_u12 = plt_b32(currentElementCount_u12, POST_UPDATE);
+                }
+                if (currentElementCount_u13 == FP32_VECTOR_LENGTH) {
+                    activeMask_u13 = fullMask;
+                } else {
+                    activeMask_u13 = plt_b32(currentElementCount_u13, POST_UPDATE);
+                }
+                if (currentElementCount_u14 == FP32_VECTOR_LENGTH) {
+                    activeMask_u14 = fullMask;
+                } else {
+                    activeMask_u14 = plt_b32(currentElementCount_u14, POST_UPDATE);
+                }
+                if (currentElementCount_u15 == FP32_VECTOR_LENGTH) {
+                    activeMask_u15 = fullMask;
+                } else {
+                    activeMask_u15 = plt_b32(currentElementCount_u15, POST_UPDATE);
+                }
+                vlds(gradY_u0, gradYAddress + offset_u0, 0, NORM);
+                vlds(gradY_u1, gradYAddress + offset_u1, 0, NORM);
+                vlds(gradY_u2, gradYAddress + offset_u2, 0, NORM);
+                vlds(gradY_u3, gradYAddress + offset_u3, 0, NORM);
+                vlds(gradY_u4, gradYAddress + offset_u4, 0, NORM);
+                vlds(gradY_u5, gradYAddress + offset_u5, 0, NORM);
+                vlds(gradY_u6, gradYAddress + offset_u6, 0, NORM);
+                vlds(gradY_u7, gradYAddress + offset_u7, 0, NORM);
+                vlds(gradY_u8, gradYAddress + offset_u8, 0, NORM);
+                vlds(gradY_u9, gradYAddress + offset_u9, 0, NORM);
+                vlds(gradY_u10, gradYAddress + offset_u10, 0, NORM);
+                vlds(gradY_u11, gradYAddress + offset_u11, 0, NORM);
+                vlds(gradY_u12, gradYAddress + offset_u12, 0, NORM);
+                vlds(gradY_u13, gradYAddress + offset_u13, 0, NORM);
+                vlds(gradY_u14, gradYAddress + offset_u14, 0, NORM);
+                vlds(gradY_u15, gradYAddress + offset_u15, 0, NORM);
+                vlds(gate_u0, gateAddress + offset_u0, 0, NORM);
+                vlds(gate_u1, gateAddress + offset_u1, 0, NORM);
+                vlds(gate_u2, gateAddress + offset_u2, 0, NORM);
+                vlds(gate_u3, gateAddress + offset_u3, 0, NORM);
+                vlds(gate_u4, gateAddress + offset_u4, 0, NORM);
+                vlds(gate_u5, gateAddress + offset_u5, 0, NORM);
+                vlds(gate_u6, gateAddress + offset_u6, 0, NORM);
+                vlds(gate_u7, gateAddress + offset_u7, 0, NORM);
+                vlds(gate_u8, gateAddress + offset_u8, 0, NORM);
+                vlds(gate_u9, gateAddress + offset_u9, 0, NORM);
+                vlds(gate_u10, gateAddress + offset_u10, 0, NORM);
+                vlds(gate_u11, gateAddress + offset_u11, 0, NORM);
+                vlds(gate_u12, gateAddress + offset_u12, 0, NORM);
+                vlds(gate_u13, gateAddress + offset_u13, 0, NORM);
+                vlds(gate_u14, gateAddress + offset_u14, 0, NORM);
+                vlds(gate_u15, gateAddress + offset_u15, 0, NORM);
+                vlds(up_u0, upAddress + offset_u0, 0, NORM);
+                vlds(up_u1, upAddress + offset_u1, 0, NORM);
+                vlds(up_u2, upAddress + offset_u2, 0, NORM);
+                vlds(up_u3, upAddress + offset_u3, 0, NORM);
+                vlds(up_u4, upAddress + offset_u4, 0, NORM);
+                vlds(up_u5, upAddress + offset_u5, 0, NORM);
+                vlds(up_u6, upAddress + offset_u6, 0, NORM);
+                vlds(up_u7, upAddress + offset_u7, 0, NORM);
+                vlds(up_u8, upAddress + offset_u8, 0, NORM);
+                vlds(up_u9, upAddress + offset_u9, 0, NORM);
+                vlds(up_u10, upAddress + offset_u10, 0, NORM);
+                vlds(up_u11, upAddress + offset_u11, 0, NORM);
+                vlds(up_u12, upAddress + offset_u12, 0, NORM);
+                vlds(up_u13, upAddress + offset_u13, 0, NORM);
+                vlds(up_u14, upAddress + offset_u14, 0, NORM);
+                vlds(up_u15, upAddress + offset_u15, 0, NORM);
+                vcmps_lt(gateInRangeMask_u0, gate_u0, clampLimit, activeMask_u0);
+                vcmps_lt(gateInRangeMask_u1, gate_u1, clampLimit, activeMask_u1);
+                vcmps_lt(gateInRangeMask_u2, gate_u2, clampLimit, activeMask_u2);
+                vcmps_lt(gateInRangeMask_u3, gate_u3, clampLimit, activeMask_u3);
+                vcmps_lt(gateInRangeMask_u4, gate_u4, clampLimit, activeMask_u4);
+                vcmps_lt(gateInRangeMask_u5, gate_u5, clampLimit, activeMask_u5);
+                vcmps_lt(gateInRangeMask_u6, gate_u6, clampLimit, activeMask_u6);
+                vcmps_lt(gateInRangeMask_u7, gate_u7, clampLimit, activeMask_u7);
+                vcmps_lt(gateInRangeMask_u8, gate_u8, clampLimit, activeMask_u8);
+                vcmps_lt(gateInRangeMask_u9, gate_u9, clampLimit, activeMask_u9);
+                vcmps_lt(gateInRangeMask_u10, gate_u10, clampLimit, activeMask_u10);
+                vcmps_lt(gateInRangeMask_u11, gate_u11, clampLimit, activeMask_u11);
+                vcmps_lt(gateInRangeMask_u12, gate_u12, clampLimit, activeMask_u12);
+                vcmps_lt(gateInRangeMask_u13, gate_u13, clampLimit, activeMask_u13);
+                vcmps_lt(gateInRangeMask_u14, gate_u14, clampLimit, activeMask_u14);
+                vcmps_lt(gateInRangeMask_u15, gate_u15, clampLimit, activeMask_u15);
+                vsel(gateClampMask_u0, ones, zeros, gateInRangeMask_u0);
+                vsel(gateClampMask_u1, ones, zeros, gateInRangeMask_u1);
+                vsel(gateClampMask_u2, ones, zeros, gateInRangeMask_u2);
+                vsel(gateClampMask_u3, ones, zeros, gateInRangeMask_u3);
+                vsel(gateClampMask_u4, ones, zeros, gateInRangeMask_u4);
+                vsel(gateClampMask_u5, ones, zeros, gateInRangeMask_u5);
+                vsel(gateClampMask_u6, ones, zeros, gateInRangeMask_u6);
+                vsel(gateClampMask_u7, ones, zeros, gateInRangeMask_u7);
+                vsel(gateClampMask_u8, ones, zeros, gateInRangeMask_u8);
+                vsel(gateClampMask_u9, ones, zeros, gateInRangeMask_u9);
+                vsel(gateClampMask_u10, ones, zeros, gateInRangeMask_u10);
+                vsel(gateClampMask_u11, ones, zeros, gateInRangeMask_u11);
+                vsel(gateClampMask_u12, ones, zeros, gateInRangeMask_u12);
+                vsel(gateClampMask_u13, ones, zeros, gateInRangeMask_u13);
+                vsel(gateClampMask_u14, ones, zeros, gateInRangeMask_u14);
+                vsel(gateClampMask_u15, ones, zeros, gateInRangeMask_u15);
+                vcmps_lt(upBelowUpperMask_u0, up_u0, clampLimit, activeMask_u0);
+                vcmps_lt(upBelowUpperMask_u1, up_u1, clampLimit, activeMask_u1);
+                vcmps_lt(upBelowUpperMask_u2, up_u2, clampLimit, activeMask_u2);
+                vcmps_lt(upBelowUpperMask_u3, up_u3, clampLimit, activeMask_u3);
+                vcmps_lt(upBelowUpperMask_u4, up_u4, clampLimit, activeMask_u4);
+                vcmps_lt(upBelowUpperMask_u5, up_u5, clampLimit, activeMask_u5);
+                vcmps_lt(upBelowUpperMask_u6, up_u6, clampLimit, activeMask_u6);
+                vcmps_lt(upBelowUpperMask_u7, up_u7, clampLimit, activeMask_u7);
+                vcmps_lt(upBelowUpperMask_u8, up_u8, clampLimit, activeMask_u8);
+                vcmps_lt(upBelowUpperMask_u9, up_u9, clampLimit, activeMask_u9);
+                vcmps_lt(upBelowUpperMask_u10, up_u10, clampLimit, activeMask_u10);
+                vcmps_lt(upBelowUpperMask_u11, up_u11, clampLimit, activeMask_u11);
+                vcmps_lt(upBelowUpperMask_u12, up_u12, clampLimit, activeMask_u12);
+                vcmps_lt(upBelowUpperMask_u13, up_u13, clampLimit, activeMask_u13);
+                vcmps_lt(upBelowUpperMask_u14, up_u14, clampLimit, activeMask_u14);
+                vcmps_lt(upBelowUpperMask_u15, up_u15, clampLimit, activeMask_u15);
+                vmuls(negativeUp_u0, up_u0, float(-1.0), activeMask_u0, MODE_ZEROING);
+                vmuls(negativeUp_u1, up_u1, float(-1.0), activeMask_u1, MODE_ZEROING);
+                vmuls(negativeUp_u2, up_u2, float(-1.0), activeMask_u2, MODE_ZEROING);
+                vmuls(negativeUp_u3, up_u3, float(-1.0), activeMask_u3, MODE_ZEROING);
+                vmuls(negativeUp_u4, up_u4, float(-1.0), activeMask_u4, MODE_ZEROING);
+                vmuls(negativeUp_u5, up_u5, float(-1.0), activeMask_u5, MODE_ZEROING);
+                vmuls(negativeUp_u6, up_u6, float(-1.0), activeMask_u6, MODE_ZEROING);
+                vmuls(negativeUp_u7, up_u7, float(-1.0), activeMask_u7, MODE_ZEROING);
+                vmuls(negativeUp_u8, up_u8, float(-1.0), activeMask_u8, MODE_ZEROING);
+                vmuls(negativeUp_u9, up_u9, float(-1.0), activeMask_u9, MODE_ZEROING);
+                vmuls(negativeUp_u10, up_u10, float(-1.0), activeMask_u10, MODE_ZEROING);
+                vmuls(negativeUp_u11, up_u11, float(-1.0), activeMask_u11, MODE_ZEROING);
+                vmuls(negativeUp_u12, up_u12, float(-1.0), activeMask_u12, MODE_ZEROING);
+                vmuls(negativeUp_u13, up_u13, float(-1.0), activeMask_u13, MODE_ZEROING);
+                vmuls(negativeUp_u14, up_u14, float(-1.0), activeMask_u14, MODE_ZEROING);
+                vmuls(negativeUp_u15, up_u15, float(-1.0), activeMask_u15, MODE_ZEROING);
+                vcmps_lt(upAboveLowerMask_u0, negativeUp_u0, clampLimit, activeMask_u0);
+                vcmps_lt(upAboveLowerMask_u1, negativeUp_u1, clampLimit, activeMask_u1);
+                vcmps_lt(upAboveLowerMask_u2, negativeUp_u2, clampLimit, activeMask_u2);
+                vcmps_lt(upAboveLowerMask_u3, negativeUp_u3, clampLimit, activeMask_u3);
+                vcmps_lt(upAboveLowerMask_u4, negativeUp_u4, clampLimit, activeMask_u4);
+                vcmps_lt(upAboveLowerMask_u5, negativeUp_u5, clampLimit, activeMask_u5);
+                vcmps_lt(upAboveLowerMask_u6, negativeUp_u6, clampLimit, activeMask_u6);
+                vcmps_lt(upAboveLowerMask_u7, negativeUp_u7, clampLimit, activeMask_u7);
+                vcmps_lt(upAboveLowerMask_u8, negativeUp_u8, clampLimit, activeMask_u8);
+                vcmps_lt(upAboveLowerMask_u9, negativeUp_u9, clampLimit, activeMask_u9);
+                vcmps_lt(upAboveLowerMask_u10, negativeUp_u10, clampLimit, activeMask_u10);
+                vcmps_lt(upAboveLowerMask_u11, negativeUp_u11, clampLimit, activeMask_u11);
+                vcmps_lt(upAboveLowerMask_u12, negativeUp_u12, clampLimit, activeMask_u12);
+                vcmps_lt(upAboveLowerMask_u13, negativeUp_u13, clampLimit, activeMask_u13);
+                vcmps_lt(upAboveLowerMask_u14, negativeUp_u14, clampLimit, activeMask_u14);
+                vcmps_lt(upAboveLowerMask_u15, negativeUp_u15, clampLimit, activeMask_u15);
+                vsel(upperBoundMask_u0, ones, zeros, upBelowUpperMask_u0);
+                vsel(upperBoundMask_u1, ones, zeros, upBelowUpperMask_u1);
+                vsel(upperBoundMask_u2, ones, zeros, upBelowUpperMask_u2);
+                vsel(upperBoundMask_u3, ones, zeros, upBelowUpperMask_u3);
+                vsel(upperBoundMask_u4, ones, zeros, upBelowUpperMask_u4);
+                vsel(upperBoundMask_u5, ones, zeros, upBelowUpperMask_u5);
+                vsel(upperBoundMask_u6, ones, zeros, upBelowUpperMask_u6);
+                vsel(upperBoundMask_u7, ones, zeros, upBelowUpperMask_u7);
+                vsel(upperBoundMask_u8, ones, zeros, upBelowUpperMask_u8);
+                vsel(upperBoundMask_u9, ones, zeros, upBelowUpperMask_u9);
+                vsel(upperBoundMask_u10, ones, zeros, upBelowUpperMask_u10);
+                vsel(upperBoundMask_u11, ones, zeros, upBelowUpperMask_u11);
+                vsel(upperBoundMask_u12, ones, zeros, upBelowUpperMask_u12);
+                vsel(upperBoundMask_u13, ones, zeros, upBelowUpperMask_u13);
+                vsel(upperBoundMask_u14, ones, zeros, upBelowUpperMask_u14);
+                vsel(upperBoundMask_u15, ones, zeros, upBelowUpperMask_u15);
+                vsel(lowerBoundMask_u0, ones, zeros, upAboveLowerMask_u0);
+                vsel(lowerBoundMask_u1, ones, zeros, upAboveLowerMask_u1);
+                vsel(lowerBoundMask_u2, ones, zeros, upAboveLowerMask_u2);
+                vsel(lowerBoundMask_u3, ones, zeros, upAboveLowerMask_u3);
+                vsel(lowerBoundMask_u4, ones, zeros, upAboveLowerMask_u4);
+                vsel(lowerBoundMask_u5, ones, zeros, upAboveLowerMask_u5);
+                vsel(lowerBoundMask_u6, ones, zeros, upAboveLowerMask_u6);
+                vsel(lowerBoundMask_u7, ones, zeros, upAboveLowerMask_u7);
+                vsel(lowerBoundMask_u8, ones, zeros, upAboveLowerMask_u8);
+                vsel(lowerBoundMask_u9, ones, zeros, upAboveLowerMask_u9);
+                vsel(lowerBoundMask_u10, ones, zeros, upAboveLowerMask_u10);
+                vsel(lowerBoundMask_u11, ones, zeros, upAboveLowerMask_u11);
+                vsel(lowerBoundMask_u12, ones, zeros, upAboveLowerMask_u12);
+                vsel(lowerBoundMask_u13, ones, zeros, upAboveLowerMask_u13);
+                vsel(lowerBoundMask_u14, ones, zeros, upAboveLowerMask_u14);
+                vsel(lowerBoundMask_u15, ones, zeros, upAboveLowerMask_u15);
+                vmul(upClampMask_u0, upperBoundMask_u0, lowerBoundMask_u0, activeMask_u0,
+                     MODE_ZEROING);
+                vmul(upClampMask_u1, upperBoundMask_u1, lowerBoundMask_u1, activeMask_u1,
+                     MODE_ZEROING);
+                vmul(upClampMask_u2, upperBoundMask_u2, lowerBoundMask_u2, activeMask_u2,
+                     MODE_ZEROING);
+                vmul(upClampMask_u3, upperBoundMask_u3, lowerBoundMask_u3, activeMask_u3,
+                     MODE_ZEROING);
+                vmul(upClampMask_u4, upperBoundMask_u4, lowerBoundMask_u4, activeMask_u4,
+                     MODE_ZEROING);
+                vmul(upClampMask_u5, upperBoundMask_u5, lowerBoundMask_u5, activeMask_u5,
+                     MODE_ZEROING);
+                vmul(upClampMask_u6, upperBoundMask_u6, lowerBoundMask_u6, activeMask_u6,
+                     MODE_ZEROING);
+                vmul(upClampMask_u7, upperBoundMask_u7, lowerBoundMask_u7, activeMask_u7,
+                     MODE_ZEROING);
+                vmul(upClampMask_u8, upperBoundMask_u8, lowerBoundMask_u8, activeMask_u8,
+                     MODE_ZEROING);
+                vmul(upClampMask_u9, upperBoundMask_u9, lowerBoundMask_u9, activeMask_u9,
+                     MODE_ZEROING);
+                vmul(upClampMask_u10, upperBoundMask_u10, lowerBoundMask_u10, activeMask_u10,
+                     MODE_ZEROING);
+                vmul(upClampMask_u11, upperBoundMask_u11, lowerBoundMask_u11, activeMask_u11,
+                     MODE_ZEROING);
+                vmul(upClampMask_u12, upperBoundMask_u12, lowerBoundMask_u12, activeMask_u12,
+                     MODE_ZEROING);
+                vmul(upClampMask_u13, upperBoundMask_u13, lowerBoundMask_u13, activeMask_u13,
+                     MODE_ZEROING);
+                vmul(upClampMask_u14, upperBoundMask_u14, lowerBoundMask_u14, activeMask_u14,
+                     MODE_ZEROING);
+                vmul(upClampMask_u15, upperBoundMask_u15, lowerBoundMask_u15, activeMask_u15,
+                     MODE_ZEROING);
+                vmins(gate_u0, gate_u0, clampLimit, activeMask_u0, MODE_ZEROING);
+                vmins(gate_u1, gate_u1, clampLimit, activeMask_u1, MODE_ZEROING);
+                vmins(gate_u2, gate_u2, clampLimit, activeMask_u2, MODE_ZEROING);
+                vmins(gate_u3, gate_u3, clampLimit, activeMask_u3, MODE_ZEROING);
+                vmins(gate_u4, gate_u4, clampLimit, activeMask_u4, MODE_ZEROING);
+                vmins(gate_u5, gate_u5, clampLimit, activeMask_u5, MODE_ZEROING);
+                vmins(gate_u6, gate_u6, clampLimit, activeMask_u6, MODE_ZEROING);
+                vmins(gate_u7, gate_u7, clampLimit, activeMask_u7, MODE_ZEROING);
+                vmins(gate_u8, gate_u8, clampLimit, activeMask_u8, MODE_ZEROING);
+                vmins(gate_u9, gate_u9, clampLimit, activeMask_u9, MODE_ZEROING);
+                vmins(gate_u10, gate_u10, clampLimit, activeMask_u10, MODE_ZEROING);
+                vmins(gate_u11, gate_u11, clampLimit, activeMask_u11, MODE_ZEROING);
+                vmins(gate_u12, gate_u12, clampLimit, activeMask_u12, MODE_ZEROING);
+                vmins(gate_u13, gate_u13, clampLimit, activeMask_u13, MODE_ZEROING);
+                vmins(gate_u14, gate_u14, clampLimit, activeMask_u14, MODE_ZEROING);
+                vmins(gate_u15, gate_u15, clampLimit, activeMask_u15, MODE_ZEROING);
+                vmins(up_u0, up_u0, clampLimit, activeMask_u0, MODE_ZEROING);
+                vmins(up_u1, up_u1, clampLimit, activeMask_u1, MODE_ZEROING);
+                vmins(up_u2, up_u2, clampLimit, activeMask_u2, MODE_ZEROING);
+                vmins(up_u3, up_u3, clampLimit, activeMask_u3, MODE_ZEROING);
+                vmins(up_u4, up_u4, clampLimit, activeMask_u4, MODE_ZEROING);
+                vmins(up_u5, up_u5, clampLimit, activeMask_u5, MODE_ZEROING);
+                vmins(up_u6, up_u6, clampLimit, activeMask_u6, MODE_ZEROING);
+                vmins(up_u7, up_u7, clampLimit, activeMask_u7, MODE_ZEROING);
+                vmins(up_u8, up_u8, clampLimit, activeMask_u8, MODE_ZEROING);
+                vmins(up_u9, up_u9, clampLimit, activeMask_u9, MODE_ZEROING);
+                vmins(up_u10, up_u10, clampLimit, activeMask_u10, MODE_ZEROING);
+                vmins(up_u11, up_u11, clampLimit, activeMask_u11, MODE_ZEROING);
+                vmins(up_u12, up_u12, clampLimit, activeMask_u12, MODE_ZEROING);
+                vmins(up_u13, up_u13, clampLimit, activeMask_u13, MODE_ZEROING);
+                vmins(up_u14, up_u14, clampLimit, activeMask_u14, MODE_ZEROING);
+                vmins(up_u15, up_u15, clampLimit, activeMask_u15, MODE_ZEROING);
+                vmaxs(up_u0, up_u0, float(-clampLimit), activeMask_u0, MODE_ZEROING);
+                vmaxs(up_u1, up_u1, float(-clampLimit), activeMask_u1, MODE_ZEROING);
+                vmaxs(up_u2, up_u2, float(-clampLimit), activeMask_u2, MODE_ZEROING);
+                vmaxs(up_u3, up_u3, float(-clampLimit), activeMask_u3, MODE_ZEROING);
+                vmaxs(up_u4, up_u4, float(-clampLimit), activeMask_u4, MODE_ZEROING);
+                vmaxs(up_u5, up_u5, float(-clampLimit), activeMask_u5, MODE_ZEROING);
+                vmaxs(up_u6, up_u6, float(-clampLimit), activeMask_u6, MODE_ZEROING);
+                vmaxs(up_u7, up_u7, float(-clampLimit), activeMask_u7, MODE_ZEROING);
+                vmaxs(up_u8, up_u8, float(-clampLimit), activeMask_u8, MODE_ZEROING);
+                vmaxs(up_u9, up_u9, float(-clampLimit), activeMask_u9, MODE_ZEROING);
+                vmaxs(up_u10, up_u10, float(-clampLimit), activeMask_u10, MODE_ZEROING);
+                vmaxs(up_u11, up_u11, float(-clampLimit), activeMask_u11, MODE_ZEROING);
+                vmaxs(up_u12, up_u12, float(-clampLimit), activeMask_u12, MODE_ZEROING);
+                vmaxs(up_u13, up_u13, float(-clampLimit), activeMask_u13, MODE_ZEROING);
+                vmaxs(up_u14, up_u14, float(-clampLimit), activeMask_u14, MODE_ZEROING);
+                vmaxs(up_u15, up_u15, float(-clampLimit), activeMask_u15, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u0, gate_u0, float(-1.0), activeMask_u0, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u1, gate_u1, float(-1.0), activeMask_u1, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u2, gate_u2, float(-1.0), activeMask_u2, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u3, gate_u3, float(-1.0), activeMask_u3, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u4, gate_u4, float(-1.0), activeMask_u4, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u5, gate_u5, float(-1.0), activeMask_u5, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u6, gate_u6, float(-1.0), activeMask_u6, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u7, gate_u7, float(-1.0), activeMask_u7, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u8, gate_u8, float(-1.0), activeMask_u8, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u9, gate_u9, float(-1.0), activeMask_u9, MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u10, gate_u10, float(-1.0), activeMask_u10,
+                      MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u11, gate_u11, float(-1.0), activeMask_u11,
+                      MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u12, gate_u12, float(-1.0), activeMask_u12,
+                      MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u13, gate_u13, float(-1.0), activeMask_u13,
+                      MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u14, gate_u14, float(-1.0), activeMask_u14,
+                      MODE_ZEROING);
+                vmuls(helper_7_negativeGate_u15, gate_u15, float(-1.0), activeMask_u15,
+                      MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u0, helper_7_negativeGate_u0, activeMask_u0,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u1, helper_7_negativeGate_u1, activeMask_u1,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u2, helper_7_negativeGate_u2, activeMask_u2,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u3, helper_7_negativeGate_u3, activeMask_u3,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u4, helper_7_negativeGate_u4, activeMask_u4,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u5, helper_7_negativeGate_u5, activeMask_u5,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u6, helper_7_negativeGate_u6, activeMask_u6,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u7, helper_7_negativeGate_u7, activeMask_u7,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u8, helper_7_negativeGate_u8, activeMask_u8,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u9, helper_7_negativeGate_u9, activeMask_u9,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u10, helper_7_negativeGate_u10, activeMask_u10,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u11, helper_7_negativeGate_u11, activeMask_u11,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u12, helper_7_negativeGate_u12, activeMask_u12,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u13, helper_7_negativeGate_u13, activeMask_u13,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u14, helper_7_negativeGate_u14, activeMask_u14,
+                     MODE_ZEROING);
+                vexp(helper_7_expNegativeGate_u15, helper_7_negativeGate_u15, activeMask_u15,
+                     MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u0, helper_7_expNegativeGate_u0, float(1.0),
+                      activeMask_u0, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u1, helper_7_expNegativeGate_u1, float(1.0),
+                      activeMask_u1, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u2, helper_7_expNegativeGate_u2, float(1.0),
+                      activeMask_u2, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u3, helper_7_expNegativeGate_u3, float(1.0),
+                      activeMask_u3, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u4, helper_7_expNegativeGate_u4, float(1.0),
+                      activeMask_u4, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u5, helper_7_expNegativeGate_u5, float(1.0),
+                      activeMask_u5, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u6, helper_7_expNegativeGate_u6, float(1.0),
+                      activeMask_u6, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u7, helper_7_expNegativeGate_u7, float(1.0),
+                      activeMask_u7, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u8, helper_7_expNegativeGate_u8, float(1.0),
+                      activeMask_u8, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u9, helper_7_expNegativeGate_u9, float(1.0),
+                      activeMask_u9, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u10, helper_7_expNegativeGate_u10, float(1.0),
+                      activeMask_u10, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u11, helper_7_expNegativeGate_u11, float(1.0),
+                      activeMask_u11, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u12, helper_7_expNegativeGate_u12, float(1.0),
+                      activeMask_u12, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u13, helper_7_expNegativeGate_u13, float(1.0),
+                      activeMask_u13, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u14, helper_7_expNegativeGate_u14, float(1.0),
+                      activeMask_u14, MODE_ZEROING);
+                vadds(helper_7_onePlusExp_u15, helper_7_expNegativeGate_u15, float(1.0),
+                      activeMask_u15, MODE_ZEROING);
+                vdiv(sigmoid_u0, ones, helper_7_onePlusExp_u0, activeMask_u0, MODE_ZEROING);
+                vdiv(sigmoid_u1, ones, helper_7_onePlusExp_u1, activeMask_u1, MODE_ZEROING);
+                vdiv(sigmoid_u2, ones, helper_7_onePlusExp_u2, activeMask_u2, MODE_ZEROING);
+                vdiv(sigmoid_u3, ones, helper_7_onePlusExp_u3, activeMask_u3, MODE_ZEROING);
+                vdiv(sigmoid_u4, ones, helper_7_onePlusExp_u4, activeMask_u4, MODE_ZEROING);
+                vdiv(sigmoid_u5, ones, helper_7_onePlusExp_u5, activeMask_u5, MODE_ZEROING);
+                vdiv(sigmoid_u6, ones, helper_7_onePlusExp_u6, activeMask_u6, MODE_ZEROING);
+                vdiv(sigmoid_u7, ones, helper_7_onePlusExp_u7, activeMask_u7, MODE_ZEROING);
+                vdiv(sigmoid_u8, ones, helper_7_onePlusExp_u8, activeMask_u8, MODE_ZEROING);
+                vdiv(sigmoid_u9, ones, helper_7_onePlusExp_u9, activeMask_u9, MODE_ZEROING);
+                vdiv(sigmoid_u10, ones, helper_7_onePlusExp_u10, activeMask_u10, MODE_ZEROING);
+                vdiv(sigmoid_u11, ones, helper_7_onePlusExp_u11, activeMask_u11, MODE_ZEROING);
+                vdiv(sigmoid_u12, ones, helper_7_onePlusExp_u12, activeMask_u12, MODE_ZEROING);
+                vdiv(sigmoid_u13, ones, helper_7_onePlusExp_u13, activeMask_u13, MODE_ZEROING);
+                vdiv(sigmoid_u14, ones, helper_7_onePlusExp_u14, activeMask_u14, MODE_ZEROING);
+                vdiv(sigmoid_u15, ones, helper_7_onePlusExp_u15, activeMask_u15, MODE_ZEROING);
+                vcmps_eq(helper_8_negInfMask_u0, gate_u0, -__builtin_inff(), activeMask_u0);
+                vcmps_eq(helper_8_negInfMask_u1, gate_u1, -__builtin_inff(), activeMask_u1);
+                vcmps_eq(helper_8_negInfMask_u2, gate_u2, -__builtin_inff(), activeMask_u2);
+                vcmps_eq(helper_8_negInfMask_u3, gate_u3, -__builtin_inff(), activeMask_u3);
+                vcmps_eq(helper_8_negInfMask_u4, gate_u4, -__builtin_inff(), activeMask_u4);
+                vcmps_eq(helper_8_negInfMask_u5, gate_u5, -__builtin_inff(), activeMask_u5);
+                vcmps_eq(helper_8_negInfMask_u6, gate_u6, -__builtin_inff(), activeMask_u6);
+                vcmps_eq(helper_8_negInfMask_u7, gate_u7, -__builtin_inff(), activeMask_u7);
+                vcmps_eq(helper_8_negInfMask_u8, gate_u8, -__builtin_inff(), activeMask_u8);
+                vcmps_eq(helper_8_negInfMask_u9, gate_u9, -__builtin_inff(), activeMask_u9);
+                vcmps_eq(helper_8_negInfMask_u10, gate_u10, -__builtin_inff(), activeMask_u10);
+                vcmps_eq(helper_8_negInfMask_u11, gate_u11, -__builtin_inff(), activeMask_u11);
+                vcmps_eq(helper_8_negInfMask_u12, gate_u12, -__builtin_inff(), activeMask_u12);
+                vcmps_eq(helper_8_negInfMask_u13, gate_u13, -__builtin_inff(), activeMask_u13);
+                vcmps_eq(helper_8_negInfMask_u14, gate_u14, -__builtin_inff(), activeMask_u14);
+                vcmps_eq(helper_8_negInfMask_u15, gate_u15, -__builtin_inff(), activeMask_u15);
+                vmul(helper_8_rawSilu_u0, gate_u0, sigmoid_u0, activeMask_u0, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u1, gate_u1, sigmoid_u1, activeMask_u1, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u2, gate_u2, sigmoid_u2, activeMask_u2, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u3, gate_u3, sigmoid_u3, activeMask_u3, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u4, gate_u4, sigmoid_u4, activeMask_u4, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u5, gate_u5, sigmoid_u5, activeMask_u5, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u6, gate_u6, sigmoid_u6, activeMask_u6, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u7, gate_u7, sigmoid_u7, activeMask_u7, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u8, gate_u8, sigmoid_u8, activeMask_u8, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u9, gate_u9, sigmoid_u9, activeMask_u9, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u10, gate_u10, sigmoid_u10, activeMask_u10, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u11, gate_u11, sigmoid_u11, activeMask_u11, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u12, gate_u12, sigmoid_u12, activeMask_u12, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u13, gate_u13, sigmoid_u13, activeMask_u13, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u14, gate_u14, sigmoid_u14, activeMask_u14, MODE_ZEROING);
+                vmul(helper_8_rawSilu_u15, gate_u15, sigmoid_u15, activeMask_u15, MODE_ZEROING);
+                vcmps_lt(helper_8_belowPositiveMinMask_u0, helper_8_rawSilu_u0, FLT_MIN,
+                         activeMask_u0);
+                vcmps_lt(helper_8_belowPositiveMinMask_u1, helper_8_rawSilu_u1, FLT_MIN,
+                         activeMask_u1);
+                vcmps_lt(helper_8_belowPositiveMinMask_u2, helper_8_rawSilu_u2, FLT_MIN,
+                         activeMask_u2);
+                vcmps_lt(helper_8_belowPositiveMinMask_u3, helper_8_rawSilu_u3, FLT_MIN,
+                         activeMask_u3);
+                vcmps_lt(helper_8_belowPositiveMinMask_u4, helper_8_rawSilu_u4, FLT_MIN,
+                         activeMask_u4);
+                vcmps_lt(helper_8_belowPositiveMinMask_u5, helper_8_rawSilu_u5, FLT_MIN,
+                         activeMask_u5);
+                vcmps_lt(helper_8_belowPositiveMinMask_u6, helper_8_rawSilu_u6, FLT_MIN,
+                         activeMask_u6);
+                vcmps_lt(helper_8_belowPositiveMinMask_u7, helper_8_rawSilu_u7, FLT_MIN,
+                         activeMask_u7);
+                vcmps_lt(helper_8_belowPositiveMinMask_u8, helper_8_rawSilu_u8, FLT_MIN,
+                         activeMask_u8);
+                vcmps_lt(helper_8_belowPositiveMinMask_u9, helper_8_rawSilu_u9, FLT_MIN,
+                         activeMask_u9);
+                vcmps_lt(helper_8_belowPositiveMinMask_u10, helper_8_rawSilu_u10, FLT_MIN,
+                         activeMask_u10);
+                vcmps_lt(helper_8_belowPositiveMinMask_u11, helper_8_rawSilu_u11, FLT_MIN,
+                         activeMask_u11);
+                vcmps_lt(helper_8_belowPositiveMinMask_u12, helper_8_rawSilu_u12, FLT_MIN,
+                         activeMask_u12);
+                vcmps_lt(helper_8_belowPositiveMinMask_u13, helper_8_rawSilu_u13, FLT_MIN,
+                         activeMask_u13);
+                vcmps_lt(helper_8_belowPositiveMinMask_u14, helper_8_rawSilu_u14, FLT_MIN,
+                         activeMask_u14);
+                vcmps_lt(helper_8_belowPositiveMinMask_u15, helper_8_rawSilu_u15, FLT_MIN,
+                         activeMask_u15);
+                vsel(helper_8_positiveSideFlushedSilu_u0, zeros, helper_8_rawSilu_u0,
+                     helper_8_belowPositiveMinMask_u0);
+                vsel(helper_8_positiveSideFlushedSilu_u1, zeros, helper_8_rawSilu_u1,
+                     helper_8_belowPositiveMinMask_u1);
+                vsel(helper_8_positiveSideFlushedSilu_u2, zeros, helper_8_rawSilu_u2,
+                     helper_8_belowPositiveMinMask_u2);
+                vsel(helper_8_positiveSideFlushedSilu_u3, zeros, helper_8_rawSilu_u3,
+                     helper_8_belowPositiveMinMask_u3);
+                vsel(helper_8_positiveSideFlushedSilu_u4, zeros, helper_8_rawSilu_u4,
+                     helper_8_belowPositiveMinMask_u4);
+                vsel(helper_8_positiveSideFlushedSilu_u5, zeros, helper_8_rawSilu_u5,
+                     helper_8_belowPositiveMinMask_u5);
+                vsel(helper_8_positiveSideFlushedSilu_u6, zeros, helper_8_rawSilu_u6,
+                     helper_8_belowPositiveMinMask_u6);
+                vsel(helper_8_positiveSideFlushedSilu_u7, zeros, helper_8_rawSilu_u7,
+                     helper_8_belowPositiveMinMask_u7);
+                vsel(helper_8_positiveSideFlushedSilu_u8, zeros, helper_8_rawSilu_u8,
+                     helper_8_belowPositiveMinMask_u8);
+                vsel(helper_8_positiveSideFlushedSilu_u9, zeros, helper_8_rawSilu_u9,
+                     helper_8_belowPositiveMinMask_u9);
+                vsel(helper_8_positiveSideFlushedSilu_u10, zeros, helper_8_rawSilu_u10,
+                     helper_8_belowPositiveMinMask_u10);
+                vsel(helper_8_positiveSideFlushedSilu_u11, zeros, helper_8_rawSilu_u11,
+                     helper_8_belowPositiveMinMask_u11);
+                vsel(helper_8_positiveSideFlushedSilu_u12, zeros, helper_8_rawSilu_u12,
+                     helper_8_belowPositiveMinMask_u12);
+                vsel(helper_8_positiveSideFlushedSilu_u13, zeros, helper_8_rawSilu_u13,
+                     helper_8_belowPositiveMinMask_u13);
+                vsel(helper_8_positiveSideFlushedSilu_u14, zeros, helper_8_rawSilu_u14,
+                     helper_8_belowPositiveMinMask_u14);
+                vsel(helper_8_positiveSideFlushedSilu_u15, zeros, helper_8_rawSilu_u15,
+                     helper_8_belowPositiveMinMask_u15);
+                vcmps_le(helper_8_negativeNormalMask_u0, helper_8_rawSilu_u0, -FLT_MIN,
+                         activeMask_u0);
+                vcmps_le(helper_8_negativeNormalMask_u1, helper_8_rawSilu_u1, -FLT_MIN,
+                         activeMask_u1);
+                vcmps_le(helper_8_negativeNormalMask_u2, helper_8_rawSilu_u2, -FLT_MIN,
+                         activeMask_u2);
+                vcmps_le(helper_8_negativeNormalMask_u3, helper_8_rawSilu_u3, -FLT_MIN,
+                         activeMask_u3);
+                vcmps_le(helper_8_negativeNormalMask_u4, helper_8_rawSilu_u4, -FLT_MIN,
+                         activeMask_u4);
+                vcmps_le(helper_8_negativeNormalMask_u5, helper_8_rawSilu_u5, -FLT_MIN,
+                         activeMask_u5);
+                vcmps_le(helper_8_negativeNormalMask_u6, helper_8_rawSilu_u6, -FLT_MIN,
+                         activeMask_u6);
+                vcmps_le(helper_8_negativeNormalMask_u7, helper_8_rawSilu_u7, -FLT_MIN,
+                         activeMask_u7);
+                vcmps_le(helper_8_negativeNormalMask_u8, helper_8_rawSilu_u8, -FLT_MIN,
+                         activeMask_u8);
+                vcmps_le(helper_8_negativeNormalMask_u9, helper_8_rawSilu_u9, -FLT_MIN,
+                         activeMask_u9);
+                vcmps_le(helper_8_negativeNormalMask_u10, helper_8_rawSilu_u10, -FLT_MIN,
+                         activeMask_u10);
+                vcmps_le(helper_8_negativeNormalMask_u11, helper_8_rawSilu_u11, -FLT_MIN,
+                         activeMask_u11);
+                vcmps_le(helper_8_negativeNormalMask_u12, helper_8_rawSilu_u12, -FLT_MIN,
+                         activeMask_u12);
+                vcmps_le(helper_8_negativeNormalMask_u13, helper_8_rawSilu_u13, -FLT_MIN,
+                         activeMask_u13);
+                vcmps_le(helper_8_negativeNormalMask_u14, helper_8_rawSilu_u14, -FLT_MIN,
+                         activeMask_u14);
+                vcmps_le(helper_8_negativeNormalMask_u15, helper_8_rawSilu_u15, -FLT_MIN,
+                         activeMask_u15);
+                vsel(helper_8_flushedSilu_u0, helper_8_rawSilu_u0,
+                     helper_8_positiveSideFlushedSilu_u0, helper_8_negativeNormalMask_u0);
+                vsel(helper_8_flushedSilu_u1, helper_8_rawSilu_u1,
+                     helper_8_positiveSideFlushedSilu_u1, helper_8_negativeNormalMask_u1);
+                vsel(helper_8_flushedSilu_u2, helper_8_rawSilu_u2,
+                     helper_8_positiveSideFlushedSilu_u2, helper_8_negativeNormalMask_u2);
+                vsel(helper_8_flushedSilu_u3, helper_8_rawSilu_u3,
+                     helper_8_positiveSideFlushedSilu_u3, helper_8_negativeNormalMask_u3);
+                vsel(helper_8_flushedSilu_u4, helper_8_rawSilu_u4,
+                     helper_8_positiveSideFlushedSilu_u4, helper_8_negativeNormalMask_u4);
+                vsel(helper_8_flushedSilu_u5, helper_8_rawSilu_u5,
+                     helper_8_positiveSideFlushedSilu_u5, helper_8_negativeNormalMask_u5);
+                vsel(helper_8_flushedSilu_u6, helper_8_rawSilu_u6,
+                     helper_8_positiveSideFlushedSilu_u6, helper_8_negativeNormalMask_u6);
+                vsel(helper_8_flushedSilu_u7, helper_8_rawSilu_u7,
+                     helper_8_positiveSideFlushedSilu_u7, helper_8_negativeNormalMask_u7);
+                vsel(helper_8_flushedSilu_u8, helper_8_rawSilu_u8,
+                     helper_8_positiveSideFlushedSilu_u8, helper_8_negativeNormalMask_u8);
+                vsel(helper_8_flushedSilu_u9, helper_8_rawSilu_u9,
+                     helper_8_positiveSideFlushedSilu_u9, helper_8_negativeNormalMask_u9);
+                vsel(helper_8_flushedSilu_u10, helper_8_rawSilu_u10,
+                     helper_8_positiveSideFlushedSilu_u10, helper_8_negativeNormalMask_u10);
+                vsel(helper_8_flushedSilu_u11, helper_8_rawSilu_u11,
+                     helper_8_positiveSideFlushedSilu_u11, helper_8_negativeNormalMask_u11);
+                vsel(helper_8_flushedSilu_u12, helper_8_rawSilu_u12,
+                     helper_8_positiveSideFlushedSilu_u12, helper_8_negativeNormalMask_u12);
+                vsel(helper_8_flushedSilu_u13, helper_8_rawSilu_u13,
+                     helper_8_positiveSideFlushedSilu_u13, helper_8_negativeNormalMask_u13);
+                vsel(helper_8_flushedSilu_u14, helper_8_rawSilu_u14,
+                     helper_8_positiveSideFlushedSilu_u14, helper_8_negativeNormalMask_u14);
+                vsel(helper_8_flushedSilu_u15, helper_8_rawSilu_u15,
+                     helper_8_positiveSideFlushedSilu_u15, helper_8_negativeNormalMask_u15);
+                vsel(gate_u0, zeros, helper_8_flushedSilu_u0, helper_8_negInfMask_u0);
+                vsel(gate_u1, zeros, helper_8_flushedSilu_u1, helper_8_negInfMask_u1);
+                vsel(gate_u2, zeros, helper_8_flushedSilu_u2, helper_8_negInfMask_u2);
+                vsel(gate_u3, zeros, helper_8_flushedSilu_u3, helper_8_negInfMask_u3);
+                vsel(gate_u4, zeros, helper_8_flushedSilu_u4, helper_8_negInfMask_u4);
+                vsel(gate_u5, zeros, helper_8_flushedSilu_u5, helper_8_negInfMask_u5);
+                vsel(gate_u6, zeros, helper_8_flushedSilu_u6, helper_8_negInfMask_u6);
+                vsel(gate_u7, zeros, helper_8_flushedSilu_u7, helper_8_negInfMask_u7);
+                vsel(gate_u8, zeros, helper_8_flushedSilu_u8, helper_8_negInfMask_u8);
+                vsel(gate_u9, zeros, helper_8_flushedSilu_u9, helper_8_negInfMask_u9);
+                vsel(gate_u10, zeros, helper_8_flushedSilu_u10, helper_8_negInfMask_u10);
+                vsel(gate_u11, zeros, helper_8_flushedSilu_u11, helper_8_negInfMask_u11);
+                vsel(gate_u12, zeros, helper_8_flushedSilu_u12, helper_8_negInfMask_u12);
+                vsel(gate_u13, zeros, helper_8_flushedSilu_u13, helper_8_negInfMask_u13);
+                vsel(gate_u14, zeros, helper_8_flushedSilu_u14, helper_8_negInfMask_u14);
+                vsel(gate_u15, zeros, helper_8_flushedSilu_u15, helper_8_negInfMask_u15);
+                vmul(gradWeightProduct_u0, gradY_u0, gate_u0, activeMask_u0, MODE_ZEROING);
+                vmul(gradWeightProduct_u1, gradY_u1, gate_u1, activeMask_u1, MODE_ZEROING);
+                vmul(gradWeightProduct_u2, gradY_u2, gate_u2, activeMask_u2, MODE_ZEROING);
+                vmul(gradWeightProduct_u3, gradY_u3, gate_u3, activeMask_u3, MODE_ZEROING);
+                vmul(gradWeightProduct_u4, gradY_u4, gate_u4, activeMask_u4, MODE_ZEROING);
+                vmul(gradWeightProduct_u5, gradY_u5, gate_u5, activeMask_u5, MODE_ZEROING);
+                vmul(gradWeightProduct_u6, gradY_u6, gate_u6, activeMask_u6, MODE_ZEROING);
+                vmul(gradWeightProduct_u7, gradY_u7, gate_u7, activeMask_u7, MODE_ZEROING);
+                vmul(gradWeightProduct_u8, gradY_u8, gate_u8, activeMask_u8, MODE_ZEROING);
+                vmul(gradWeightProduct_u9, gradY_u9, gate_u9, activeMask_u9, MODE_ZEROING);
+                vmul(gradWeightProduct_u10, gradY_u10, gate_u10, activeMask_u10, MODE_ZEROING);
+                vmul(gradWeightProduct_u11, gradY_u11, gate_u11, activeMask_u11, MODE_ZEROING);
+                vmul(gradWeightProduct_u12, gradY_u12, gate_u12, activeMask_u12, MODE_ZEROING);
+                vmul(gradWeightProduct_u13, gradY_u13, gate_u13, activeMask_u13, MODE_ZEROING);
+                vmul(gradWeightProduct_u14, gradY_u14, gate_u14, activeMask_u14, MODE_ZEROING);
+                vmul(gradWeightProduct_u15, gradY_u15, gate_u15, activeMask_u15, MODE_ZEROING);
+                vmul(gradWeightProduct_u0, gradWeightProduct_u0, up_u0, activeMask_u0,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u1, gradWeightProduct_u1, up_u1, activeMask_u1,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u2, gradWeightProduct_u2, up_u2, activeMask_u2,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u3, gradWeightProduct_u3, up_u3, activeMask_u3,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u4, gradWeightProduct_u4, up_u4, activeMask_u4,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u5, gradWeightProduct_u5, up_u5, activeMask_u5,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u6, gradWeightProduct_u6, up_u6, activeMask_u6,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u7, gradWeightProduct_u7, up_u7, activeMask_u7,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u8, gradWeightProduct_u8, up_u8, activeMask_u8,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u9, gradWeightProduct_u9, up_u9, activeMask_u9,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u10, gradWeightProduct_u10, up_u10, activeMask_u10,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u11, gradWeightProduct_u11, up_u11, activeMask_u11,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u12, gradWeightProduct_u12, up_u12, activeMask_u12,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u13, gradWeightProduct_u13, up_u13, activeMask_u13,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u14, gradWeightProduct_u14, up_u14, activeMask_u14,
+                     MODE_ZEROING);
+                vmul(gradWeightProduct_u15, gradWeightProduct_u15, up_u15, activeMask_u15,
+                     MODE_ZEROING);
+                vsts(gradWeightProduct_u0, gradWeightProductAddress + offset_u0, 0, NORM_B32,
+                     activeMask_u0);
+                vsts(gradWeightProduct_u1, gradWeightProductAddress + offset_u1, 0, NORM_B32,
+                     activeMask_u1);
+                vsts(gradWeightProduct_u2, gradWeightProductAddress + offset_u2, 0, NORM_B32,
+                     activeMask_u2);
+                vsts(gradWeightProduct_u3, gradWeightProductAddress + offset_u3, 0, NORM_B32,
+                     activeMask_u3);
+                vsts(gradWeightProduct_u4, gradWeightProductAddress + offset_u4, 0, NORM_B32,
+                     activeMask_u4);
+                vsts(gradWeightProduct_u5, gradWeightProductAddress + offset_u5, 0, NORM_B32,
+                     activeMask_u5);
+                vsts(gradWeightProduct_u6, gradWeightProductAddress + offset_u6, 0, NORM_B32,
+                     activeMask_u6);
+                vsts(gradWeightProduct_u7, gradWeightProductAddress + offset_u7, 0, NORM_B32,
+                     activeMask_u7);
+                vsts(gradWeightProduct_u8, gradWeightProductAddress + offset_u8, 0, NORM_B32,
+                     activeMask_u8);
+                vsts(gradWeightProduct_u9, gradWeightProductAddress + offset_u9, 0, NORM_B32,
+                     activeMask_u9);
+                vsts(gradWeightProduct_u10, gradWeightProductAddress + offset_u10, 0, NORM_B32,
+                     activeMask_u10);
+                vsts(gradWeightProduct_u11, gradWeightProductAddress + offset_u11, 0, NORM_B32,
+                     activeMask_u11);
+                vsts(gradWeightProduct_u12, gradWeightProductAddress + offset_u12, 0, NORM_B32,
+                     activeMask_u12);
+                vsts(gradWeightProduct_u13, gradWeightProductAddress + offset_u13, 0, NORM_B32,
+                     activeMask_u13);
+                vsts(gradWeightProduct_u14, gradWeightProductAddress + offset_u14, 0, NORM_B32,
+                     activeMask_u14);
+                vsts(gradWeightProduct_u15, gradWeightProductAddress + offset_u15, 0, NORM_B32,
+                     activeMask_u15);
+                vcmps_eq(helper_9_posInfMask_u0, gate_u0, __builtin_inff(), activeMask_u0);
+                vcmps_eq(helper_9_posInfMask_u1, gate_u1, __builtin_inff(), activeMask_u1);
+                vcmps_eq(helper_9_posInfMask_u2, gate_u2, __builtin_inff(), activeMask_u2);
+                vcmps_eq(helper_9_posInfMask_u3, gate_u3, __builtin_inff(), activeMask_u3);
+                vcmps_eq(helper_9_posInfMask_u4, gate_u4, __builtin_inff(), activeMask_u4);
+                vcmps_eq(helper_9_posInfMask_u5, gate_u5, __builtin_inff(), activeMask_u5);
+                vcmps_eq(helper_9_posInfMask_u6, gate_u6, __builtin_inff(), activeMask_u6);
+                vcmps_eq(helper_9_posInfMask_u7, gate_u7, __builtin_inff(), activeMask_u7);
+                vcmps_eq(helper_9_posInfMask_u8, gate_u8, __builtin_inff(), activeMask_u8);
+                vcmps_eq(helper_9_posInfMask_u9, gate_u9, __builtin_inff(), activeMask_u9);
+                vcmps_eq(helper_9_posInfMask_u10, gate_u10, __builtin_inff(), activeMask_u10);
+                vcmps_eq(helper_9_posInfMask_u11, gate_u11, __builtin_inff(), activeMask_u11);
+                vcmps_eq(helper_9_posInfMask_u12, gate_u12, __builtin_inff(), activeMask_u12);
+                vcmps_eq(helper_9_posInfMask_u13, gate_u13, __builtin_inff(), activeMask_u13);
+                vcmps_eq(helper_9_posInfMask_u14, gate_u14, __builtin_inff(), activeMask_u14);
+                vcmps_eq(helper_9_posInfMask_u15, gate_u15, __builtin_inff(), activeMask_u15);
+                vmul(siluTimesSigmoid_u0, gate_u0, sigmoid_u0, activeMask_u0, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u1, gate_u1, sigmoid_u1, activeMask_u1, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u2, gate_u2, sigmoid_u2, activeMask_u2, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u3, gate_u3, sigmoid_u3, activeMask_u3, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u4, gate_u4, sigmoid_u4, activeMask_u4, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u5, gate_u5, sigmoid_u5, activeMask_u5, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u6, gate_u6, sigmoid_u6, activeMask_u6, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u7, gate_u7, sigmoid_u7, activeMask_u7, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u8, gate_u8, sigmoid_u8, activeMask_u8, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u9, gate_u9, sigmoid_u9, activeMask_u9, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u10, gate_u10, sigmoid_u10, activeMask_u10, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u11, gate_u11, sigmoid_u11, activeMask_u11, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u12, gate_u12, sigmoid_u12, activeMask_u12, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u13, gate_u13, sigmoid_u13, activeMask_u13, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u14, gate_u14, sigmoid_u14, activeMask_u14, MODE_ZEROING);
+                vmul(siluTimesSigmoid_u15, gate_u15, sigmoid_u15, activeMask_u15, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u0, sigmoid_u0, gate_u0, activeMask_u0, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u1, sigmoid_u1, gate_u1, activeMask_u1, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u2, sigmoid_u2, gate_u2, activeMask_u2, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u3, sigmoid_u3, gate_u3, activeMask_u3, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u4, sigmoid_u4, gate_u4, activeMask_u4, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u5, sigmoid_u5, gate_u5, activeMask_u5, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u6, sigmoid_u6, gate_u6, activeMask_u6, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u7, sigmoid_u7, gate_u7, activeMask_u7, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u8, sigmoid_u8, gate_u8, activeMask_u8, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u9, sigmoid_u9, gate_u9, activeMask_u9, MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u10, sigmoid_u10, gate_u10, activeMask_u10,
+                     MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u11, sigmoid_u11, gate_u11, activeMask_u11,
+                     MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u12, sigmoid_u12, gate_u12, activeMask_u12,
+                     MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u13, sigmoid_u13, gate_u13, activeMask_u13,
+                     MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u14, sigmoid_u14, gate_u14, activeMask_u14,
+                     MODE_ZEROING);
+                vadd(helper_9_rawSiluPrime_u15, sigmoid_u15, gate_u15, activeMask_u15,
+                     MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u0, helper_9_rawSiluPrime_u0, siluTimesSigmoid_u0,
+                     activeMask_u0, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u1, helper_9_rawSiluPrime_u1, siluTimesSigmoid_u1,
+                     activeMask_u1, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u2, helper_9_rawSiluPrime_u2, siluTimesSigmoid_u2,
+                     activeMask_u2, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u3, helper_9_rawSiluPrime_u3, siluTimesSigmoid_u3,
+                     activeMask_u3, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u4, helper_9_rawSiluPrime_u4, siluTimesSigmoid_u4,
+                     activeMask_u4, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u5, helper_9_rawSiluPrime_u5, siluTimesSigmoid_u5,
+                     activeMask_u5, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u6, helper_9_rawSiluPrime_u6, siluTimesSigmoid_u6,
+                     activeMask_u6, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u7, helper_9_rawSiluPrime_u7, siluTimesSigmoid_u7,
+                     activeMask_u7, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u8, helper_9_rawSiluPrime_u8, siluTimesSigmoid_u8,
+                     activeMask_u8, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u9, helper_9_rawSiluPrime_u9, siluTimesSigmoid_u9,
+                     activeMask_u9, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u10, helper_9_rawSiluPrime_u10, siluTimesSigmoid_u10,
+                     activeMask_u10, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u11, helper_9_rawSiluPrime_u11, siluTimesSigmoid_u11,
+                     activeMask_u11, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u12, helper_9_rawSiluPrime_u12, siluTimesSigmoid_u12,
+                     activeMask_u12, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u13, helper_9_rawSiluPrime_u13, siluTimesSigmoid_u13,
+                     activeMask_u13, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u14, helper_9_rawSiluPrime_u14, siluTimesSigmoid_u14,
+                     activeMask_u14, MODE_ZEROING);
+                vsub(helper_9_rawSiluPrime_u15, helper_9_rawSiluPrime_u15, siluTimesSigmoid_u15,
+                     activeMask_u15, MODE_ZEROING);
+                vsel(siluPrime_u0, ones, helper_9_rawSiluPrime_u0, helper_9_posInfMask_u0);
+                vsel(siluPrime_u1, ones, helper_9_rawSiluPrime_u1, helper_9_posInfMask_u1);
+                vsel(siluPrime_u2, ones, helper_9_rawSiluPrime_u2, helper_9_posInfMask_u2);
+                vsel(siluPrime_u3, ones, helper_9_rawSiluPrime_u3, helper_9_posInfMask_u3);
+                vsel(siluPrime_u4, ones, helper_9_rawSiluPrime_u4, helper_9_posInfMask_u4);
+                vsel(siluPrime_u5, ones, helper_9_rawSiluPrime_u5, helper_9_posInfMask_u5);
+                vsel(siluPrime_u6, ones, helper_9_rawSiluPrime_u6, helper_9_posInfMask_u6);
+                vsel(siluPrime_u7, ones, helper_9_rawSiluPrime_u7, helper_9_posInfMask_u7);
+                vsel(siluPrime_u8, ones, helper_9_rawSiluPrime_u8, helper_9_posInfMask_u8);
+                vsel(siluPrime_u9, ones, helper_9_rawSiluPrime_u9, helper_9_posInfMask_u9);
+                vsel(siluPrime_u10, ones, helper_9_rawSiluPrime_u10, helper_9_posInfMask_u10);
+                vsel(siluPrime_u11, ones, helper_9_rawSiluPrime_u11, helper_9_posInfMask_u11);
+                vsel(siluPrime_u12, ones, helper_9_rawSiluPrime_u12, helper_9_posInfMask_u12);
+                vsel(siluPrime_u13, ones, helper_9_rawSiluPrime_u13, helper_9_posInfMask_u13);
+                vsel(siluPrime_u14, ones, helper_9_rawSiluPrime_u14, helper_9_posInfMask_u14);
+                vsel(siluPrime_u15, ones, helper_9_rawSiluPrime_u15, helper_9_posInfMask_u15);
+                vmul(gradGate_u0, gradY_u0, siluPrime_u0, activeMask_u0, MODE_ZEROING);
+                vmul(gradGate_u1, gradY_u1, siluPrime_u1, activeMask_u1, MODE_ZEROING);
+                vmul(gradGate_u2, gradY_u2, siluPrime_u2, activeMask_u2, MODE_ZEROING);
+                vmul(gradGate_u3, gradY_u3, siluPrime_u3, activeMask_u3, MODE_ZEROING);
+                vmul(gradGate_u4, gradY_u4, siluPrime_u4, activeMask_u4, MODE_ZEROING);
+                vmul(gradGate_u5, gradY_u5, siluPrime_u5, activeMask_u5, MODE_ZEROING);
+                vmul(gradGate_u6, gradY_u6, siluPrime_u6, activeMask_u6, MODE_ZEROING);
+                vmul(gradGate_u7, gradY_u7, siluPrime_u7, activeMask_u7, MODE_ZEROING);
+                vmul(gradGate_u8, gradY_u8, siluPrime_u8, activeMask_u8, MODE_ZEROING);
+                vmul(gradGate_u9, gradY_u9, siluPrime_u9, activeMask_u9, MODE_ZEROING);
+                vmul(gradGate_u10, gradY_u10, siluPrime_u10, activeMask_u10, MODE_ZEROING);
+                vmul(gradGate_u11, gradY_u11, siluPrime_u11, activeMask_u11, MODE_ZEROING);
+                vmul(gradGate_u12, gradY_u12, siluPrime_u12, activeMask_u12, MODE_ZEROING);
+                vmul(gradGate_u13, gradY_u13, siluPrime_u13, activeMask_u13, MODE_ZEROING);
+                vmul(gradGate_u14, gradY_u14, siluPrime_u14, activeMask_u14, MODE_ZEROING);
+                vmul(gradGate_u15, gradY_u15, siluPrime_u15, activeMask_u15, MODE_ZEROING);
+                vmul(gradGate_u0, gradGate_u0, up_u0, activeMask_u0, MODE_ZEROING);
+                vmul(gradGate_u1, gradGate_u1, up_u1, activeMask_u1, MODE_ZEROING);
+                vmul(gradGate_u2, gradGate_u2, up_u2, activeMask_u2, MODE_ZEROING);
+                vmul(gradGate_u3, gradGate_u3, up_u3, activeMask_u3, MODE_ZEROING);
+                vmul(gradGate_u4, gradGate_u4, up_u4, activeMask_u4, MODE_ZEROING);
+                vmul(gradGate_u5, gradGate_u5, up_u5, activeMask_u5, MODE_ZEROING);
+                vmul(gradGate_u6, gradGate_u6, up_u6, activeMask_u6, MODE_ZEROING);
+                vmul(gradGate_u7, gradGate_u7, up_u7, activeMask_u7, MODE_ZEROING);
+                vmul(gradGate_u8, gradGate_u8, up_u8, activeMask_u8, MODE_ZEROING);
+                vmul(gradGate_u9, gradGate_u9, up_u9, activeMask_u9, MODE_ZEROING);
+                vmul(gradGate_u10, gradGate_u10, up_u10, activeMask_u10, MODE_ZEROING);
+                vmul(gradGate_u11, gradGate_u11, up_u11, activeMask_u11, MODE_ZEROING);
+                vmul(gradGate_u12, gradGate_u12, up_u12, activeMask_u12, MODE_ZEROING);
+                vmul(gradGate_u13, gradGate_u13, up_u13, activeMask_u13, MODE_ZEROING);
+                vmul(gradGate_u14, gradGate_u14, up_u14, activeMask_u14, MODE_ZEROING);
+                vmul(gradGate_u15, gradGate_u15, up_u15, activeMask_u15, MODE_ZEROING);
+                vmul(gradGate_u0, gradGate_u0, weight, activeMask_u0, MODE_ZEROING);
+                vmul(gradGate_u1, gradGate_u1, weight, activeMask_u1, MODE_ZEROING);
+                vmul(gradGate_u2, gradGate_u2, weight, activeMask_u2, MODE_ZEROING);
+                vmul(gradGate_u3, gradGate_u3, weight, activeMask_u3, MODE_ZEROING);
+                vmul(gradGate_u4, gradGate_u4, weight, activeMask_u4, MODE_ZEROING);
+                vmul(gradGate_u5, gradGate_u5, weight, activeMask_u5, MODE_ZEROING);
+                vmul(gradGate_u6, gradGate_u6, weight, activeMask_u6, MODE_ZEROING);
+                vmul(gradGate_u7, gradGate_u7, weight, activeMask_u7, MODE_ZEROING);
+                vmul(gradGate_u8, gradGate_u8, weight, activeMask_u8, MODE_ZEROING);
+                vmul(gradGate_u9, gradGate_u9, weight, activeMask_u9, MODE_ZEROING);
+                vmul(gradGate_u10, gradGate_u10, weight, activeMask_u10, MODE_ZEROING);
+                vmul(gradGate_u11, gradGate_u11, weight, activeMask_u11, MODE_ZEROING);
+                vmul(gradGate_u12, gradGate_u12, weight, activeMask_u12, MODE_ZEROING);
+                vmul(gradGate_u13, gradGate_u13, weight, activeMask_u13, MODE_ZEROING);
+                vmul(gradGate_u14, gradGate_u14, weight, activeMask_u14, MODE_ZEROING);
+                vmul(gradGate_u15, gradGate_u15, weight, activeMask_u15, MODE_ZEROING);
+                vmul(gradGate_u0, gradGate_u0, gateClampMask_u0, activeMask_u0, MODE_ZEROING);
+                vmul(gradGate_u1, gradGate_u1, gateClampMask_u1, activeMask_u1, MODE_ZEROING);
+                vmul(gradGate_u2, gradGate_u2, gateClampMask_u2, activeMask_u2, MODE_ZEROING);
+                vmul(gradGate_u3, gradGate_u3, gateClampMask_u3, activeMask_u3, MODE_ZEROING);
+                vmul(gradGate_u4, gradGate_u4, gateClampMask_u4, activeMask_u4, MODE_ZEROING);
+                vmul(gradGate_u5, gradGate_u5, gateClampMask_u5, activeMask_u5, MODE_ZEROING);
+                vmul(gradGate_u6, gradGate_u6, gateClampMask_u6, activeMask_u6, MODE_ZEROING);
+                vmul(gradGate_u7, gradGate_u7, gateClampMask_u7, activeMask_u7, MODE_ZEROING);
+                vmul(gradGate_u8, gradGate_u8, gateClampMask_u8, activeMask_u8, MODE_ZEROING);
+                vmul(gradGate_u9, gradGate_u9, gateClampMask_u9, activeMask_u9, MODE_ZEROING);
+                vmul(gradGate_u10, gradGate_u10, gateClampMask_u10, activeMask_u10, MODE_ZEROING);
+                vmul(gradGate_u11, gradGate_u11, gateClampMask_u11, activeMask_u11, MODE_ZEROING);
+                vmul(gradGate_u12, gradGate_u12, gateClampMask_u12, activeMask_u12, MODE_ZEROING);
+                vmul(gradGate_u13, gradGate_u13, gateClampMask_u13, activeMask_u13, MODE_ZEROING);
+                vmul(gradGate_u14, gradGate_u14, gateClampMask_u14, activeMask_u14, MODE_ZEROING);
+                vmul(gradGate_u15, gradGate_u15, gateClampMask_u15, activeMask_u15, MODE_ZEROING);
+                vsts(gradGate_u0, (__ubuf__ float*)gradGateAddress + offset_u0, 0, NORM_B32,
+                     activeMask_u0);
+                vsts(gradGate_u1, (__ubuf__ float*)gradGateAddress + offset_u1, 0, NORM_B32,
+                     activeMask_u1);
+                vsts(gradGate_u2, (__ubuf__ float*)gradGateAddress + offset_u2, 0, NORM_B32,
+                     activeMask_u2);
+                vsts(gradGate_u3, (__ubuf__ float*)gradGateAddress + offset_u3, 0, NORM_B32,
+                     activeMask_u3);
+                vsts(gradGate_u4, (__ubuf__ float*)gradGateAddress + offset_u4, 0, NORM_B32,
+                     activeMask_u4);
+                vsts(gradGate_u5, (__ubuf__ float*)gradGateAddress + offset_u5, 0, NORM_B32,
+                     activeMask_u5);
+                vsts(gradGate_u6, (__ubuf__ float*)gradGateAddress + offset_u6, 0, NORM_B32,
+                     activeMask_u6);
+                vsts(gradGate_u7, (__ubuf__ float*)gradGateAddress + offset_u7, 0, NORM_B32,
+                     activeMask_u7);
+                vsts(gradGate_u8, (__ubuf__ float*)gradGateAddress + offset_u8, 0, NORM_B32,
+                     activeMask_u8);
+                vsts(gradGate_u9, (__ubuf__ float*)gradGateAddress + offset_u9, 0, NORM_B32,
+                     activeMask_u9);
+                vsts(gradGate_u10, (__ubuf__ float*)gradGateAddress + offset_u10, 0, NORM_B32,
+                     activeMask_u10);
+                vsts(gradGate_u11, (__ubuf__ float*)gradGateAddress + offset_u11, 0, NORM_B32,
+                     activeMask_u11);
+                vsts(gradGate_u12, (__ubuf__ float*)gradGateAddress + offset_u12, 0, NORM_B32,
+                     activeMask_u12);
+                vsts(gradGate_u13, (__ubuf__ float*)gradGateAddress + offset_u13, 0, NORM_B32,
+                     activeMask_u13);
+                vsts(gradGate_u14, (__ubuf__ float*)gradGateAddress + offset_u14, 0, NORM_B32,
+                     activeMask_u14);
+                vsts(gradGate_u15, (__ubuf__ float*)gradGateAddress + offset_u15, 0, NORM_B32,
+                     activeMask_u15);
+                vmul(gradUp_u0, gradY_u0, gate_u0, activeMask_u0, MODE_ZEROING);
+                vmul(gradUp_u1, gradY_u1, gate_u1, activeMask_u1, MODE_ZEROING);
+                vmul(gradUp_u2, gradY_u2, gate_u2, activeMask_u2, MODE_ZEROING);
+                vmul(gradUp_u3, gradY_u3, gate_u3, activeMask_u3, MODE_ZEROING);
+                vmul(gradUp_u4, gradY_u4, gate_u4, activeMask_u4, MODE_ZEROING);
+                vmul(gradUp_u5, gradY_u5, gate_u5, activeMask_u5, MODE_ZEROING);
+                vmul(gradUp_u6, gradY_u6, gate_u6, activeMask_u6, MODE_ZEROING);
+                vmul(gradUp_u7, gradY_u7, gate_u7, activeMask_u7, MODE_ZEROING);
+                vmul(gradUp_u8, gradY_u8, gate_u8, activeMask_u8, MODE_ZEROING);
+                vmul(gradUp_u9, gradY_u9, gate_u9, activeMask_u9, MODE_ZEROING);
+                vmul(gradUp_u10, gradY_u10, gate_u10, activeMask_u10, MODE_ZEROING);
+                vmul(gradUp_u11, gradY_u11, gate_u11, activeMask_u11, MODE_ZEROING);
+                vmul(gradUp_u12, gradY_u12, gate_u12, activeMask_u12, MODE_ZEROING);
+                vmul(gradUp_u13, gradY_u13, gate_u13, activeMask_u13, MODE_ZEROING);
+                vmul(gradUp_u14, gradY_u14, gate_u14, activeMask_u14, MODE_ZEROING);
+                vmul(gradUp_u15, gradY_u15, gate_u15, activeMask_u15, MODE_ZEROING);
+                vmul(gradUp_u0, gradUp_u0, weight, activeMask_u0, MODE_ZEROING);
+                vmul(gradUp_u1, gradUp_u1, weight, activeMask_u1, MODE_ZEROING);
+                vmul(gradUp_u2, gradUp_u2, weight, activeMask_u2, MODE_ZEROING);
+                vmul(gradUp_u3, gradUp_u3, weight, activeMask_u3, MODE_ZEROING);
+                vmul(gradUp_u4, gradUp_u4, weight, activeMask_u4, MODE_ZEROING);
+                vmul(gradUp_u5, gradUp_u5, weight, activeMask_u5, MODE_ZEROING);
+                vmul(gradUp_u6, gradUp_u6, weight, activeMask_u6, MODE_ZEROING);
+                vmul(gradUp_u7, gradUp_u7, weight, activeMask_u7, MODE_ZEROING);
+                vmul(gradUp_u8, gradUp_u8, weight, activeMask_u8, MODE_ZEROING);
+                vmul(gradUp_u9, gradUp_u9, weight, activeMask_u9, MODE_ZEROING);
+                vmul(gradUp_u10, gradUp_u10, weight, activeMask_u10, MODE_ZEROING);
+                vmul(gradUp_u11, gradUp_u11, weight, activeMask_u11, MODE_ZEROING);
+                vmul(gradUp_u12, gradUp_u12, weight, activeMask_u12, MODE_ZEROING);
+                vmul(gradUp_u13, gradUp_u13, weight, activeMask_u13, MODE_ZEROING);
+                vmul(gradUp_u14, gradUp_u14, weight, activeMask_u14, MODE_ZEROING);
+                vmul(gradUp_u15, gradUp_u15, weight, activeMask_u15, MODE_ZEROING);
+                vmul(gradUp_u0, gradUp_u0, upClampMask_u0, activeMask_u0, MODE_ZEROING);
+                vmul(gradUp_u1, gradUp_u1, upClampMask_u1, activeMask_u1, MODE_ZEROING);
+                vmul(gradUp_u2, gradUp_u2, upClampMask_u2, activeMask_u2, MODE_ZEROING);
+                vmul(gradUp_u3, gradUp_u3, upClampMask_u3, activeMask_u3, MODE_ZEROING);
+                vmul(gradUp_u4, gradUp_u4, upClampMask_u4, activeMask_u4, MODE_ZEROING);
+                vmul(gradUp_u5, gradUp_u5, upClampMask_u5, activeMask_u5, MODE_ZEROING);
+                vmul(gradUp_u6, gradUp_u6, upClampMask_u6, activeMask_u6, MODE_ZEROING);
+                vmul(gradUp_u7, gradUp_u7, upClampMask_u7, activeMask_u7, MODE_ZEROING);
+                vmul(gradUp_u8, gradUp_u8, upClampMask_u8, activeMask_u8, MODE_ZEROING);
+                vmul(gradUp_u9, gradUp_u9, upClampMask_u9, activeMask_u9, MODE_ZEROING);
+                vmul(gradUp_u10, gradUp_u10, upClampMask_u10, activeMask_u10, MODE_ZEROING);
+                vmul(gradUp_u11, gradUp_u11, upClampMask_u11, activeMask_u11, MODE_ZEROING);
+                vmul(gradUp_u12, gradUp_u12, upClampMask_u12, activeMask_u12, MODE_ZEROING);
+                vmul(gradUp_u13, gradUp_u13, upClampMask_u13, activeMask_u13, MODE_ZEROING);
+                vmul(gradUp_u14, gradUp_u14, upClampMask_u14, activeMask_u14, MODE_ZEROING);
+                vmul(gradUp_u15, gradUp_u15, upClampMask_u15, activeMask_u15, MODE_ZEROING);
+                vsts(gradUp_u0, (__ubuf__ float*)gradUpAddress + offset_u0, 0, NORM_B32,
+                     activeMask_u0);
+                vsts(gradUp_u1, (__ubuf__ float*)gradUpAddress + offset_u1, 0, NORM_B32,
+                     activeMask_u1);
+                vsts(gradUp_u2, (__ubuf__ float*)gradUpAddress + offset_u2, 0, NORM_B32,
+                     activeMask_u2);
+                vsts(gradUp_u3, (__ubuf__ float*)gradUpAddress + offset_u3, 0, NORM_B32,
+                     activeMask_u3);
+                vsts(gradUp_u4, (__ubuf__ float*)gradUpAddress + offset_u4, 0, NORM_B32,
+                     activeMask_u4);
+                vsts(gradUp_u5, (__ubuf__ float*)gradUpAddress + offset_u5, 0, NORM_B32,
+                     activeMask_u5);
+                vsts(gradUp_u6, (__ubuf__ float*)gradUpAddress + offset_u6, 0, NORM_B32,
+                     activeMask_u6);
+                vsts(gradUp_u7, (__ubuf__ float*)gradUpAddress + offset_u7, 0, NORM_B32,
+                     activeMask_u7);
+                vsts(gradUp_u8, (__ubuf__ float*)gradUpAddress + offset_u8, 0, NORM_B32,
+                     activeMask_u8);
+                vsts(gradUp_u9, (__ubuf__ float*)gradUpAddress + offset_u9, 0, NORM_B32,
+                     activeMask_u9);
+                vsts(gradUp_u10, (__ubuf__ float*)gradUpAddress + offset_u10, 0, NORM_B32,
+                     activeMask_u10);
+                vsts(gradUp_u11, (__ubuf__ float*)gradUpAddress + offset_u11, 0, NORM_B32,
+                     activeMask_u11);
+                vsts(gradUp_u12, (__ubuf__ float*)gradUpAddress + offset_u12, 0, NORM_B32,
+                     activeMask_u12);
+                vsts(gradUp_u13, (__ubuf__ float*)gradUpAddress + offset_u13, 0, NORM_B32,
+                     activeMask_u13);
+                vsts(gradUp_u14, (__ubuf__ float*)gradUpAddress + offset_u14, 0, NORM_B32,
+                     activeMask_u14);
+                vsts(gradUp_u15, (__ubuf__ float*)gradUpAddress + offset_u15, 0, NORM_B32,
+                     activeMask_u15);
+            }
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ float* gradYAddress = (__ubuf__ float*)get_imm(0);
+    __ubuf__ float* gateAddress = (__ubuf__ float*)get_imm(4096);
+    __ubuf__ float* upAddress = (__ubuf__ float*)get_imm(8192);
+    __ubuf__ float* weightAddress = (__ubuf__ float*)get_imm(12288);
+    __ubuf__ float* yOriginAddress = (__ubuf__ float*)get_imm(12544);
+    __ubuf__ float* gradGateAddress = (__ubuf__ float*)get_imm(12800);
+    __ubuf__ float* gradUpAddress = (__ubuf__ float*)get_imm(16896);
+    __ubuf__ float* gradWeightProductAddress = (__ubuf__ float*)get_imm(20992);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 12800, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(gradYAddress, gateAddress, upAddress, weightAddress, yOriginAddress,
+                 gradGateAddress, gradUpAddress, gradWeightProductAddress);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)gradGateAddress, 0, 1, 4096, 0, 0, 0);
+    copy_ubuf_to_gm_align_v2(output + 4096, (__ubuf__ uint8_t*)gradUpAddress, 0, 1, 4096, 0, 0, 0);
+    copy_ubuf_to_gm_align_v2(output + 8192, (__ubuf__ uint8_t*)gradWeightProductAddress, 0, 1, 4096,
+                             0, 0, 0);
+}

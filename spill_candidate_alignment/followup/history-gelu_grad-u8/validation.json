@@ -1,0 +1,123 @@
+{
+  "plan": {
+    "unroll": 8,
+    "cuts": [
+      6
+    ],
+    "policy": "pressure",
+    "cohort": 8,
+    "pressure_weight": 8,
+    "stages": 2,
+    "scratch_bytes": 65536,
+    "ub_high_water": 114944,
+    "pressure": [
+      {
+        "stage": 0,
+        "section": 0,
+        "peaks": {
+          "Register": 19,
+          "PredicateRegister": 1
+        },
+        "lanes": 8
+      },
+      {
+        "stage": 1,
+        "section": 0,
+        "peaks": {
+          "Register": 17,
+          "PredicateRegister": 2
+        },
+        "lanes": 8
+      }
+    ],
+    "source_sha256": "5f2f350d08301971c6faa092638d75557232b3acf66dfe0f853103c205b6cd00"
+  },
+  "status": "validated_no_spill",
+  "camodel_cycles": 1003,
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 4.76837158203125e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 330,
+    "vector_loads": 384,
+    "vector_stores": 320,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 1,
+    "static_load_pc_counts": {
+      "NORAML": 48
+    },
+    "loops": [
+      {
+        "pc": "0x13b3e2b0",
+        "detail": "Sn[5]=0x8, Sn2[6]=0x422a, instr_num : 140, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b3e52c",
+        "detail": "Sn[5]=0x8, Sn2[6]=0x422a, instr_num : 125, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "compiler_stack_instruction_count": 0,
+  "compiler_stack_opcodes": [],
+  "export_audit": [
+    {
+      "vf_index": 0,
+      "camodel_cycles": 1003,
+      "expected_counts": {
+        "PSET_B32": 1,
+        "VDUP": 4,
+        "VMOV": 134,
+        "VLDS": 384,
+        "VSTS": 320,
+        "VMUL": 448,
+        "VAXPY": 128,
+        "VEXP": 64,
+        "VADDS": 64,
+        "MEMBAR": 1,
+        "VDIV": 64,
+        "VCMP_EQ": 64,
+        "VSEL": 64,
+        "VADD": 64
+      },
+      "json_counts": {
+        "PSET_B32": 1,
+        "VDUP": 4,
+        "VMOV": 134,
+        "VLDS": 384,
+        "VSTS": 320,
+        "VMUL": 448,
+        "VAXPY": 128,
+        "VEXP": 64,
+        "VADDS": 64,
+        "MEMBAR": 1,
+        "VDIV": 64,
+        "VCMP_EQ": 64,
+        "VSEL": 64,
+        "VADD": 64
+      },
+      "count_match": true,
+      "missing_semantics": [],
+      "unmodeled_scalar_opcounts": {
+        "RV_SMOVI": 200,
+        "RV_SMOVK": 177
+      },
+      "diagnostics": [],
+      "status": "ready",
+      "json_file": "vf_000.json"
+    }
+  ],
+  "global_cycles": 828
+}

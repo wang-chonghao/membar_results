@@ -1,0 +1,96 @@
+{
+  "case": "resident_u2",
+  "matrices": 36,
+  "camodel": 33006,
+  "global_cycles": 31111,
+  "local_cycles": 28916,
+  "speedup": 1.075909531055471,
+  "global_accuracy_percent": 94.25861964491304,
+  "removed_static_membars": 2,
+  "hardware_dynamic_membars": 37,
+  "audits": {
+    "global": {
+      "opcode_and_pc_order_equal": true,
+      "register_producer_graph_equal": true,
+      "memory_range_checks": 0,
+      "rounded_32b_ordering_checks": {}
+    },
+    "local": {
+      "opcode_and_pc_order_equal": true,
+      "register_producer_graph_equal": true,
+      "memory_range_checks": 1009,
+      "rounded_32b_ordering_checks": {
+        "RAW": 1484,
+        "WAW": 288,
+        "WAR": 428
+      }
+    }
+  },
+  "global_result": {
+    "cycles_executed": 31099,
+    "vf_end_cycle": 31111,
+    "results_dir": "/tmp/mhc-vfsim-36-20261010/m36/resident_u2/global",
+    "trace_path": "/tmp/mhc-vfsim-36-20261010/m36/resident_u2/global/trace.json",
+    "memory_ordering_stats": {
+      "precise_access_count": 0,
+      "total_access_count": 0,
+      "precise_access_ratio": 0.0,
+      "local_dependency_edges": 0,
+      "precise_dependency_edges": 0,
+      "fallback_dependency_edges": 0,
+      "fallback_warning_count": 0,
+      "ub_dependency_blocked_cycles": 0
+    },
+    "linear_inst_count": 101,
+    "normalization_stats": {
+      "renamed_operands": 0,
+      "reused_slots": 0
+    },
+    "canonicalization_stats": {
+      "expanded_loops": 0,
+      "expanded_instructions": 0
+    },
+    "soc": "DV100",
+    "soc_selector": "dav-3510",
+    "soc_expansion_stats": {
+      "expanded_instruction_count": 0,
+      "generated_instruction_count": 0
+    }
+  },
+  "local_result": {
+    "cycles_executed": 28904,
+    "vf_end_cycle": 28916,
+    "results_dir": "/tmp/mhc-vfsim-36-20261010/m36/resident_u2/local",
+    "trace_path": "/tmp/mhc-vfsim-36-20261010/m36/resident_u2/local/trace.json",
+    "memory_ordering_stats": {
+      "precise_access_count": 1009,
+      "total_access_count": 1009,
+      "precise_access_ratio": 1.0,
+      "local_dependency_edges": 456,
+      "precise_dependency_edges": 456,
+      "fallback_dependency_edges": 0,
+      "fallback_warning_count": 0,
+      "ub_dependency_blocked_cycles": 13966
+    },
+    "linear_inst_count": 99,
+    "normalization_stats": {
+      "renamed_operands": 0,
+      "reused_slots": 0
+    },
+    "canonicalization_stats": {
+      "expanded_loops": 0,
+      "expanded_instructions": 0
+    },
+    "soc": "DV100",
+    "soc_selector": "dav-3510"
+  },
+  "scope": "Python experiment: global barriers vs byte-overlap RAW/WAR; independently checked at 32B including WAW; cap7 unchanged; scalar timing excluded.",
+  "audit_scope": {
+    "dynamic_graph_match_between_modes": true,
+    "global_dynamic_membars_match_hardware": true,
+    "local_dynamic_membars": 0,
+    "scalar_timing_excluded": true,
+    "pointer_post_update_timing_included": true,
+    "all_local_memory_ranges_resolved": true
+  }
+}

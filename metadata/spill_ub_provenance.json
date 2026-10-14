@@ -1,0 +1,2256 @@
+{
+  "model_root": "/tmp/spill-ub-model-0060620",
+  "model_commit": "0060620",
+  "model_branch": "ub-address-dependency-experiment",
+  "baseline_prediction_audit": {
+    "model_commit": "2bcefb1572edb52518274b8c8c6d914d5c926098",
+    "configuration_sha256": {
+      "configs/uarch.json": "33533160a2dbc1eeaf89884f3587bf1c0c12f7b1fb2427b5bcbe23ab67c45f62",
+      "configs/isa.json": "c3c10130cd03831eda2a0528d9872e7d82b1838df7f74a5438aa73f2d1728892",
+      "configs/forwarding.json": "acb1a207bc1397f59b0de5950239e8981675aea29f6ee604f6083c0ef36d770d",
+      "configs/InitiationInterval.json": "148b49b3da7420aed415d0d832a8f2fbaf25360107212988cb4f461f83d18464",
+      "configs/instruction_catalog.json": "5f15d2269e6e799cbefb7ff223e616fa0fccf862b8b6dbefb5763d4e9c98d7b8"
+    },
+    "input_path": "compiled CCE RV -> Canonical JSON -> CoreVfCostModel",
+    "cases": [
+      {
+        "case": "swiglu",
+        "title": "SwiGLU Group Grad",
+        "cce_source_sha256": "d6174a933bcf0415117547e054ad14e5a92f7a83ca44fe0bfd956a606568834b",
+        "camodel_vf_cycles": [
+          550
+        ],
+        "camodel_vf_cycles_sum": 550,
+        "vfsim_cycles": 540,
+        "prediction_accuracy_percent": 98.18181818181819,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 550,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 2,
+              "VLDS": 49,
+              "VCMPS_LT": 64,
+              "VSEL": 112,
+              "VMULS": 32,
+              "VMUL": 176,
+              "VMINS": 32,
+              "VMAXS": 16,
+              "VEXP": 16,
+              "VADDS": 16,
+              "VDIV": 16,
+              "VCMPS_EQ": 32,
+              "VCMPS_LE": 16,
+              "VSTS": 48,
+              "VADD": 16,
+              "VSUB": 16
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 2,
+              "VLDS": 49,
+              "VCMPS_LT": 64,
+              "VSEL": 112,
+              "VMULS": 32,
+              "VMUL": 176,
+              "VMINS": 32,
+              "VMAXS": 16,
+              "VEXP": 16,
+              "VADDS": 16,
+              "VDIV": 16,
+              "VCMPS_EQ": 32,
+              "VCMPS_LE": 16,
+              "VSTS": 48,
+              "VADD": 16,
+              "VSUB": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {},
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 540,
+            "camodel_cycles": 550
+          }
+        ],
+        "timing_warning_count": 69,
+        "timing_warning_kinds": [
+          "compatible_forwarding_pair_fallback",
+          "compatible_isa_form_fallback",
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "focal",
+        "title": "Sigmoid Focal Loss Grad",
+        "cce_source_sha256": "7f1babf4f95034bb213238c6b95b85ea03cfecd6d63dd5ef0fb89506799c90a0",
+        "camodel_vf_cycles": [
+          391
+        ],
+        "camodel_vf_cycles_sum": 391,
+        "vfsim_cycles": 377,
+        "prediction_accuracy_percent": 96.41943734015345,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 391,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 64,
+              "VLN": 16,
+              "VMULS": 80,
+              "VADDS": 16,
+              "VMUL": 64,
+              "VSUB": 32,
+              "VDIV": 16,
+              "VABS": 48,
+              "VMAX": 16,
+              "VCMP_LE": 16,
+              "VCMPS_GT": 48,
+              "VCMPS_LE": 16,
+              "VSEL": 80,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 64,
+              "VLN": 16,
+              "VMULS": 80,
+              "VADDS": 16,
+              "VMUL": 64,
+              "VSUB": 32,
+              "VDIV": 16,
+              "VABS": 48,
+              "VMAX": 16,
+              "VCMP_LE": 16,
+              "VCMPS_GT": 48,
+              "VCMPS_LE": 16,
+              "VSEL": 80,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 377,
+            "camodel_cycles": 391
+          }
+        ],
+        "timing_warning_count": 104,
+        "timing_warning_kinds": [
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "swiglu_quant",
+        "title": "SwiGLU Backward Group Quant Dual Axis",
+        "cce_source_sha256": "e70bc57a831d6ae2358a75d5f8502b606b98026327ff7f42ee5a80126b9c2d93",
+        "camodel_vf_cycles": [
+          500
+        ],
+        "camodel_vf_cycles_sum": 500,
+        "vfsim_cycles": 476,
+        "prediction_accuracy_percent": 95.19999999999999,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 500,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 19,
+              "VLDS": 49,
+              "PLT": 16,
+              "VCVT_F16_TO_F32": 48,
+              "VMUL": 112,
+              "VCMP_LE": 32,
+              "VCMP_GE": 16,
+              "VMINS": 32,
+              "VMULS": 48,
+              "VEXP": 16,
+              "VADDS": 64,
+              "VDIV": 16,
+              "VMAXS": 16,
+              "VSEL": 48,
+              "VCVT_F32_TO_F16": 32,
+              "VSTS": 32
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 19,
+              "VLDS": 49,
+              "PLT": 16,
+              "VCVT_F16_TO_F32": 48,
+              "VMUL": 112,
+              "VCMP_LE": 32,
+              "VCMP_GE": 16,
+              "VMINS": 32,
+              "VMULS": 48,
+              "VEXP": 16,
+              "VADDS": 64,
+              "VDIV": 16,
+              "VMAXS": 16,
+              "VSEL": 48,
+              "VCVT_F32_TO_F16": 32,
+              "VSTS": 32
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 476,
+            "camodel_cycles": 500
+          }
+        ],
+        "timing_warning_count": 100,
+        "timing_warning_kinds": [
+          "compatible_forwarding_pair_fallback",
+          "compatible_ii_pair_fallback",
+          "compatible_isa_form_fallback",
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "bce",
+        "title": "BCEWithLogits V2",
+        "cce_source_sha256": "0a7e71f94ed10de7d6f7acfba6b5ec608f5dfb16893856b61c01246dc588ca1e",
+        "camodel_vf_cycles": [
+          278
+        ],
+        "camodel_vf_cycles_sum": 278,
+        "vfsim_cycles": 265,
+        "prediction_accuracy_percent": 95.32374100719424,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 278,
+            "expected_counts": {
+              "PLT": 16,
+              "VDUP": 16,
+              "VLDS": 64,
+              "VMINS": 16,
+              "VABS": 16,
+              "VMULS": 16,
+              "VEXP": 16,
+              "VADDS": 32,
+              "VLN": 16,
+              "VSUB": 64,
+              "VMUL": 64,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VDUP": 16,
+              "VLDS": 64,
+              "VMINS": 16,
+              "VABS": 16,
+              "VMULS": 16,
+              "VEXP": 16,
+              "VADDS": 32,
+              "VLN": 16,
+              "VSUB": 64,
+              "VMUL": 64,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 5
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 265,
+            "camodel_cycles": 278
+          }
+        ],
+        "timing_warning_count": 50,
+        "timing_warning_kinds": [
+          "compatible_forwarding_pair_fallback",
+          "compatible_ii_pair_fallback",
+          "compatible_isa_form_fallback",
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "logit",
+        "title": "Logit Grad",
+        "cce_source_sha256": "32883525a8e395c167d90b58c6a5cf04356e16feebe69ce94d3a4a8eb80811f8",
+        "camodel_vf_cycles": [
+          226
+        ],
+        "camodel_vf_cycles_sum": 226,
+        "vfsim_cycles": 240,
+        "prediction_accuracy_percent": 93.80530973451327,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 226,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 4,
+              "PLT": 16,
+              "VLDS": 32,
+              "VMULS": 48,
+              "VADDS": 16,
+              "VMUL": 32,
+              "VCMP_LT": 16,
+              "VSEL": 64,
+              "VDIV": 16,
+              "VCMP_GE": 16,
+              "VCMP_LE": 16,
+              "PAND": 16,
+              "VCMP_EQ": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 4,
+              "PLT": 16,
+              "VLDS": 32,
+              "VMULS": 48,
+              "VADDS": 16,
+              "VMUL": 32,
+              "VCMP_LT": 16,
+              "VSEL": 64,
+              "VDIV": 16,
+              "VCMP_GE": 16,
+              "VCMP_LE": 16,
+              "PAND": 16,
+              "VCMP_EQ": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1,
+              "RV_SMOV": 16,
+              "RV_SSUBI": 16
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 240,
+            "camodel_cycles": 226
+          }
+        ],
+        "timing_warning_count": 93,
+        "timing_warning_kinds": [
+          "compatible_ii_pair_fallback",
+          "compatible_isa_form_fallback",
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "adam_decay",
+        "title": "AdamApplyOne With Decay",
+        "cce_source_sha256": "4be7a7c584707ed7c003fccf183b724531ff6f16b5702abb0ca120df1c097cfe",
+        "camodel_vf_cycles": [
+          261
+        ],
+        "camodel_vf_cycles_sum": 261,
+        "vfsim_cycles": 250,
+        "prediction_accuracy_percent": 95.78544061302682,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 261,
+            "expected_counts": {
+              "VLDS": 71,
+              "PLT": 16,
+              "VMUL": 112,
+              "VADD": 64,
+              "VSQRT": 16,
+              "VDIV": 16,
+              "VSUB": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VLDS": 71,
+              "PLT": 16,
+              "VMUL": 112,
+              "VADD": 64,
+              "VSQRT": 16,
+              "VDIV": 16,
+              "VSUB": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 250,
+            "camodel_cycles": 261
+          }
+        ],
+        "timing_warning_count": 26,
+        "timing_warning_kinds": [
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "lstm",
+        "title": "LSTM Block Cell Grad",
+        "cce_source_sha256": "7d73c660ea6c9b94a6b5a45e39653f7d930033c3eabec93674b04493590fd617",
+        "camodel_vf_cycles": [
+          184
+        ],
+        "camodel_vf_cycles_sum": 184,
+        "vfsim_cycles": 189,
+        "prediction_accuracy_percent": 97.28260869565217,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 184,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "PLT": 16,
+              "VLDS": 80,
+              "VSUB": 48,
+              "VMUL": 144,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "PLT": 16,
+              "VLDS": 80,
+              "VSUB": 48,
+              "VMUL": 144,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 189,
+            "camodel_cycles": 184
+          }
+        ],
+        "timing_warning_count": 13,
+        "timing_warning_kinds": [
+          "compatible_forwarding_pair_fallback",
+          "compatible_ii_pair_fallback",
+          "compatible_isa_form_fallback",
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "groupnorm",
+        "title": "GroupNorm SiLU",
+        "cce_source_sha256": "93f9e2b10364688eca209f36f864bb28c311bd21f5737f88cca9df3b881ecfbe",
+        "camodel_vf_cycles": [
+          189
+        ],
+        "camodel_vf_cycles_sum": 189,
+        "vfsim_cycles": 181,
+        "prediction_accuracy_percent": 95.76719576719577,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 189,
+            "expected_counts": {
+              "VLDS": 50,
+              "PLT": 16,
+              "VSUB": 16,
+              "VMUL": 32,
+              "VADD": 16,
+              "VMULS": 16,
+              "VEXP": 16,
+              "VADDS": 16,
+              "VDIV": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "VLDS": 50,
+              "PLT": 16,
+              "VSUB": 16,
+              "VMUL": 32,
+              "VADD": 16,
+              "VMULS": 16,
+              "VEXP": 16,
+              "VADDS": 16,
+              "VDIV": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 181,
+            "camodel_cycles": 189
+          }
+        ],
+        "timing_warning_count": 22,
+        "timing_warning_kinds": [
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "ftrl",
+        "title": "Apply FTRL",
+        "cce_source_sha256": "fc539f8f85807199c3a5a947e26f2faf312ca5a975682c6ce9b0dee23654151f",
+        "camodel_vf_cycles": [
+          81,
+          204,
+          460,
+          258,
+          529,
+          226,
+          460,
+          258,
+          525,
+          378
+        ],
+        "camodel_vf_cycles_sum": 3379,
+        "vfsim_cycles": null,
+        "prediction_accuracy_percent": null,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 81,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 32,
+              "VMUL": 16,
+              "VADD": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 32,
+              "VMUL": 16,
+              "VADD": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          },
+          {
+            "vf_index": 1,
+            "camodel_cycles": 204,
+            "expected_counts": {
+              "VBR": 5,
+              "PLT": 16,
+              "VLDS": 16,
+              "VABS": 16,
+              "VCMPS_LT": 16,
+              "VSEL": 16,
+              "VSUB": 32,
+              "VAND": 16,
+              "VCVT_S32_TO_F32": 16,
+              "VAXPY": 16,
+              "VADDS": 32,
+              "VDIV": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VBR": 5,
+              "PLT": 16,
+              "VLDS": 16,
+              "VABS": 16,
+              "VCMPS_LT": 16,
+              "VSEL": 16,
+              "VSUB": 32,
+              "VAND": 16,
+              "VCVT_S32_TO_F32": 16,
+              "VAXPY": 16,
+              "VADDS": 32,
+              "VDIV": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_001.json"
+          },
+          {
+            "vf_index": 2,
+            "camodel_cycles": 460,
+            "expected_counts": {
+              "VBR": 3,
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 64,
+              "VMULS": 48,
+              "VADD": 112,
+              "VNEG_FP": 16,
+              "VMADD": 64,
+              "VMOV": 32,
+              "VAXPY": 48,
+              "VSUB": 32,
+              "VMULA": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 64,
+              "VMULS": 48,
+              "VADD": 112,
+              "VNEG_FP": 16,
+              "VMADD": 64,
+              "VMOV": 32,
+              "VAXPY": 48,
+              "VSUB": 32,
+              "VMULA": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMADD",
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[8]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[13]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[14]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[23]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[25]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_002.unsupported.json"
+          },
+          {
+            "vf_index": 3,
+            "camodel_cycles": 258,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 17,
+              "PLT": 16,
+              "VLDS": 32,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 17,
+              "PLT": 16,
+              "VLDS": 32,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[4]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[5]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[6]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[8]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_003.unsupported.json"
+          },
+          {
+            "vf_index": 4,
+            "camodel_cycles": 529,
+            "expected_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "PNOT",
+              "PXOR",
+              "VMADD",
+              "VNEG_FP",
+              "VTRC",
+              "VXOR"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[12]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[18]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[22]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[23]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[27]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[28]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[30]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_004.unsupported.json"
+          },
+          {
+            "vf_index": 5,
+            "camodel_cycles": 226,
+            "expected_counts": {
+              "VBR": 5,
+              "PLT": 16,
+              "VLDS": 16,
+              "VABS": 16,
+              "VCMPS_LT": 16,
+              "VSEL": 16,
+              "VSUB": 32,
+              "VAND": 16,
+              "VCVT_S32_TO_F32": 16,
+              "VAXPY": 16,
+              "VADDS": 32,
+              "VDIV": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VBR": 5,
+              "PLT": 16,
+              "VLDS": 16,
+              "VABS": 16,
+              "VCMPS_LT": 16,
+              "VSEL": 16,
+              "VSUB": 32,
+              "VAND": 16,
+              "VCVT_S32_TO_F32": 16,
+              "VAXPY": 16,
+              "VADDS": 32,
+              "VDIV": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_005.json"
+          },
+          {
+            "vf_index": 6,
+            "camodel_cycles": 460,
+            "expected_counts": {
+              "VBR": 3,
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 64,
+              "VMULS": 48,
+              "VADD": 112,
+              "VNEG_FP": 16,
+              "VMADD": 64,
+              "VMOV": 32,
+              "VAXPY": 48,
+              "VSUB": 32,
+              "VMULA": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 64,
+              "VMULS": 48,
+              "VADD": 112,
+              "VNEG_FP": 16,
+              "VMADD": 64,
+              "VMOV": 32,
+              "VAXPY": 48,
+              "VSUB": 32,
+              "VMULA": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMADD",
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[8]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[13]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[14]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[23]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[3].body[25]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_006.unsupported.json"
+          },
+          {
+            "vf_index": 7,
+            "camodel_cycles": 258,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 17,
+              "PLT": 16,
+              "VLDS": 32,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 17,
+              "PLT": 16,
+              "VLDS": 32,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[4]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[5]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[6]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[2].body[8]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_007.unsupported.json"
+          },
+          {
+            "vf_index": 8,
+            "camodel_cycles": 525,
+            "expected_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "PNOT",
+              "PXOR",
+              "VMADD",
+              "VNEG_FP",
+              "VTRC",
+              "VXOR"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[12]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[18]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[22]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[23]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[27]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[28]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[30]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_008.unsupported.json"
+          },
+          {
+            "vf_index": 9,
+            "camodel_cycles": 378,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 80,
+              "VSUB": 64,
+              "VMUL": 16,
+              "VDUP": 48,
+              "VDIV": 48,
+              "VADD": 16,
+              "VCMPS_GT": 32,
+              "VCMPS_LT": 16,
+              "VSEL": 48,
+              "VMULS": 16,
+              "VADDS": 16,
+              "VABS": 16,
+              "VSTS": 32
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 80,
+              "VSUB": 64,
+              "VMUL": 16,
+              "VDUP": 48,
+              "VDIV": 48,
+              "VADD": 16,
+              "VCMPS_GT": 32,
+              "VCMPS_LT": 16,
+              "VSEL": 48,
+              "VMULS": 16,
+              "VADDS": 16,
+              "VABS": 16,
+              "VSTS": 32
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_009.json"
+          }
+        ],
+        "status": "unsupported",
+        "reason": "缺少完整指令语义合同：PNOT, PXOR, VMADD, VMULA, VNEG_FP, VTRC, VXOR"
+      },
+      {
+        "case": "adamw",
+        "title": "AdamW V2 AMSGrad",
+        "cce_source_sha256": "b46190e4bd7cf648d4fad92b6f3b4c109ced12af0a3ac13756f7a9945b63a64b",
+        "camodel_vf_cycles": [
+          69,
+          124,
+          180,
+          249,
+          533,
+          156,
+          180,
+          254,
+          524,
+          447
+        ],
+        "camodel_vf_cycles_sum": 2716,
+        "vfsim_cycles": null,
+        "prediction_accuracy_percent": null,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 69,
+            "expected_counts": {
+              "VLDS": 1,
+              "PLT": 16,
+              "VADDS": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "VLDS": 1,
+              "PLT": 16,
+              "VADDS": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          },
+          {
+            "vf_index": 1,
+            "camodel_cycles": 124,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "VBR": 5,
+              "VABS": 1,
+              "VCMPS_LT": 1,
+              "VSEL": 1,
+              "VSUB": 2,
+              "VAND": 1,
+              "VCVT_S32_TO_F32": 1,
+              "VAXPY": 1,
+              "VADDS": 2,
+              "VDIV": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "VBR": 5,
+              "VABS": 1,
+              "VCMPS_LT": 1,
+              "VSEL": 1,
+              "VSUB": 2,
+              "VAND": 1,
+              "VCVT_S32_TO_F32": 1,
+              "VAXPY": 1,
+              "VADDS": 2,
+              "VDIV": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_001.json"
+          },
+          {
+            "vf_index": 2,
+            "camodel_cycles": 180,
+            "expected_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VLDS": 3,
+              "VMUL": 4,
+              "VMULS": 3,
+              "VADD": 7,
+              "VNEG_FP": 1,
+              "VMADD": 4,
+              "VAXPY": 3,
+              "VMOV": 1,
+              "VSUB": 2,
+              "VMULA": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VLDS": 3,
+              "VMUL": 4,
+              "VMULS": 3,
+              "VADD": 7,
+              "VNEG_FP": 1,
+              "VMADD": 4,
+              "VAXPY": 3,
+              "VMOV": 1,
+              "VSUB": 2,
+              "VMULA": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMADD",
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[10]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[11]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[15]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[16]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[25]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[27]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_002.unsupported.json"
+          },
+          {
+            "vf_index": 3,
+            "camodel_cycles": 249,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VDUP": 16,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VDUP": 16,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[5]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[6]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[9]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_003.unsupported.json"
+          },
+          {
+            "vf_index": 4,
+            "camodel_cycles": 533,
+            "expected_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "PNOT",
+              "PXOR",
+              "VMADD",
+              "VNEG_FP",
+              "VTRC",
+              "VXOR"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[12]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[18]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[22]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[23]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[27]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[28]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[30]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_004.unsupported.json"
+          },
+          {
+            "vf_index": 5,
+            "camodel_cycles": 156,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "VBR": 5,
+              "VABS": 1,
+              "VCMPS_LT": 1,
+              "VSEL": 1,
+              "VSUB": 2,
+              "VAND": 1,
+              "VCVT_S32_TO_F32": 1,
+              "VAXPY": 1,
+              "VADDS": 2,
+              "VDIV": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "VBR": 5,
+              "VABS": 1,
+              "VCMPS_LT": 1,
+              "VSEL": 1,
+              "VSUB": 2,
+              "VAND": 1,
+              "VCVT_S32_TO_F32": 1,
+              "VAXPY": 1,
+              "VADDS": 2,
+              "VDIV": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_005.json"
+          },
+          {
+            "vf_index": 6,
+            "camodel_cycles": 180,
+            "expected_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VLDS": 3,
+              "VMUL": 4,
+              "VMULS": 3,
+              "VADD": 7,
+              "VNEG_FP": 1,
+              "VMADD": 4,
+              "VAXPY": 3,
+              "VMOV": 1,
+              "VSUB": 2,
+              "VMULA": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VLDS": 3,
+              "VMUL": 4,
+              "VMULS": 3,
+              "VADD": 7,
+              "VNEG_FP": 1,
+              "VMADD": 4,
+              "VAXPY": 3,
+              "VMOV": 1,
+              "VSUB": 2,
+              "VMULA": 1,
+              "PLT": 16,
+              "VSTS": 48
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMADD",
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[10]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[11]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[15]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[16]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[25]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[27]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_006.unsupported.json"
+          },
+          {
+            "vf_index": 7,
+            "camodel_cycles": 254,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VDUP": 16,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 48,
+              "VMUL": 16,
+              "VNEG_FP": 16,
+              "VMULA": 48,
+              "VEXP": 16,
+              "VCMPS_GE": 32,
+              "VDUP": 16,
+              "VCMPS_LT": 16,
+              "POR": 16,
+              "VSEL": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMULA",
+              "VNEG_FP"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[5]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[6]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[0].body[9]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_007.unsupported.json"
+          },
+          {
+            "vf_index": 8,
+            "camodel_cycles": 524,
+            "expected_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "VBR": 3,
+              "PSET_B32": 1,
+              "VDUP": 65,
+              "PLT": 16,
+              "VLDS": 32,
+              "VCMPS_EQ": 128,
+              "POR": 64,
+              "PNOT": 16,
+              "VCMP_NE": 48,
+              "PXOR": 32,
+              "VAND": 32,
+              "VCMPS_LT": 32,
+              "VXOR": 16,
+              "VSEL": 80,
+              "VMULS": 16,
+              "VTRC": 32,
+              "VMADD": 16,
+              "VNEG_FP": 16,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "PNOT",
+              "PXOR",
+              "VMADD",
+              "VNEG_FP",
+              "VTRC",
+              "VXOR"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOV": 1
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[7]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[12]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[18]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[22]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[23]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[27]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[28]"
+                }
+              },
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[5].body[30]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_008.unsupported.json"
+          },
+          {
+            "vf_index": 9,
+            "camodel_cycles": 447,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 112,
+              "VMULS": 96,
+              "VSUB": 80,
+              "VMUL": 48,
+              "VMAX": 16,
+              "VDUP": 32,
+              "VSQRT": 32,
+              "VDIV": 48,
+              "VADDS": 16,
+              "VADD": 16,
+              "VSTS": 64
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 112,
+              "VMULS": 96,
+              "VSUB": 80,
+              "VMUL": 48,
+              "VMAX": 16,
+              "VDUP": 32,
+              "VSQRT": 32,
+              "VDIV": 48,
+              "VADDS": 16,
+              "VADD": 16,
+              "VSTS": 64
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_009.json"
+          }
+        ],
+        "status": "unsupported",
+        "reason": "缺少完整指令语义合同：PNOT, PXOR, VMADD, VMULA, VNEG_FP, VTRC, VXOR"
+      },
+      {
+        "case": "syncbn",
+        "title": "Sync BatchNorm Backward Elemt",
+        "cce_source_sha256": "7c505284b65bbc530d653f46c8b0719e9ede118c66216bddbdeea9d87ea82f64",
+        "camodel_vf_cycles": [
+          164
+        ],
+        "camodel_vf_cycles_sum": 164,
+        "vfsim_cycles": 152,
+        "prediction_accuracy_percent": 92.6829268292683,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 164,
+            "expected_counts": {
+              "PLT": 16,
+              "VLDS": 112,
+              "VSUB": 48,
+              "VMUL": 80,
+              "VSTS": 16
+            },
+            "json_counts": {
+              "PLT": 16,
+              "VLDS": 112,
+              "VSUB": 48,
+              "VMUL": 80,
+              "VSTS": 16
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 152,
+            "camodel_cycles": 164
+          }
+        ],
+        "timing_warning_count": 7,
+        "timing_warning_kinds": [
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "deepnorm",
+        "title": "DeepNorm Grad",
+        "cce_source_sha256": "2547d1552578552b3e108f7a3cc097905eb7121e4d58438b3d50cffddb0f6130",
+        "camodel_vf_cycles": [
+          177
+        ],
+        "camodel_vf_cycles_sum": 177,
+        "vfsim_cycles": 173,
+        "prediction_accuracy_percent": 97.74011299435028,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 177,
+            "expected_counts": {
+              "MEMBAR": 1,
+              "VLDS": 68,
+              "PLT": 16,
+              "VMUL": 48,
+              "VMULS": 32,
+              "VADD": 48,
+              "VSUB": 16,
+              "VSTS": 32
+            },
+            "json_counts": {
+              "MEMBAR": 1,
+              "VLDS": 68,
+              "PLT": 16,
+              "VMUL": 48,
+              "VMULS": 32,
+              "VADD": 48,
+              "VSUB": 16,
+              "VSTS": 32
+            },
+            "count_match": true,
+            "missing_semantics": [],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 2,
+              "RV_SMIN": 16,
+              "RV_SSUB": 16
+            },
+            "diagnostics": [],
+            "status": "ready",
+            "json_file": "vf_000.json"
+          }
+        ],
+        "status": "predicted",
+        "vf_predictions": [
+          {
+            "vf_index": 0,
+            "vfsim_cycles": 173,
+            "camodel_cycles": 177
+          }
+        ],
+        "timing_warning_count": 14,
+        "timing_warning_kinds": [
+          "missing_forwarding_pair",
+          "missing_ii_pair"
+        ]
+      },
+      {
+        "case": "bn3d",
+        "title": "BN3D Training Reduce",
+        "cce_source_sha256": "925866da055b517d87811bfa8680d427e69d50c3d6fbdd560f266681c0cc6a17",
+        "camodel_vf_cycles": [
+          423
+        ],
+        "camodel_vf_cycles_sum": 423,
+        "vfsim_cycles": null,
+        "prediction_accuracy_percent": null,
+        "input_path": "canonical_json_compiled_replay",
+        "vf_exports": [
+          {
+            "vf_index": 0,
+            "camodel_cycles": 423,
+            "expected_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "VLDS": 20,
+              "VMOV": 32,
+              "PLT": 16,
+              "VSHLS": 16,
+              "VMULA": 16,
+              "VADD": 48,
+              "VSUB": 96,
+              "VCMPS_LE": 32,
+              "VSEL": 64,
+              "VCMPS_GE": 32,
+              "VADDS": 32,
+              "VSTS": 4
+            },
+            "json_counts": {
+              "PSET_B32": 1,
+              "VDUP": 1,
+              "VLDS": 20,
+              "VMOV": 32,
+              "PLT": 16,
+              "VSHLS": 16,
+              "VMULA": 16,
+              "VADD": 48,
+              "VSUB": 96,
+              "VCMPS_LE": 32,
+              "VSEL": 64,
+              "VCMPS_GE": 32,
+              "VADDS": 32,
+              "VSTS": 4
+            },
+            "count_match": true,
+            "missing_semantics": [
+              "VMULA"
+            ],
+            "unmodeled_scalar_opcounts": {
+              "RV_SMOVI": 1,
+              "RV_SMOV": 16
+            },
+            "diagnostics": [
+              {
+                "code": "unsupported_predicate_semantics",
+                "message": "Predicate instructions require a complete Catalog signature",
+                "context": {
+                  "path": "context[6].body[2].body[3]"
+                }
+              }
+            ],
+            "status": "unsupported",
+            "json_file": "vf_000.unsupported.json"
+          }
+        ],
+        "status": "unsupported",
+        "reason": "缺少完整指令语义合同：VMULA"
+      }
+    ]
+  },
+  "config_sha256": {
+    "uarch_override_schema.json": "adba6f7d92e3ae19e440ec5160363fb676658594b88a2f61599cdeb43ed79854",
+    "instruction_catalog.json": "5f15d2269e6e799cbefb7ff223e616fa0fccf862b8b6dbefb5763d4e9c98d7b8",
+    "forwarding.json": "acb1a207bc1397f59b0de5950239e8981675aea29f6ee604f6083c0ef36d770d",
+    "isa.json": "c3c10130cd03831eda2a0528d9872e7d82b1838df7f74a5438aa73f2d1728892",
+    "InitiationInterval.json": "148b49b3da7420aed415d0d832a8f2fbaf25360107212988cb4f461f83d18464",
+    "uarch.json": "33533160a2dbc1eeaf89884f3587bf1c0c12f7b1fb2427b5bcbe23ab67c45f62"
+  },
+  "scripts_sha256": {
+    "spill_ab_scan.py": "c0e5d0bb82607d0458c066c139f67bc96674b0a72906b89c41949b3d5c92cb31",
+    "spill_ab_worker.py": "84205d122a15c5d929cb0ddfb761a5c1b632cb32ec343f4cc1231f60deb05bb3",
+    "spill_replay_listing.py": "64ca8489af286e4d69ddac5b721b1758f118914ad8a0b60da87af672521276be",
+    "canonical_replay.py": "d33b6e843785991a94a86e30e5ab76e9ae686363fe01ec3c64026928e67de86f"
+  }
+}

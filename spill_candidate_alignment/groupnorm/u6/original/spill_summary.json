@@ -1,0 +1,158 @@
+{
+  "case": "groupnorm",
+  "unroll": 6,
+  "method": "manual",
+  "selected_loop": "k",
+  "source_sha256": "319affe7c231d31adb1dada0f3d4d0017d6589afbe4829fe30d5bc24c3e06d9c",
+  "baseline_source_sha256": "93f9e2b10364688eca209f36f864bb28c311bd21f5737f88cca9df3b881ecfbe",
+  "metrics": {
+    "vf_cycles": [
+      194
+    ],
+    "total_vf_cycles": 194,
+    "dynamic_rv_opcounts": {
+      "RV_PLT": 16,
+      "RV_SEND": 1,
+      "RV_SMOVI": 9,
+      "RV_SMOVK": 2,
+      "RV_VADD": 16,
+      "RV_VADDS": 16,
+      "RV_VDIV": 16,
+      "RV_VEXP": 16,
+      "RV_VLD": 48,
+      "RV_VLDI": 2,
+      "RV_VLOOPv2": 2,
+      "RV_VMUL": 32,
+      "RV_VMULS": 16,
+      "RV_VST": 16,
+      "RV_VSUB": 16
+    }
+  },
+  "instruction_audit": {
+    "vf_count": 1,
+    "static_vf_words": 109,
+    "vector_loads": 50,
+    "vector_stores": 16,
+    "predicate_loads": 0,
+    "predicate_stores": 0,
+    "scalar_spill_loads": 0,
+    "scalar_spill_stores": 0,
+    "membars": 0,
+    "static_load_pc_counts": {
+      "BRC_B32": 2,
+      "NORAML": 21
+    },
+    "loops": [
+      {
+        "pc": "0x13b32218",
+        "detail": "Sn[6]=0x2, Sn2[7]=0x4, instr_num : 78, layer: 0001, last: 0,"
+      },
+      {
+        "pc": "0x13b32378",
+        "detail": "Sn[7]=0x4, Sn2[8]=0x3100, instr_num : 13, layer: 0001, last: 1,"
+      }
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "bitwise_matches_ascendc": true,
+    "bitwise_matches_u1": true,
+    "formula": {
+      "ok": true,
+      "max_abs_error": 3.256802241224932e-07,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    "guard_ok": true
+  },
+  "spill": {
+    "detected": false,
+    "address_audit_complete": true,
+    "vector_spill_detected": false,
+    "paired_vector_byte_addresses": [],
+    "spill_vector_loads": 0,
+    "spill_vector_stores": 0,
+    "other_extra_vector_loads": 0,
+    "extra_vector_loads": 0,
+    "extra_vector_stores": 0,
+    "added_accesses": [],
+    "removed_accesses": [],
+    "vector_evidence": [],
+    "predicate_evidence": []
+  },
+  "static_load_expansion_ratio": 7.0,
+  "unroll_effective": true,
+  "elapsed_seconds": 35.30632581800455,
+  "camodel_speedup_percent": -2.645502645502651,
+  "prediction": {
+    "case": "u6",
+    "title": "groupnorm U6",
+    "cce_source_sha256": "319affe7c231d31adb1dada0f3d4d0017d6589afbe4829fe30d5bc24c3e06d9c",
+    "camodel_vf_cycles": [
+      194
+    ],
+    "camodel_vf_cycles_sum": 194,
+    "vfsim_cycles": 178,
+    "prediction_accuracy_percent": 91.75257731958763,
+    "input_path": "canonical_json_compiled_replay",
+    "vf_exports": [
+      {
+        "vf_index": 0,
+        "camodel_cycles": 194,
+        "expected_counts": {
+          "VLDS": 50,
+          "PLT": 16,
+          "VSUB": 16,
+          "VMUL": 32,
+          "VADD": 16,
+          "VMULS": 16,
+          "VEXP": 16,
+          "VADDS": 16,
+          "VDIV": 16,
+          "VSTS": 16
+        },
+        "json_counts": {
+          "VLDS": 50,
+          "PLT": 16,
+          "VSUB": 16,
+          "VMUL": 32,
+          "VADD": 16,
+          "VMULS": 16,
+          "VEXP": 16,
+          "VADDS": 16,
+          "VDIV": 16,
+          "VSTS": 16
+        },
+        "count_match": true,
+        "missing_semantics": [],
+        "unmodeled_scalar_opcounts": {
+          "RV_SMOVI": 9,
+          "RV_SMOVK": 2
+        },
+        "diagnostics": [],
+        "status": "ready",
+        "json_file": "vf_000.json"
+      }
+    ],
+    "status": "predicted",
+    "vf_predictions": [
+      {
+        "vf_index": 0,
+        "vfsim_cycles": 178,
+        "camodel_cycles": 194
+      }
+    ],
+    "timing_warning_count": 16,
+    "timing_warning_kinds": [
+      "missing_forwarding_pair",
+      "missing_ii_pair"
+    ]
+  },
+  "status": "passed",
+  "compute_issue": {
+    "compute_events": 144,
+    "average_compute_ipc": 0.7422680412371134,
+    "dual_issue_cycles": 55,
+    "peak_compute_issue_per_cycle": 2
+  }
+}

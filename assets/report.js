@@ -9,6 +9,7 @@
   const percent = value => value == null ? '<span class="dash">—</span>' : `${value.toFixed(2)}%`;
   const escape = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const defaultVariant = item => item.variants.find(v => v.id === item.default);
+  const ccePath = variant => variant.hardware_equivalent?.path || variant.sources[0].path;
   let chart;
   let selected;
   let overlay = false;
@@ -35,12 +36,27 @@
           y:{beginAtZero:true,grid:{color:'#e8edf0'},suggestedMax:bar ? undefined : 2,title:{display:true,text:bar ? 'VF 周期' : '计算完成 IPC'}}}}});
   }
 
+  function widenIpc(samples, sourceWindow, targetWindow) {
+    if (targetWindow === sourceWindow) return samples;
+    if (targetWindow < sourceWindow || targetWindow % sourceWindow !== 0) {
+      throw new Error('IPC 窗口必须是原统计窗口的整数倍');
+    }
+    // 将互不重叠的原窗口相加，得到更宽的窗口，不叠加二次移动平均。
+    const sums = new Array(sourceWindow).fill(0);
+    const windows = targetWindow / sourceWindow;
+    return samples.map((value, cycle) => {
+      const slot = cycle % sourceWindow;
+      sums[slot] += value - (cycle >= targetWindow ? samples[cycle - targetWindow] : 0);
+      return Math.round(sums[slot] / windows * 10000) / 10000;
+    });
+  }
+
   function overview() {
     title.textContent = 'Membar 实验结果';
     const variants = data.cases.flatMap(c=>c.variants);
     const rows = data.cases.map(c=>{
       const v=defaultVariant(c);
-      return `<tr><td><a href="#${c.id}">${escape(c.title)}</a><span class="subtle">${escape(v.label)}</span></td><td class="num">${number(v.camodel)}</td><td class="num">${number(v.global_cycles)}</td><td class="num">${number(v.local_cycles)}</td><td class="num">${percent(v.accuracy)}</td><td class="num">${v.speedup ? v.speedup.toFixed(2)+'x' : '—'}</td></tr>`;
+      return `<tr><td><a href="#${c.id}">${escape(c.title)}</a><a class="subtle" href="${escape(ccePath(v))}" target="_blank" rel="noopener" title="打开对应 CCE">${escape(v.label)}</a></td><td class="num">${number(v.camodel)}</td><td class="num">${number(v.global_cycles)}</td><td class="num">${number(v.local_cycles)}</td><td class="num">${percent(v.accuracy)}</td><td class="num">${v.speedup ? v.speedup.toFixed(2)+'x' : '—'}</td></tr>`;
     }).join('');
     view.innerHTML = `<p class="lede intro">同步空泡、架构寄存器 spill，以及通过循环切分恢复性能的 A5 实验。</p>
       <p class="shape">CAModel 为实际硬件模型执行结果；局部依赖周期为保留数据约束后的实验预测。</p>
@@ -55,7 +71,7 @@
   }
 
   function tableRow(v, columns) {
-    return `<tr class="${v.id===selected.id ? 'selected' : ''}" data-variant="${v.id}"><td><button class="table-link" data-select="${v.id}">${escape(v.label)}</button></td><td class="num">${number(v.camodel)}</td><td class="num">${number(v.source_cycles)}</td><td class="num">${number(v.global_cycles)}</td><td class="num">${number(v.local_cycles)}</td><td class="num">${percent(v.accuracy)}</td><td class="num">${v.speedup ? v.speedup.toFixed(2)+'x' : '—'}</td><td class="num">${v.vector_store}/${v.vector_load}</td><td class="num">${v.predicate_store}/${v.predicate_load}</td><td class="num">${v.membars}</td>${columns.map(c=>`<td class="num">${number(v[c.key])}</td>`).join('')}</tr>`;
+    return `<tr class="${v.id===selected.id ? 'selected' : ''}" data-variant="${v.id}"><td><a class="table-link" href="${escape(ccePath(v))}" target="_blank" rel="noopener" title="打开对应 CCE">${escape(v.label)}</a></td><td class="num">${number(v.camodel)}</td><td class="num">${number(v.source_cycles)}</td><td class="num">${number(v.global_cycles)}</td><td class="num">${number(v.local_cycles)}</td><td class="num">${percent(v.accuracy)}</td><td class="num">${v.speedup ? v.speedup.toFixed(2)+'x' : '—'}</td><td class="num">${v.vector_store}/${v.vector_load}</td><td class="num">${v.predicate_store}/${v.predicate_load}</td><td class="num">${v.membars}</td>${columns.map(c=>`<td class="num">${number(v[c.key])}</td>`).join('')}</tr>`;
   }
 
   function variantTable(item) {
@@ -80,19 +96,18 @@
     selected=variant;
     title.textContent=item.title;
     const v=selected;
-    const hardwareTiming=v.hardware_equivalent?.prediction_used ? '表中预测使用此等效指令流，已核对动态指令、寄存器依赖和访存地址。' : '表中预测时间沿用原实验的预测输入，新归档的等效代码未重新编译或重新预测。';
+    const hardwareTiming=v.hardware_equivalent?.prediction_note || (v.hardware_equivalent?.prediction_used ? '表中预测使用此等效指令流，已核对动态指令、寄存器依赖和访存地址。' : '表中预测时间沿用原实验的预测输入，新归档的等效代码未重新编译或重新预测。');
     const hardware=v.hardware_equivalent ? `<section class="hardware-code"><h2>实际底层硬件执行指令流 · 等效 CCE</h2><p><a class="hardware-file" href="${v.hardware_equivalent.path}">hardware_equivalent.cce</a><a href="${v.hardware_equivalent.mapping}">PC 与指令数量核对</a></p><p>这份代码对应本版本 CAModel 日志中实际执行的 VF 计算、UB 读写及同步序列，已补入溢出后编译器插入的 VLDS/VSTS、${v.predicate_store ? 'PLDS/PSTS、' : ''}mem_bar，保留指令顺序、寄存器复用和循环次数。</p><p class="muted">标量地址计算效果已折入指针及立即数；原始标量指令仍见日志。${escape(hardwareTiming)}</p></section>` : '';
     view.innerHTML=`<p class="lede">${escape(item.headline)}</p><p class="shape">${escape(item.shape)}</p>
-      <div class="stats"><div class="stat"><label>CAModel 实测</label><strong>${number(v.camodel)}</strong><small>${escape(v.label)}</small></div><div class="stat"><label>VfSim 全局同步</label><strong>${number(v.global_cycles)}</strong><small>${v.accuracy==null ? '该源码预测缺少编译器 spill' : '精度 '+percent(v.accuracy)}</small></div><div class="stat green"><label>VfSim 局部依赖</label><strong>${number(v.local_cycles)}</strong><small>${v.speedup ? '模型内加速 '+v.speedup.toFixed(2)+'x' : '此版本没有同流局部 A/B 记录'}</small></div><div class="stat"><label>数值校验</label><strong>通过</strong><small>原实验 golden / 独立核查</small></div></div>
+      <div class="stats"><div class="stat"><label>CAModel 实测</label><strong>${number(v.camodel)}</strong><small>${escape(v.label)}</small></div><div class="stat"><label>VfSim 全局同步</label><strong>${number(v.global_cycles)}</strong><small>${v.accuracy==null ? (v.prediction_status_note ? escape(v.prediction_status_note) : v.source_cycles==null ? '未运行 VfSim 全局预测' : '该源码预测缺少编译器 spill') : '精度 '+percent(v.accuracy)}</small></div><div class="stat green"><label>VfSim 局部依赖</label><strong>${number(v.local_cycles)}</strong><small>${v.speedup ? '模型内加速 '+v.speedup.toFixed(2)+'x' : '此版本没有同流局部 A/B 记录'}</small></div><div class="stat"><label>数值校验</label><strong>通过</strong><small>原实验 golden / 独立核查</small></div></div>
       ${hardware}${comparisonSection(item)}${variantTable(item)}
       <section class="section"><div class="section-head"><h2>计算完成 IPC</h2><div class="toolbar"><label for="variant-select" class="muted">版本</label><select id="variant-select">${item.variants.map(x=>`<option value="${x.id}" ${x.id===v.id ? 'selected' : ''}>${escape(x.label)}</option>`).join('')}</select></div></div>
       <div class="section-head">${item.overlay ? `<div class="mode-picker"><label><input type="radio" name="plot-mode" value="single" ${!overlay?'checked':''}>本版本模式对比</label><label><input type="radio" name="plot-mode" value="overlay" ${overlay?'checked':''}>${escape(item.overlay_label||'循环切分实测对比')}</label></div>` : '<span></span>'}<button class="text-link" id="export-plot">导出图表 PNG</button></div>
-      <div class="plot-surface"><div class="plot"><canvas id="ipc-chart" role="img" aria-label="${escape(item.title)} 计算完成 IPC"></canvas></div><p class="plot-caption">${escape(data.ipc_method)} 共用时间标尺保留不同阶段间的空泡。</p></div></section>
+      <div class="plot-surface"><div class="plot"><canvas id="ipc-chart" role="img" aria-label="${escape(item.title)} 计算完成 IPC"></canvas></div><p class="plot-caption">${escape(item.plot_ipc_method || data.ipc_method)} 共用时间标尺保留不同阶段间的空泡。</p></div></section>
       <div class="chips"><span>Vector spill：<strong>${v.vector_store} 写 / ${v.vector_load} 读</strong></span><span>Predicate spill：<strong>${v.predicate_store} 写 / ${v.predicate_load} 读</strong></span><span>动态 Membar：<strong>${v.membars}</strong></span></div>
       <div class="note"><p>${escape(v.note)}</p>${item.notes.map(n=>`<p>${escape(n)}</p>`).join('')}</div>
       <section class="section"><h2>源码与 CAModel 日志</h2><div class="files"><div><h3>CCE 与结果</h3><ul class="file-list">${v.sources.map(s=>`<li><a href="${s.path}">${escape(s.label)} · ${escape(s.path.split('/').pop())}</a></li>`).join('')}<li><a href="${item.id}/${v.id}/figures/ipc.png">本版本 IPC 图 · PNG</a></li>${overlayFigureLink(item)}</ul><a href="${item.id}/${v.id}/result.json">本版本元数据与 IPC 数据</a></div><div><h3>原始日志</h3><ul class="file-list">${v.logs.map(p=>`<li><a href="${p}">${escape(p.split('/').pop())}</a></li>`).join('')}</ul><details><summary>校验与实验记录</summary><ul class="file-list">${v.evidence.map(p=>`<li><a href="${p}">${escape(p.split('/').pop())}</a></li>`).join('')}</ul></details></div></div></section>`;
     updateCasePlot(item);
-    view.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',()=>renderCase(item,item.variants.find(x=>x.id===b.dataset.select))));
     document.getElementById('variant-select').addEventListener('change',e=>renderCase(item,item.variants.find(x=>x.id===e.target.value)));
     view.querySelectorAll('[name="plot-mode"]').forEach(r=>r.addEventListener('change',e=>{overlay=e.target.value==='overlay';updateCasePlot(item);}));
     bindExport(`${item.id}_${v.id}`);
@@ -104,6 +119,9 @@
       const colors=['#344251','#2376b8','#18846d'];
       const variants=item.overlay_variant_ids ? item.overlay_variant_ids.map(id=>item.variants.find(v=>v.id===id)) : item.variants;
       series=variants.map((v,i)=>({...v.series.find(s=>s.key==='camodel'),label:v.label,color:colors[i%colors.length]}));
+    }
+    if (item.plot_window) {
+      series=series.map(s=>({...s,samples:widenIpc(s.samples,data.window,item.plot_window)}));
     }
     draw(series);
   }
@@ -118,7 +136,11 @@
   }
 
   function route() {
-    const id=location.hash.slice(1)||'overview';
+    let id=location.hash.slice(1)||'overview';
+    if (id==='mhc_sinkhorn_36') {
+      id='mhc_sinkhorn';
+      history.replaceState(null,'','#'+id);
+    }
     const item=data.cases.find(c=>c.id===id);
     nav.querySelectorAll('a').forEach(a=>{const active=a.dataset.case===(item ? id : 'overview');a.classList.toggle('active',active);active ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current');});
     overlay=!!item?.overlay && item?.overlay_default!==false;

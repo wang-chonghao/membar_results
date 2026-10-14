@@ -1,0 +1,70 @@
+/**
+ * Copyright (c) 2025 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+namespace AscendC {
+namespace Reg = MicroAPI;
+}
+using namespace AscendC;
+using namespace AscendC::MicroAPI;
+__aicore__ inline void candidate_vf(__ubuf__ float* dy, __ubuf__ float* x, __ubuf__ float* gamma,
+                                    __ubuf__ float* sum1, __ubuf__ float* sum2,
+                                    __ubuf__ float* rstd, __ubuf__ float* dst) {
+    uint16_t outerLoopTimes = 48;
+    uint32_t colSize = 64, outerLoopStride = 64, innerLoopStride = 64;
+    float floatN = 64.0f, reciprocalN = 0.015625f;
+    __VEC_SCOPE__ {
+
+        uint32_t count;
+
+        RegTensor<float> xReg, dyReg, dxReg;
+        RegTensor<float> sum1Reg, sum2Reg, rstdReg;
+        RegTensor<float> gammaReg;
+        RegTensor<float> Reg0, Reg1, Reg2, Reg3, Reg4, Reg5;
+        MaskReg pMask;
+        count = static_cast<uint32_t>(colSize);
+        pMask = UpdateMask<float>(count);
+#pragma unroll 1
+        for (uint16_t i = 0; i < outerLoopTimes; ++i) {
+            DataCopy<float, LoadDist::DIST_BRC_B32>(sum1Reg, (__local_mem__ float*)sum1 + i);
+            DataCopy<float, LoadDist::DIST_BRC_B32>(sum2Reg, (__local_mem__ float*)sum2 + i);
+            DataCopy<float, LoadDist::DIST_BRC_B32>(rstdReg, (__local_mem__ float*)rstd + i);
+            DataCopy(dyReg, (__local_mem__ float*)dy + i * outerLoopStride + 0 * innerLoopStride);
+            DataCopy(xReg, (__local_mem__ float*)x + i * outerLoopStride + 0 * innerLoopStride);
+            DataCopy(gammaReg, (__local_mem__ float*)gamma + 0 * innerLoopStride);
+            Mul<float, MaskMergeMode::ZEROING>(Reg0, dyReg, gammaReg, pMask);
+            Muls<float, float, MaskMergeMode::ZEROING>(Reg1, Reg0, floatN, pMask);
+            Sub<float, MaskMergeMode::ZEROING>(Reg2, Reg1, sum1Reg, pMask);
+            Mul<float, MaskMergeMode::ZEROING>(Reg3, xReg, sum2Reg, pMask);
+            Sub<float, MaskMergeMode::ZEROING>(Reg4, Reg2, Reg3, pMask);
+            Muls<float, float, MaskMergeMode::ZEROING>(Reg5, Reg4, reciprocalN, pMask);
+            Mul<float, MaskMergeMode::ZEROING>(dxReg, Reg5, rstdReg, pMask);
+            DataCopy(dst + (i * outerLoopStride), dxReg, pMask);
+        }
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ float* dy = (__ubuf__ float*)get_imm(0);
+    __ubuf__ float* x = (__ubuf__ float*)get_imm(12288);
+    __ubuf__ float* gamma = (__ubuf__ float*)get_imm(24576);
+    __ubuf__ float* sum1 = (__ubuf__ float*)get_imm(24832);
+    __ubuf__ float* sum2 = (__ubuf__ float*)get_imm(25088);
+    __ubuf__ float* rstd = (__ubuf__ float*)get_imm(25344);
+    __ubuf__ float* dst = (__ubuf__ float*)get_imm(25600);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 25600, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(dy, x, gamma, sum1, sum2, rstd, dst);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)dst, 0, 1, 12288, 0, 0, 0);
+}
