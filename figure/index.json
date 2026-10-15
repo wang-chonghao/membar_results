@@ -1,0 +1,1485 @@
+{
+  "source": "metadata/spill_candidate_alignment.json",
+  "source_date": "2026-10-14",
+  "source_sha256": "a85ab3cb218d77a0f48c8098bd1361e5cbe4d355ff862346f8bcbfb13b0a4604",
+  "width": 2560,
+  "height": 1440,
+  "series": [
+    {
+      "key": "camodel",
+      "label": "原 CAModel"
+    },
+    {
+      "key": "global_cycles",
+      "label": "VfSim 全局"
+    },
+    {
+      "key": "local_cycles",
+      "label": "VfSim 局部"
+    },
+    {
+      "key": "software_cycles",
+      "label": "VfSim 软件优化全局 / 保留原版本"
+    }
+  ],
+  "groups": [
+    {
+      "case": "swiglu",
+      "title": "SwiGLU Group Grad",
+      "comparison_group": "fixed-swiglu",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "swiglu__fixed-swiglu",
+      "rows": [
+        {
+          "id": "swiglu-u1",
+          "label": "U1",
+          "camodel": 550,
+          "global_cycles": 540,
+          "local_cycles": 540,
+          "software_cycles": 540
+        },
+        {
+          "id": "swiglu-u4",
+          "label": "U4",
+          "camodel": 1337,
+          "global_cycles": 1330,
+          "local_cycles": 498,
+          "software_cycles": 431
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "swiglu__fixed-swiglu.png",
+          "sha256": "231849aad96de6039d3af8dfa5dd9809212b46e3f6cb03dd0e8a8285aadaf5eb"
+        },
+        "pdf": {
+          "path": "swiglu__fixed-swiglu.pdf",
+          "sha256": "6f09daec1e219d51ebc5d60c691de50d5095963510da477e5437ed058046213c"
+        }
+      }
+    },
+    {
+      "case": "focal",
+      "title": "Sigmoid Focal Loss Grad",
+      "comparison_group": "fixed-focal",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "focal__fixed-focal",
+      "rows": [
+        {
+          "id": "focal-u1",
+          "label": "U1",
+          "camodel": 391,
+          "global_cycles": 377,
+          "local_cycles": 377,
+          "software_cycles": 377
+        },
+        {
+          "id": "focal-u2",
+          "label": "U2",
+          "camodel": 1984,
+          "global_cycles": 2020,
+          "local_cycles": 377,
+          "software_cycles": 362
+        },
+        {
+          "id": "focal-u4",
+          "label": "U4",
+          "camodel": 2845,
+          "global_cycles": 2873,
+          "local_cycles": 390,
+          "software_cycles": 355
+        },
+        {
+          "id": "focal-u5",
+          "label": "U5",
+          "camodel": 4133,
+          "global_cycles": 4214,
+          "local_cycles": 415,
+          "software_cycles": 368
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "focal__fixed-focal.png",
+          "sha256": "553532ed5bc4dda64e8670039cc092e2d971c7c22345493718ba3781d5cdf738"
+        },
+        "pdf": {
+          "path": "focal__fixed-focal.pdf",
+          "sha256": "9049d003e37a443dab03550780b22cf391777c9327c5b0159617df4d1b582ca6"
+        }
+      }
+    },
+    {
+      "case": "swiglu_quant",
+      "title": "SwiGLU Backward Group Quant Dual Axis",
+      "comparison_group": "fixed-swiglu_quant",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "swiglu_quant__fixed-swiglu_quant",
+      "rows": [
+        {
+          "id": "swiglu_quant-u1",
+          "label": "U1",
+          "camodel": 500,
+          "global_cycles": 476,
+          "local_cycles": 476,
+          "software_cycles": 476
+        },
+        {
+          "id": "swiglu_quant-u2",
+          "label": "U2",
+          "camodel": 612,
+          "global_cycles": 518,
+          "local_cycles": 454,
+          "software_cycles": 430
+        },
+        {
+          "id": "swiglu_quant-u4",
+          "label": "U4",
+          "camodel": 1560,
+          "global_cycles": 1558,
+          "local_cycles": 449,
+          "software_cycles": 418
+        },
+        {
+          "id": "swiglu_quant-u5",
+          "label": "U5",
+          "camodel": 1790,
+          "global_cycles": 1825,
+          "local_cycles": 478,
+          "software_cycles": 437
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "swiglu_quant__fixed-swiglu_quant.png",
+          "sha256": "0b4d71d742fbd16b2a8ed459015722b16b99acbfc61765f536c23333f2c68bfe"
+        },
+        "pdf": {
+          "path": "swiglu_quant__fixed-swiglu_quant.pdf",
+          "sha256": "e95649463f08e148a09f26ef2aebde1b0c987edafc7bc83a5f18c3bc97b3c9cd"
+        }
+      }
+    },
+    {
+      "case": "bce",
+      "title": "BCEWithLogits V2",
+      "comparison_group": "fixed-bce",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "bce__fixed-bce",
+      "rows": [
+        {
+          "id": "bce-u1",
+          "label": "U1",
+          "camodel": 278,
+          "global_cycles": 265,
+          "local_cycles": 265,
+          "software_cycles": 265
+        },
+        {
+          "id": "bce-u5",
+          "label": "U5",
+          "camodel": 476,
+          "global_cycles": 457,
+          "local_cycles": 285,
+          "software_cycles": 263
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "bce__fixed-bce.png",
+          "sha256": "37fbe85e325f7a23b93a3373c5db7911808d46e265e63b331aa00cccf483b0df"
+        },
+        "pdf": {
+          "path": "bce__fixed-bce.pdf",
+          "sha256": "b1233f2ef957a7cfc186a245e2d90cad32f5de9cc5550c0fa6279f7493a50c11"
+        }
+      }
+    },
+    {
+      "case": "adam_decay",
+      "title": "AdamApplyOne With Decay",
+      "comparison_group": "fixed-adam_decay",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "adam_decay__fixed-adam_decay",
+      "rows": [
+        {
+          "id": "adam_decay-u1",
+          "label": "U1",
+          "camodel": 261,
+          "global_cycles": 250,
+          "local_cycles": 250,
+          "software_cycles": 250
+        },
+        {
+          "id": "adam_decay-u6",
+          "label": "U6",
+          "camodel": 643,
+          "global_cycles": 584,
+          "local_cycles": 272,
+          "software_cycles": 250
+        },
+        {
+          "id": "adam_decay-u7",
+          "label": "U7",
+          "camodel": 1476,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": 249
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "adam_decay__fixed-adam_decay.png",
+          "sha256": "2be874a06a738a7110d3d34633adc1a1ea611bdb16bdfbf27d5313f7d06bc05e"
+        },
+        "pdf": {
+          "path": "adam_decay__fixed-adam_decay.pdf",
+          "sha256": "80e4aec0cffbb86d5a7f7c66fae2586cf8da81e3ac30dcbe2817890f36506739"
+        }
+      }
+    },
+    {
+      "case": "groupnorm",
+      "title": "GroupNorm SiLU",
+      "comparison_group": "fixed-groupnorm",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "groupnorm__fixed-groupnorm",
+      "rows": [
+        {
+          "id": "groupnorm-u1",
+          "label": "U1",
+          "camodel": 189,
+          "global_cycles": 181,
+          "local_cycles": 181,
+          "software_cycles": 181
+        },
+        {
+          "id": "groupnorm-u8",
+          "label": "U8",
+          "camodel": 623,
+          "global_cycles": 599,
+          "local_cycles": 174,
+          "software_cycles": 177
+        },
+        {
+          "id": "groupnorm-u10",
+          "label": "U10",
+          "camodel": 846,
+          "global_cycles": 834,
+          "local_cycles": 204,
+          "software_cycles": 181
+        },
+        {
+          "id": "groupnorm-u11",
+          "label": "U11",
+          "camodel": 1139,
+          "global_cycles": 1133,
+          "local_cycles": 207,
+          "software_cycles": 180
+        },
+        {
+          "id": "groupnorm-u16",
+          "label": "U16",
+          "camodel": 2276,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": 177
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "groupnorm__fixed-groupnorm.png",
+          "sha256": "03826a52fa8184e65b5288a86071d215550aa1abf897ccc7ba459ca4d207c1ee"
+        },
+        "pdf": {
+          "path": "groupnorm__fixed-groupnorm.pdf",
+          "sha256": "a776acd342bfec17a780a205218e58a57b81efe705c0fe9f64f8d8b728e67fba"
+        }
+      }
+    },
+    {
+      "case": "logit",
+      "title": "Logit Grad",
+      "comparison_group": "fixed-logit",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "logit__fixed-logit",
+      "rows": [
+        {
+          "id": "logit-u1",
+          "label": "U1",
+          "camodel": 226,
+          "global_cycles": 240,
+          "local_cycles": 240,
+          "software_cycles": 240
+        },
+        {
+          "id": "logit-u3",
+          "label": "U3",
+          "camodel": 714,
+          "global_cycles": 659,
+          "local_cycles": 235,
+          "software_cycles": 235
+        },
+        {
+          "id": "logit-u4",
+          "label": "U4",
+          "camodel": 2025,
+          "global_cycles": 2037,
+          "local_cycles": 393,
+          "software_cycles": 228
+        },
+        {
+          "id": "logit-u5",
+          "label": "U5",
+          "camodel": 2715,
+          "global_cycles": 2756,
+          "local_cycles": 323,
+          "software_cycles": 235
+        },
+        {
+          "id": "logit-u6",
+          "label": "U6",
+          "camodel": 2861,
+          "global_cycles": 2906,
+          "local_cycles": 288,
+          "software_cycles": 235
+        },
+        {
+          "id": "logit-u8",
+          "label": "U8",
+          "camodel": 5288,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": 234
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "logit__fixed-logit.png",
+          "sha256": "fa3b136c40b7fc9822a5f91005c47512fd31897f20800ecebaf80ea333bcb426"
+        },
+        "pdf": {
+          "path": "logit__fixed-logit.pdf",
+          "sha256": "f5d21bfafb5c4bef2f172e14ab2c5c8c703a82d4729a6e55e7c1b41f6fa52e38"
+        }
+      }
+    },
+    {
+      "case": "lstm",
+      "title": "LSTM Block Cell Grad",
+      "comparison_group": "fixed-lstm",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "lstm__fixed-lstm",
+      "rows": [
+        {
+          "id": "lstm-u1",
+          "label": "U1",
+          "camodel": 184,
+          "global_cycles": 189,
+          "local_cycles": 189,
+          "software_cycles": 189
+        },
+        {
+          "id": "lstm-u6",
+          "label": "U6",
+          "camodel": 531,
+          "global_cycles": 495,
+          "local_cycles": 185,
+          "software_cycles": 187
+        },
+        {
+          "id": "lstm-u7",
+          "label": "U7",
+          "camodel": 950,
+          "global_cycles": 929,
+          "local_cycles": 186,
+          "software_cycles": 184
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "lstm__fixed-lstm.png",
+          "sha256": "634fe429bc0f4ab2d072ecb79784befa84a85c7ca26a6caa01e6960279aa4609"
+        },
+        "pdf": {
+          "path": "lstm__fixed-lstm.pdf",
+          "sha256": "5dedc5cbe1cd98884d28ec7cd7ed11eccd293c8c0695af98877728276072b654"
+        }
+      }
+    },
+    {
+      "case": "syncbn",
+      "title": "Sync BatchNorm Backward Elemt",
+      "comparison_group": "fixed-syncbn",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "syncbn__fixed-syncbn",
+      "rows": [
+        {
+          "id": "syncbn-u1",
+          "label": "U1",
+          "camodel": 164,
+          "global_cycles": 152,
+          "local_cycles": 152,
+          "software_cycles": 152
+        },
+        {
+          "id": "syncbn-u5",
+          "label": "U5",
+          "camodel": 451,
+          "global_cycles": 429,
+          "local_cycles": 159,
+          "software_cycles": 151
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "syncbn__fixed-syncbn.png",
+          "sha256": "97051172dc1fc35d4d0047f7ff60a144dd78a307233129a79f45c69b351aebed"
+        },
+        "pdf": {
+          "path": "syncbn__fixed-syncbn.pdf",
+          "sha256": "737fe19efe7d19c43b4da8be0f81dd2ac0c85f69612c3ff1a51e9417c636de16"
+        }
+      }
+    },
+    {
+      "case": "deepnorm",
+      "title": "DeepNorm Grad",
+      "comparison_group": "fixed-deepnorm",
+      "comparison_label": "1024 元素 / 本轮参数",
+      "stem": "deepnorm__fixed-deepnorm",
+      "rows": [
+        {
+          "id": "deepnorm-u1",
+          "label": "U1",
+          "camodel": 177,
+          "global_cycles": 173,
+          "local_cycles": 168,
+          "software_cycles": 173
+        },
+        {
+          "id": "deepnorm-u8",
+          "label": "U8",
+          "camodel": 496,
+          "global_cycles": 450,
+          "local_cycles": 158,
+          "software_cycles": 163
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "deepnorm__fixed-deepnorm.png",
+          "sha256": "4ac474a31ddce76b1fbebfc8947d370539f4ce0d6c256123c6d2065593ae2ad6"
+        },
+        "pdf": {
+          "path": "deepnorm__fixed-deepnorm.pdf",
+          "sha256": "560b1eb4e289569eb97c7010f8161b890dc9953ff583864cb4fa6003dbf26a93"
+        }
+      }
+    },
+    {
+      "case": "softmax_three_loop",
+      "title": "Softmax",
+      "comparison_group": "history-softmax_three_loop",
+      "comparison_label": "8 行 × 1024，FP32",
+      "stem": "softmax_three_loop__history-softmax_three_loop",
+      "rows": [
+        {
+          "id": "history-softmax_three_loop-round56",
+          "label": "三循环 · 8 × 1024",
+          "camodel": 654,
+          "global_cycles": 638,
+          "local_cycles": 524,
+          "software_cycles": 638
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "softmax_three_loop__history-softmax_three_loop.png",
+          "sha256": "0c51a6078c3aa6ec611a3d96165a75c8f44af89f1716382d88f44fb58eab4288"
+        },
+        "pdf": {
+          "path": "softmax_three_loop__history-softmax_three_loop.pdf",
+          "sha256": "dfe8fb0ce13d5e6afe57e09183b458e6ef3b5b69641208cf78d5c49501de2989"
+        }
+      }
+    },
+    {
+      "case": "gelu_poly",
+      "title": "GeLU Poly",
+      "comparison_group": "history-gelu_poly",
+      "comparison_label": "6144 元素，FP32，96 次向量迭代",
+      "stem": "gelu_poly__history-gelu_poly",
+      "rows": [
+        {
+          "id": "history-gelu_poly-u1",
+          "label": "Unroll 1",
+          "camodel": 2245,
+          "global_cycles": 1928,
+          "local_cycles": null,
+          "software_cycles": 1928
+        },
+        {
+          "id": "history-gelu_poly-u12",
+          "label": "Unroll 12",
+          "camodel": 6037,
+          "global_cycles": 6016,
+          "local_cycles": 1656,
+          "software_cycles": 1712
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "gelu_poly__history-gelu_poly.png",
+          "sha256": "e88b17ee3328122ae0cdc9d187624df38bf03b94e45d80aaf4c4525319db7951"
+        },
+        "pdf": {
+          "path": "gelu_poly__history-gelu_poly.pdf",
+          "sha256": "5c14dff9a212c04a7103e50f84b46f8a2a711b3861b34c873c29c32fa8de7783"
+        }
+      }
+    },
+    {
+      "case": "swiglu_grad",
+      "title": "SwiGLU Grad",
+      "comparison_group": "history-swiglu_grad",
+      "comparison_label": "每个 tensor 6144 元素，FP32，双输出",
+      "stem": "swiglu_grad__history-swiglu_grad",
+      "rows": [
+        {
+          "id": "history-swiglu_grad-u1",
+          "label": "Unroll 1",
+          "camodel": 1299,
+          "global_cycles": 1228,
+          "local_cycles": null,
+          "software_cycles": 1228
+        },
+        {
+          "id": "history-swiglu_grad-u6",
+          "label": "Unroll 6",
+          "camodel": 3281,
+          "global_cycles": 3073,
+          "local_cycles": 1150,
+          "software_cycles": 1075
+        },
+        {
+          "id": "history-swiglu_grad-u8",
+          "label": "Unroll 8",
+          "camodel": 8243,
+          "global_cycles": 8115,
+          "local_cycles": 1125,
+          "software_cycles": 1057
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "swiglu_grad__history-swiglu_grad.png",
+          "sha256": "7efe68bb8603173f53e9e30f2cd50b85e429bcf264c237870cb39a87532b381b"
+        },
+        "pdf": {
+          "path": "swiglu_grad__history-swiglu_grad.pdf",
+          "sha256": "a45faf3a89fe64bcc468206e4ef6a314d4f1305f155d1d16c3a98cff056d2557"
+        }
+      }
+    },
+    {
+      "case": "adam_apply_one",
+      "title": "AdamApplyOne",
+      "comparison_group": "history-adam_apply_one",
+      "comparison_label": "3072 元素，FP32，48 次迭代，三输出",
+      "stem": "adam_apply_one__history-adam_apply_one",
+      "rows": [
+        {
+          "id": "history-adam_apply_one-u1",
+          "label": "Unroll 1",
+          "camodel": 516,
+          "global_cycles": 461,
+          "local_cycles": null,
+          "software_cycles": 461
+        },
+        {
+          "id": "history-adam_apply_one-u6",
+          "label": "Unroll 6",
+          "camodel": 1435,
+          "global_cycles": 1310,
+          "local_cycles": 497,
+          "software_cycles": 480
+        },
+        {
+          "id": "history-adam_apply_one-u8",
+          "label": "Unroll 8",
+          "camodel": 3761,
+          "global_cycles": 3635,
+          "local_cycles": 509,
+          "software_cycles": 477
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "adam_apply_one__history-adam_apply_one.png",
+          "sha256": "71a75e57cf2b860a8d8e127ab99730671c981b7ccc70fa8d7510b3ca898176ab"
+        },
+        "pdf": {
+          "path": "adam_apply_one__history-adam_apply_one.pdf",
+          "sha256": "8a97480d67cc4986181b7fe2d0822ed9a7d734d6ebffe60f887b17c4ec6d9e66"
+        }
+      }
+    },
+    {
+      "case": "gelu_grad",
+      "title": "GeLU Grad",
+      "comparison_group": "history-gelu_grad",
+      "comparison_label": "4096 元素，FP32，64 次向量迭代",
+      "stem": "gelu_grad__history-gelu_grad",
+      "rows": [
+        {
+          "id": "history-gelu_grad-u1",
+          "label": "单循环 Unroll 1",
+          "camodel": 996,
+          "global_cycles": 944,
+          "local_cycles": null,
+          "software_cycles": 932
+        },
+        {
+          "id": "history-gelu_grad-u8",
+          "label": "单循环 Unroll 8",
+          "camodel": 2553,
+          "global_cycles": 2421,
+          "local_cycles": 862,
+          "software_cycles": 828
+        },
+        {
+          "id": "history-gelu_grad-u8_explicit",
+          "label": "U8 · 显式 vector + predicate spill",
+          "camodel": 2541,
+          "global_cycles": 2421,
+          "local_cycles": 862,
+          "software_cycles": 828
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "gelu_grad__history-gelu_grad.png",
+          "sha256": "9e48ac63f35462ec1aa405e101acf2fe8643b50896147cdaa6673b883643398f"
+        },
+        "pdf": {
+          "path": "gelu_grad__history-gelu_grad.pdf",
+          "sha256": "8683185efe2fdf167a3cba2dcb33d232fd82f70e8058cffb3b5616109b574459"
+        }
+      }
+    },
+    {
+      "case": "gelu_grad_three_stage",
+      "title": "GeLU Grad 三段循环",
+      "comparison_group": "history-gelu_grad_three_stage",
+      "comparison_label": "4096 元素，FP32；显式 UB 布局 96KiB",
+      "stem": "gelu_grad_three_stage__history-gelu_grad_three_stage",
+      "rows": [
+        {
+          "id": "history-gelu_grad_three_stage-single_u1",
+          "label": "单循环 U1 参考",
+          "camodel": 996,
+          "global_cycles": 944,
+          "local_cycles": null,
+          "software_cycles": 932
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "gelu_grad_three_stage__history-gelu_grad_three_stage.png",
+          "sha256": "549822cc306ef03fe13c99858b561b99b1a452fe91d08ea364a73eb8724288a1"
+        },
+        "pdf": {
+          "path": "gelu_grad_three_stage__history-gelu_grad_three_stage.pdf",
+          "sha256": "95abd9b221f6d4de7fd00faa1ed96aa0a44406304e472263934a1fe0b8ce2a09"
+        }
+      }
+    },
+    {
+      "case": "flash_attention_grad_front",
+      "title": "FlashAttention Grad 前段",
+      "comparison_group": "history-flash_attention_grad_front",
+      "comparison_label": "提取 VF：FP32，8 行 × 768，输出 8 个行点积；不是完整 FlashAttention Grad 算子。",
+      "stem": "flash_attention_grad_front__history-flash_attention_grad_front",
+      "rows": [
+        {
+          "id": "history-flash_attention_grad_front-u1",
+          "label": "原始单循环 U1",
+          "camodel": 240,
+          "global_cycles": 201,
+          "local_cycles": null,
+          "software_cycles": 201
+        },
+        {
+          "id": "history-flash_attention_grad_front-u2_concentrated_spill",
+          "label": "集中加载 U2 · 编译器 spill",
+          "camodel": 3237,
+          "global_cycles": 3208,
+          "local_cycles": 306,
+          "software_cycles": 201
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "flash_attention_grad_front__history-flash_attention_grad_front.png",
+          "sha256": "46beecd2d8f4a2273b60b436e71e9e5f4f1d1a9ae891ff0dd233e65ee29c3c36"
+        },
+        "pdf": {
+          "path": "flash_attention_grad_front__history-flash_attention_grad_front.pdf",
+          "sha256": "c3b70e0d76a53725bdf84b106850a45cb174915acfdb799a91a160f51c51edc3"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-8-frozen",
+      "comparison_label": "8 矩阵 / 历史冻结参数",
+      "stem": "mhc_sinkhorn__mhc-8-frozen",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-m8_resident",
+          "label": "8 矩阵 · 驻留 U1",
+          "camodel": 11611,
+          "global_cycles": 11663,
+          "local_cycles": 11123,
+          "software_cycles": 11663
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-8-frozen.png",
+          "sha256": "52d91c0c4b5228ef4375205847a36ee79008533fbbfe684521c61131d7ce5e92"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-8-frozen.pdf",
+          "sha256": "e72da3ac984335f7a9c45094b548f94cda07044e7e2b9416333180de0315c412"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-8-calibrated",
+      "comparison_label": "8 矩阵 / 新校准 GSU",
+      "stem": "mhc_sinkhorn__mhc-8-calibrated",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-m8_element_major",
+          "label": "8 矩阵 · Element-major U1 · 校准预测",
+          "camodel": 2146,
+          "global_cycles": 2586,
+          "local_cycles": null,
+          "software_cycles": 2586
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-8-calibrated.png",
+          "sha256": "cd808ccd8207094f03652ed08619807ab3ca33b4cd0192e541debb505995709f"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-8-calibrated.pdf",
+          "sha256": "90407d69bb6d155dbb81f00a8e439dfbe52ab6881a101adae4b9366886c5031d"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-36-frozen",
+      "comparison_label": "36 矩阵 / 历史冻结参数",
+      "stem": "mhc_sinkhorn__mhc-36-frozen",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-resident",
+          "label": "36 矩阵 · 驻留 U1",
+          "camodel": 51539,
+          "global_cycles": 51759,
+          "local_cycles": 49550,
+          "software_cycles": 51759
+        },
+        {
+          "id": "history-mhc_sinkhorn-resident_u6",
+          "label": "36 矩阵 · 驻留 U6 · 自动 spill",
+          "camodel": 26288,
+          "global_cycles": 29007,
+          "local_cycles": 24349,
+          "software_cycles": 23533
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-36-frozen.png",
+          "sha256": "a909e6b39c52dad45c1a8eabdf52ca811f3b78d25ba83a5488b42a52887326c8"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-36-frozen.pdf",
+          "sha256": "76f13156bfb9326f6c6063bf50e754f8455d4716141b23403043ca7bfd022367"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-36-calibrated",
+      "comparison_label": "36 矩阵 / 新校准 GSU",
+      "stem": "mhc_sinkhorn__mhc-36-calibrated",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-element_major",
+          "label": "36 矩阵 · Element-major U1 · 校准预测",
+          "camodel": 2425,
+          "global_cycles": 2586,
+          "local_cycles": 2586,
+          "software_cycles": 2586
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-36-calibrated.png",
+          "sha256": "64feace7de51c22b9a31bcc1c8c2cc64ac78a581464a13a2da9694cfdb61017f"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-36-calibrated.pdf",
+          "sha256": "f1afe173876babe5493ee32c9ecfa6e5a6c92a89faa2007fd90f781040e7a053"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-64-frozen",
+      "comparison_label": "64 矩阵 / 历史冻结参数",
+      "stem": "mhc_sinkhorn__mhc-64-frozen",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-m64_resident",
+          "label": "64 矩阵 · 驻留 U1",
+          "camodel": 91467,
+          "global_cycles": 91855,
+          "local_cycles": 87981,
+          "software_cycles": 91855
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-64-frozen.png",
+          "sha256": "11f8b67e821f42d073b7c8b83ba0a6df8e750ced6f4343d4f0fb27d0696cac99"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-64-frozen.pdf",
+          "sha256": "e247547d154600685b17e66b1d4cb766123b986aed3a992c3541aff5ad12d145"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-64-calibrated",
+      "comparison_label": "64 矩阵 / 新校准 GSU",
+      "stem": "mhc_sinkhorn__mhc-64-calibrated",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-m64_element_major",
+          "label": "64 矩阵 · Element-major U1 · 校准预测",
+          "camodel": 2760,
+          "global_cycles": 2586,
+          "local_cycles": null,
+          "software_cycles": 2586
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-64-calibrated.png",
+          "sha256": "e5ca82c8677c0d84a61344e134aaa15d65f3cbc0b80122cf462044d16ede5727"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-64-calibrated.pdf",
+          "sha256": "61e64fd2f16cdc8383a76fe047fa3c2529d9fac4872795dda37e1d435e7b0cb7"
+        }
+      }
+    },
+    {
+      "case": "mhc_sinkhorn",
+      "title": "MHC Sinkhorn",
+      "comparison_group": "mhc-128-calibrated",
+      "comparison_label": "128 矩阵 / 新校准 GSU",
+      "stem": "mhc_sinkhorn__mhc-128-calibrated",
+      "rows": [
+        {
+          "id": "history-mhc_sinkhorn-m128_element_major",
+          "label": "128 矩阵 · Element-major U1",
+          "camodel": 4950,
+          "global_cycles": 5082,
+          "local_cycles": null,
+          "software_cycles": 4364
+        },
+        {
+          "id": "history-mhc_sinkhorn-m128_element_major_u2",
+          "label": "128 矩阵 · Element-major U2 · 自动 spill",
+          "camodel": 11446,
+          "global_cycles": 11118,
+          "local_cycles": 4145,
+          "software_cycles": 4839
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_sinkhorn__mhc-128-calibrated.png",
+          "sha256": "c1b2103f6bdc9b8a6487ca6f85314be6e69cb790a757b2c12e97e8f28b6b2667"
+        },
+        "pdf": {
+          "path": "mhc_sinkhorn__mhc-128-calibrated.pdf",
+          "sha256": "5d37792fb1cd2e368dc41b71938d7c57d6e26d750428524807021d6622fc140a"
+        }
+      }
+    },
+    {
+      "case": "mish",
+      "title": "Mish",
+      "comparison_group": "round2-mish",
+      "comparison_label": "3072 元素 / 当前 A5 参数",
+      "stem": "mish__round2-mish",
+      "rows": [
+        {
+          "id": "round2-mish-u1",
+          "label": "U1",
+          "camodel": 729,
+          "global_cycles": 761,
+          "local_cycles": 761,
+          "software_cycles": 761
+        },
+        {
+          "id": "round2-mish-u4",
+          "label": "U4",
+          "camodel": 1101,
+          "global_cycles": 1054,
+          "local_cycles": 791,
+          "software_cycles": 781
+        },
+        {
+          "id": "round2-mish-u8",
+          "label": "U8",
+          "camodel": 5015,
+          "global_cycles": 5029,
+          "local_cycles": 785,
+          "software_cycles": 781
+        },
+        {
+          "id": "round2-mish-u12",
+          "label": "U12",
+          "camodel": 11170,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": 781
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mish__round2-mish.png",
+          "sha256": "b8e9c37586f338f8c44d5305e2c05757a4e2c6927e1ec83866d16cc4b24e2649"
+        },
+        "pdf": {
+          "path": "mish__round2-mish.pdf",
+          "sha256": "0ff95369f5dec4240317b950f225bb97ac4d8d9f7fb6a12bb449603d8e7fc715"
+        }
+      }
+    },
+    {
+      "case": "logsigmoid_grad",
+      "title": "LogSigmoidGrad",
+      "comparison_group": "round2-logsigmoid_grad",
+      "comparison_label": "3072 元素 / 当前 A5 参数",
+      "stem": "logsigmoid_grad__round2-logsigmoid_grad",
+      "rows": [
+        {
+          "id": "round2-logsigmoid_grad-u1",
+          "label": "U1",
+          "camodel": 365,
+          "global_cycles": 360,
+          "local_cycles": 360,
+          "software_cycles": 360
+        },
+        {
+          "id": "round2-logsigmoid_grad-u4",
+          "label": "U4",
+          "camodel": 1273,
+          "global_cycles": 1018,
+          "local_cycles": 367,
+          "software_cycles": 360
+        },
+        {
+          "id": "round2-logsigmoid_grad-u8",
+          "label": "U8",
+          "camodel": 3764,
+          "global_cycles": 3781,
+          "local_cycles": 379,
+          "software_cycles": 360
+        },
+        {
+          "id": "round2-logsigmoid_grad-u12",
+          "label": "U12",
+          "camodel": 8058,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": 360
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "logsigmoid_grad__round2-logsigmoid_grad.png",
+          "sha256": "d6b5518eac7f965701ca61c70bde786b114bf859b049d3c79f148dba84d6e89a"
+        },
+        "pdf": {
+          "path": "logsigmoid_grad__round2-logsigmoid_grad.pdf",
+          "sha256": "a2bebe960efc82ca9e0449177fc0a3224d32c81a2cd10a0db7a115e145fdb287"
+        }
+      }
+    },
+    {
+      "case": "binary_cross_entropy",
+      "title": "BinaryCrossEntropy（概率输入）",
+      "comparison_group": "round2-binary_cross_entropy",
+      "comparison_label": "3072 元素 / 当前 A5 参数",
+      "stem": "binary_cross_entropy__round2-binary_cross_entropy",
+      "rows": [
+        {
+          "id": "round2-binary_cross_entropy-u1",
+          "label": "U1",
+          "camodel": 421,
+          "global_cycles": 461,
+          "local_cycles": 461,
+          "software_cycles": 461
+        },
+        {
+          "id": "round2-binary_cross_entropy-u8",
+          "label": "U8",
+          "camodel": 2132,
+          "global_cycles": 2083,
+          "local_cycles": 473,
+          "software_cycles": 458
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "binary_cross_entropy__round2-binary_cross_entropy.png",
+          "sha256": "b138d53ec8ea165607254fcf46dda0a184a83dcbe3ed908cf820e90685ca200b"
+        },
+        "pdf": {
+          "path": "binary_cross_entropy__round2-binary_cross_entropy.pdf",
+          "sha256": "b589ee994eaefbdc542fe7bb1b85172e430dab8207aad0f3749b9a140114687f"
+        }
+      }
+    },
+    {
+      "case": "groupnorm_swish_dx",
+      "title": "GroupNormSwishGrad dx（双块）",
+      "comparison_group": "round3-groupnorm_swish_dx",
+      "comparison_label": "6144 / FP32 / 第三批 A5",
+      "stem": "groupnorm_swish_dx__round3-groupnorm_swish_dx",
+      "rows": [
+        {
+          "id": "round3-groupnorm_swish_dx-u1",
+          "label": "U1",
+          "camodel": 1645,
+          "global_cycles": 1571,
+          "local_cycles": 1571,
+          "software_cycles": 1571
+        },
+        {
+          "id": "round3-groupnorm_swish_dx-u4",
+          "label": "U4",
+          "camodel": 12519,
+          "global_cycles": 12638,
+          "local_cycles": 1430,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "groupnorm_swish_dx__round3-groupnorm_swish_dx.png",
+          "sha256": "a5ceb4ec71d89d84fcc47f67e45737517115587d7b3ec4a2f2a3e6a161f314ec"
+        },
+        "pdf": {
+          "path": "groupnorm_swish_dx__round3-groupnorm_swish_dx.pdf",
+          "sha256": "0515c9cdc07166250ec35b4d26a1498b388c6551f455f23ecee3d2cf5807bc58"
+        }
+      }
+    },
+    {
+      "case": "logsigmoid",
+      "title": "LogSigmoid Forward",
+      "comparison_group": "round3-logsigmoid",
+      "comparison_label": "3072 / FP32 / 第三批 A5",
+      "stem": "logsigmoid__round3-logsigmoid",
+      "rows": [
+        {
+          "id": "round3-logsigmoid-u1",
+          "label": "U1",
+          "camodel": 567,
+          "global_cycles": 522,
+          "local_cycles": 522,
+          "software_cycles": 522
+        },
+        {
+          "id": "round3-logsigmoid-u4",
+          "label": "U4",
+          "camodel": 1173,
+          "global_cycles": 1099,
+          "local_cycles": 520,
+          "software_cycles": null
+        },
+        {
+          "id": "round3-logsigmoid-u8",
+          "label": "U8",
+          "camodel": 5831,
+          "global_cycles": 5907,
+          "local_cycles": 537,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "logsigmoid__round3-logsigmoid.png",
+          "sha256": "3d349adbd6ac45360daadeaec322d942d5621feeec64c690167de5388427a6dd"
+        },
+        "pdf": {
+          "path": "logsigmoid__round3-logsigmoid.pdf",
+          "sha256": "db5baa0334980f18632c556201acf9d0e19154536eb5e62a6172b0168c92e67e"
+        }
+      }
+    },
+    {
+      "case": "layernorm_dx",
+      "title": "LayerNormGrad V3 dx",
+      "comparison_group": "round3-layernorm_dx",
+      "comparison_label": "3072 / FP32 / 第三批 A5",
+      "stem": "layernorm_dx__round3-layernorm_dx",
+      "rows": [
+        {
+          "id": "round3-layernorm_dx-u1",
+          "label": "U1",
+          "camodel": 319,
+          "global_cycles": 283,
+          "local_cycles": 283,
+          "software_cycles": 283
+        },
+        {
+          "id": "round3-layernorm_dx-u8",
+          "label": "U8",
+          "camodel": 2479,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "layernorm_dx__round3-layernorm_dx.png",
+          "sha256": "f9bc64c0459fc5454664ed4a47331e3ff2439f55d301eb5c7bba713fc6ba20d4"
+        },
+        "pdf": {
+          "path": "layernorm_dx__round3-layernorm_dx.pdf",
+          "sha256": "ee08393d39c652d9bede14b4f4eca16e2d245b5c1118fdaa6fae72d3b3862e64"
+        }
+      }
+    },
+    {
+      "case": "softplus",
+      "title": "Softplus DAG / 融合 CCE",
+      "comparison_group": "round3-softplus",
+      "comparison_label": "3072 / FP32 / 第三批 A5",
+      "stem": "softplus__round3-softplus",
+      "rows": [
+        {
+          "id": "round3-softplus-u1",
+          "label": "U1",
+          "camodel": 515,
+          "global_cycles": 541,
+          "local_cycles": 541,
+          "software_cycles": 541
+        },
+        {
+          "id": "round3-softplus-u8",
+          "label": "U8",
+          "camodel": 3015,
+          "global_cycles": 2995,
+          "local_cycles": 532,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "softplus__round3-softplus.png",
+          "sha256": "cbd6b588eeedc98b33c020190e08ef02816fafdbb45a751fab6ce24c7a3a3c5a"
+        },
+        "pdf": {
+          "path": "softplus__round3-softplus.pdf",
+          "sha256": "83f639af73ac0c3bdb56ad0efc64ad615016507173e2b51c28f0fffed9547ec5"
+        }
+      }
+    },
+    {
+      "case": "moe_softplus",
+      "title": "MoE 单专家 Softplus",
+      "comparison_group": "round3-moe_softplus",
+      "comparison_label": "3072 / FP32 / 第三批 A5",
+      "stem": "moe_softplus__round3-moe_softplus",
+      "rows": [
+        {
+          "id": "round3-moe_softplus-u1",
+          "label": "U1",
+          "camodel": 771,
+          "global_cycles": 739,
+          "local_cycles": 739,
+          "software_cycles": 739
+        },
+        {
+          "id": "round3-moe_softplus-u4",
+          "label": "U4",
+          "camodel": 1586,
+          "global_cycles": 1074,
+          "local_cycles": 725,
+          "software_cycles": null
+        },
+        {
+          "id": "round3-moe_softplus-u8",
+          "label": "U8",
+          "camodel": 6137,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "moe_softplus__round3-moe_softplus.png",
+          "sha256": "9219ab7b26b7e95ced86022978456e79faaed804c31f2582a703d3af395e3643"
+        },
+        "pdf": {
+          "path": "moe_softplus__round3-moe_softplus.pdf",
+          "sha256": "68c068b3ef699aef53d902cbce8582eec23476ff395b8b5e682cb19e4e136b71"
+        }
+      }
+    },
+    {
+      "case": "causal_conv",
+      "title": "FusedCausalConv1D Residual",
+      "comparison_group": "round3-causal_conv",
+      "comparison_label": "49×192 / FP16 / 第三批 A5",
+      "stem": "causal_conv__round3-causal_conv",
+      "rows": [
+        {
+          "id": "round3-causal_conv-u1",
+          "label": "U1",
+          "camodel": 1266,
+          "global_cycles": 1156,
+          "local_cycles": 1156,
+          "software_cycles": 1156
+        },
+        {
+          "id": "round3-causal_conv-u2",
+          "label": "U2",
+          "camodel": 4309,
+          "global_cycles": 4361,
+          "local_cycles": 1095,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "causal_conv__round3-causal_conv.png",
+          "sha256": "7593cc8f76d956de39ece36adb0243edd2e5c5ad3a6988bed78e51da983d8f29"
+        },
+        "pdf": {
+          "path": "causal_conv__round3-causal_conv.pdf",
+          "sha256": "48f2f3a7aae38ed568e78e9022def3db0f6182a49479351dc3a6b7d1ade34c9f"
+        }
+      }
+    },
+    {
+      "case": "rope_grad",
+      "title": "RoPE Grad Half",
+      "comparison_group": "round3-rope_grad",
+      "comparison_label": "1×1×48×128 / FP32 / 第三批 A5",
+      "stem": "rope_grad__round3-rope_grad",
+      "rows": [
+        {
+          "id": "round3-rope_grad-u1",
+          "label": "U1",
+          "camodel": 439,
+          "global_cycles": 392,
+          "local_cycles": 392,
+          "software_cycles": 392
+        },
+        {
+          "id": "round3-rope_grad-u4",
+          "label": "U4",
+          "camodel": 3447,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        },
+        {
+          "id": "round3-rope_grad-u8",
+          "label": "U8",
+          "camodel": 5891,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "rope_grad__round3-rope_grad.png",
+          "sha256": "edd03064b8a6225aeead37132cc5bdfebce9b2b73e70e05a92f1cb3b968a0f43"
+        },
+        "pdf": {
+          "path": "rope_grad__round3-rope_grad.pdf",
+          "sha256": "df0bea186140e21b95b9434af191a370da88c2aad1dc15537ab8c9414dfc94a2"
+        }
+      }
+    },
+    {
+      "case": "rmsnorm_dx",
+      "title": "RMSNormGrad dx",
+      "comparison_group": "round3-rmsnorm_dx",
+      "comparison_label": "3072 / FP32 / 第三批 A5",
+      "stem": "rmsnorm_dx__round3-rmsnorm_dx",
+      "rows": [
+        {
+          "id": "round3-rmsnorm_dx-u1",
+          "label": "U1",
+          "camodel": 218,
+          "global_cycles": 227,
+          "local_cycles": 227,
+          "software_cycles": 227
+        },
+        {
+          "id": "round3-rmsnorm_dx-u8",
+          "label": "U8",
+          "camodel": 1597,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "rmsnorm_dx__round3-rmsnorm_dx.png",
+          "sha256": "95871196d82439888b294b87154c9f4b1d30273ca47a3db44fb634b243476183"
+        },
+        "pdf": {
+          "path": "rmsnorm_dx__round3-rmsnorm_dx.pdf",
+          "sha256": "299a1fde8a007ef0c6c63e509b08917436524ca3a0e3fb262a932bcf0eefabcf"
+        }
+      }
+    },
+    {
+      "case": "softmax_ce",
+      "title": "SoftmaxCrossEntropy 输出子 VF",
+      "comparison_group": "round3-softmax_ce",
+      "comparison_label": "3072 / FP32 / 第三批 A5",
+      "stem": "softmax_ce__round3-softmax_ce",
+      "rows": [
+        {
+          "id": "round3-softmax_ce-u1",
+          "label": "U1",
+          "camodel": 356,
+          "global_cycles": 333,
+          "local_cycles": 333,
+          "software_cycles": 333
+        },
+        {
+          "id": "round3-softmax_ce-u4",
+          "label": "U4",
+          "camodel": 1105,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        },
+        {
+          "id": "round3-softmax_ce-u8",
+          "label": "U8",
+          "camodel": 4312,
+          "global_cycles": null,
+          "local_cycles": null,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "softmax_ce__round3-softmax_ce.png",
+          "sha256": "32a0d3db9e6d752d576e8f6683646d8050514fd3291bbe194b0c7fa9c7880147"
+        },
+        "pdf": {
+          "path": "softmax_ce__round3-softmax_ce.pdf",
+          "sha256": "39eefed0f7d25a4a9fa0bf8e17e22e8a56b696cf3a39a793cc2dfbeaab2e4f6d"
+        }
+      }
+    },
+    {
+      "case": "mhc_partial",
+      "title": "MHC Pre Partial Merge",
+      "comparison_group": "round3-mhc_partial",
+      "comparison_label": "4×48×64 / FP32 / 第三批 A5",
+      "stem": "mhc_partial__round3-mhc_partial",
+      "rows": [
+        {
+          "id": "round3-mhc_partial-u1",
+          "label": "U1",
+          "camodel": 1145,
+          "global_cycles": 613,
+          "local_cycles": 613,
+          "software_cycles": 613
+        },
+        {
+          "id": "round3-mhc_partial-u4",
+          "label": "U4",
+          "camodel": 2313,
+          "global_cycles": 1879,
+          "local_cycles": 661,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "mhc_partial__round3-mhc_partial.png",
+          "sha256": "e26ebe5a80b40285247891221dde6b0d5c33a99e19fa830788c86d0761763375"
+        },
+        "pdf": {
+          "path": "mhc_partial__round3-mhc_partial.pdf",
+          "sha256": "972217a14c1408a5af2c7446cc28f3e2c3b0e5d12d4c7d1cbac3d86451d54470"
+        }
+      }
+    },
+    {
+      "case": "compressor_softmax",
+      "title": "Compressor DND Softmax",
+      "comparison_group": "round3-compressor_softmax",
+      "comparison_label": "4×8×128 / FP32 / 第三批 A5",
+      "stem": "compressor_softmax__round3-compressor_softmax",
+      "rows": [
+        {
+          "id": "round3-compressor_softmax-u1",
+          "label": "U1",
+          "camodel": 1183,
+          "global_cycles": 1149,
+          "local_cycles": 418,
+          "software_cycles": null
+        }
+      ],
+      "files": {
+        "png": {
+          "path": "compressor_softmax__round3-compressor_softmax.png",
+          "sha256": "b0b00015864f46d6d697514a2bf13c8dc9facc6ccc435cc4d6a5e0cd279f1d55"
+        },
+        "pdf": {
+          "path": "compressor_softmax__round3-compressor_softmax.pdf",
+          "sha256": "0dfa654a5da21f28e7857d3e4837b109e30c577916d6cdabc1f110e1dbe8d4cf"
+        }
+      }
+    }
+  ]
+}
