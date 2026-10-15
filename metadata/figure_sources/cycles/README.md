@@ -5,7 +5,7 @@
 四条曲线分别为原 CAModel、VfSim 全局、VfSim 局部、VfSim 软件优化全局 / 保留原版本。缺失值保留断点，不设为零，也不插值。
 PNG 为 2560 × 1440（16:9），PDF 为相同比例的矢量图。未重跑预测或修改周期。
 软件侧仍采用全局 Membar；无 spill 对照沿用原版本。历史参数差异及限制参见 HTML 详情。
-数据 SHA256：`a85ab3cb218d77a0f48c8098bd1361e5cbe4d355ff862346f8bcbfb13b0a4604`。各图的数据、行 ID 和文件校验值见 [index.json](index.json)。
+数据 SHA256：`ff34f2e6210863dd4e8c5b41a058902e66ef78fe2db88de1a5b1716e627ca71f`。各图的数据、行 ID 和文件校验值见 [index.json](./index.json)。
 
 | 算子 | Shape / 参数组 | PNG | PDF |
 | --- | --- | --- | --- |

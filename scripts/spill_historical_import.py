@@ -101,8 +101,9 @@ def comparable_software_pairs(cases, root):
                   if key[0] == "flash_attention_grad_front" and unroll_of(value, root) == 2
                   and not spill_present(value) and value.get("global_cycles") is not None]
     if candidates:
-        best, _ = min(candidates, key=lambda item: (item[1]["global_cycles"], item[1]["camodel"], item[0]))
-        pairs[("flash_attention_grad_front", "u2_concentrated_spill")] = (best, "已有同 U2 无 spill 重排对照")
+        best, _ = min(candidates, key=lambda item: (item[1]["camodel"], item[1]["global_cycles"], item[0]))
+        pairs[("flash_attention_grad_front", "u2_concentrated_spill")] = (
+            best, "同 U2 无 spill、CAModel 实测最快：Bank-aware 两行交错；比值仍用 VfSim")
     result = {}
     for original, (optimized, strategy) in pairs.items():
         if original not in variants or optimized not in variants:

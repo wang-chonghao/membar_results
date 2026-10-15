@@ -1,4 +1,4 @@
-# FlashAttention Grad 指令顺序图
+# 指令顺序 DAG 图
 
 `figure/DAG/` 只保留按编译后程序顺序绘制的图片，不再保留旧的 dataflow、hardware_group、full_vf 图片及 PDF。
 
@@ -6,6 +6,9 @@
 | --- | --- | --- | --- |
 | U1 | [查看](../../../figure/DAG/u1_instruction_order.png) | [查看](../../../figure/DAG/u1_instruction_order.svg) | [说明](u1_instruction_order.md) |
 | U2 含 Spill | [查看](../../../figure/DAG/u2_instruction_order.png) | [查看](../../../figure/DAG/u2_instruction_order.svg) | [五张分段图及说明](u2_instruction_order.md) |
+| Bank-aware U2 无 Spill | [查看](../../../figure/DAG/u2_bank_aware_instruction_order.png) | [查看](../../../figure/DAG/u2_bank_aware_instruction_order.svg) | [两张分段图及说明](u2_bank_aware_instruction_order.md) |
+| Logit Grad U4 Predicate Spill | [查看](../../../figure/DAG/logit_grad_u4_predicate_spill_order.png) | [查看](../../../figure/DAG/logit_grad_u4_predicate_spill_order.svg) | [三张分段图及说明](logit_grad_u4_predicate_spill_order.md) |
+| Logit Grad U1 无 Spill | [查看](../../../figure/DAG/logit_grad_u1_instruction_order.png) | [查看](../../../figure/DAG/logit_grad_u1_instruction_order.svg) | [说明](logit_grad_u1_instruction_order.md) |
 
 横轴为编译后循环体的程序顺序，不是执行 cycle。黄色表示 load/reload，绿色表示 store，蓝色表示计算，红色菱形表示 Membar，灰色表示标量辅助指令。曲线表示向量 RAW 和 spill UB RAW 依赖。
 
@@ -22,4 +25,7 @@ U2 每组有 21 次向量 spill 保存和 21 次重载，以及 42 条 Membar。
 ```bash
 python3 scripts/plot_u1_instruction_order.py --overwrite
 python3 scripts/plot_u2_instruction_order.py --overwrite
+python3 scripts/plot_bank_aware_instruction_order.py --overwrite
+python3 scripts/plot_logit_predicate_spill_dag.py --overwrite
+python3 scripts/plot_logit_predicate_spill_dag.py --unroll 1 --overwrite
 ```

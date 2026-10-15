@@ -94470,69 +94470,69 @@ window.SPILL_REPORT = {
       "global_cycles": 3208,
       "local_cycles": 306,
       "source_cycles": 208,
-      "software_cycles": 201,
-      "software_camodel": 234,
-      "software_accuracy": 85.8974358974359,
+      "software_cycles": 204,
+      "software_camodel": 228,
+      "software_accuracy": 89.47368421052632,
       "original_accuracy": 99.10410874266296,
       "local_gain": 90.46134663341647,
-      "software_gain": 93.73441396508728,
+      "software_gain": 93.64089775561098,
       "plan": null,
       "software_validation": null,
       "software_comparison": {
         "case": "flash_attention_grad_front",
-        "variant": "u2_original",
+        "variant": "u2_bank_window1",
         "unroll": 2,
-        "cycles": 201,
-        "camodel": 234,
-        "strategy": "已有同 U2 无 spill 重排对照",
-        "label": "原序直接展开 U2",
+        "cycles": 204,
+        "camodel": 228,
+        "strategy": "同 U2 无 spill、CAModel 实测最快：Bank-aware 两行交错；比值仍用 VfSim",
+        "label": "Bank-aware U2 · 预取 1 组",
         "files": {
           "original_cce": [
             {
               "label": "完整 CCE",
-              "path": "flash_attention_grad_front/u2_original/source/kernel.cce"
+              "path": "flash_attention_grad_front/u2_bank_window1/source/kernel.cce"
             },
             {
               "label": "编译后 PC 回放",
-              "path": "flash_attention_grad_front/u2_original/source/compiled_pc_replay.cce"
+              "path": "flash_attention_grad_front/u2_bank_window1/source/compiled_pc_replay.cce"
             },
             {
               "label": "CAModel 完整用例说明",
-              "path": "flash_attention_grad_front/u2_original/camodel_case/README.txt"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/README.txt"
             },
             {
               "label": "CAModel 构建运行入口",
-              "path": "flash_attention_grad_front/u2_original/camodel_case/run.py"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/run.py"
             },
             {
               "label": "CAModel host 源码",
-              "path": "flash_attention_grad_front/u2_original/camodel_case/host.cpp"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/host.cpp"
             }
           ],
           "comparison": [
             {
               "label": "core0.veccore0.instr_popped_log.dump",
-              "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_popped_log.dump"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel/core0.veccore0.instr_popped_log.dump"
             },
             {
               "label": "core0.veccore0.instr_log.dump",
-              "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_log.dump"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel/core0.veccore0.instr_log.dump"
             },
             {
               "label": "1_summary.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/1_summary.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/1_summary.json"
             },
             {
               "label": "2_validation.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/2_validation.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/2_validation.json"
             },
             {
               "label": "3_alignment_audit.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/3_alignment_audit.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/3_alignment_audit.json"
             },
             {
               "label": "4_commands.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/4_commands.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/4_commands.json"
             }
           ]
         },
@@ -94543,7 +94543,7 @@ window.SPILL_REPORT = {
       },
       "candidate_count": 0,
       "finalists": 0,
-      "strategy": "已有同 U2 无 spill 重排对照",
+      "strategy": "同 U2 无 spill、CAModel 实测最快：Bank-aware 两行交错；比值仍用 VfSim",
       "files": {
         "original_cce": [
           {
@@ -94604,47 +94604,47 @@ window.SPILL_REPORT = {
         "software": [
           {
             "label": "完整 CCE",
-            "path": "flash_attention_grad_front/u2_original/source/kernel.cce"
+            "path": "flash_attention_grad_front/u2_bank_window1/source/kernel.cce"
           },
           {
             "label": "编译后 PC 回放",
-            "path": "flash_attention_grad_front/u2_original/source/compiled_pc_replay.cce"
+            "path": "flash_attention_grad_front/u2_bank_window1/source/compiled_pc_replay.cce"
           },
           {
             "label": "CAModel 完整用例说明",
-            "path": "flash_attention_grad_front/u2_original/camodel_case/README.txt"
+            "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/README.txt"
           },
           {
             "label": "CAModel 构建运行入口",
-            "path": "flash_attention_grad_front/u2_original/camodel_case/run.py"
+            "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/run.py"
           },
           {
             "label": "CAModel host 源码",
-            "path": "flash_attention_grad_front/u2_original/camodel_case/host.cpp"
+            "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/host.cpp"
           },
           {
             "label": "core0.veccore0.instr_popped_log.dump",
-            "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_popped_log.dump"
+            "path": "flash_attention_grad_front/u2_bank_window1/camodel/core0.veccore0.instr_popped_log.dump"
           },
           {
             "label": "core0.veccore0.instr_log.dump",
-            "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_log.dump"
+            "path": "flash_attention_grad_front/u2_bank_window1/camodel/core0.veccore0.instr_log.dump"
           },
           {
             "label": "1_summary.json",
-            "path": "flash_attention_grad_front/u2_original/evidence/1_summary.json"
+            "path": "flash_attention_grad_front/u2_bank_window1/evidence/1_summary.json"
           },
           {
             "label": "2_validation.json",
-            "path": "flash_attention_grad_front/u2_original/evidence/2_validation.json"
+            "path": "flash_attention_grad_front/u2_bank_window1/evidence/2_validation.json"
           },
           {
             "label": "3_alignment_audit.json",
-            "path": "flash_attention_grad_front/u2_original/evidence/3_alignment_audit.json"
+            "path": "flash_attention_grad_front/u2_bank_window1/evidence/3_alignment_audit.json"
           },
           {
             "label": "4_commands.json",
-            "path": "flash_attention_grad_front/u2_original/evidence/4_commands.json"
+            "path": "flash_attention_grad_front/u2_bank_window1/evidence/4_commands.json"
           }
         ]
       },
@@ -101348,8 +101348,8 @@ window.SPILL_REPORT = {
       "spill_kind": "vector",
       "source_cce_path": "flash_attention_grad_front/u2_concentrated_spill/source/kernel.cce",
       "compiled_cce_path": "flash_attention_grad_front/u2_concentrated_spill/source/hardware_equivalent.cce",
-      "membar_vs_software_performance": 65.68627450980392,
-      "software_reference": "flash_attention_grad_front/u2_original",
+      "membar_vs_software_performance": 66.66666666666667,
+      "software_reference": "flash_attention_grad_front/u2_bank_window1",
       "selection_role": "register spill"
     },
     {
@@ -709041,59 +709041,59 @@ window.SPILL_REPORT = {
         "original_case": "flash_attention_grad_front",
         "original_variant": "u2_concentrated_spill",
         "case": "flash_attention_grad_front",
-        "variant": "u2_original",
+        "variant": "u2_bank_window1",
         "unroll": 2,
-        "cycles": 201,
-        "camodel": 234,
-        "strategy": "已有同 U2 无 spill 重排对照",
-        "label": "原序直接展开 U2",
+        "cycles": 204,
+        "camodel": 228,
+        "strategy": "同 U2 无 spill、CAModel 实测最快：Bank-aware 两行交错；比值仍用 VfSim",
+        "label": "Bank-aware U2 · 预取 1 组",
         "files": {
           "original_cce": [
             {
               "label": "完整 CCE",
-              "path": "flash_attention_grad_front/u2_original/source/kernel.cce"
+              "path": "flash_attention_grad_front/u2_bank_window1/source/kernel.cce"
             },
             {
               "label": "编译后 PC 回放",
-              "path": "flash_attention_grad_front/u2_original/source/compiled_pc_replay.cce"
+              "path": "flash_attention_grad_front/u2_bank_window1/source/compiled_pc_replay.cce"
             },
             {
               "label": "CAModel 完整用例说明",
-              "path": "flash_attention_grad_front/u2_original/camodel_case/README.txt"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/README.txt"
             },
             {
               "label": "CAModel 构建运行入口",
-              "path": "flash_attention_grad_front/u2_original/camodel_case/run.py"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/run.py"
             },
             {
               "label": "CAModel host 源码",
-              "path": "flash_attention_grad_front/u2_original/camodel_case/host.cpp"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel_case/host.cpp"
             }
           ],
           "comparison": [
             {
               "label": "core0.veccore0.instr_popped_log.dump",
-              "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_popped_log.dump"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel/core0.veccore0.instr_popped_log.dump"
             },
             {
               "label": "core0.veccore0.instr_log.dump",
-              "path": "flash_attention_grad_front/u2_original/camodel/core0.veccore0.instr_log.dump"
+              "path": "flash_attention_grad_front/u2_bank_window1/camodel/core0.veccore0.instr_log.dump"
             },
             {
               "label": "1_summary.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/1_summary.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/1_summary.json"
             },
             {
               "label": "2_validation.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/2_validation.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/2_validation.json"
             },
             {
               "label": "3_alignment_audit.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/3_alignment_audit.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/3_alignment_audit.json"
             },
             {
               "label": "4_commands.json",
-              "path": "flash_attention_grad_front/u2_original/evidence/4_commands.json"
+              "path": "flash_attention_grad_front/u2_bank_window1/evidence/4_commands.json"
             }
           ]
         },

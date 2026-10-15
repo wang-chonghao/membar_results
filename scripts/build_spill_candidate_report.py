@@ -382,9 +382,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--refresh-page-only", action="store_true", help="Reuse archived evidence; regenerate page and checksums")
     parser.add_argument("--preserve-imported", action="store_true", help="Keep already imported historical/software rows; apply only audited prediction/source updates")
+    parser.add_argument("--refresh-historical-software", action="store_true",
+                        help="Refresh historical software references from validated archived measurements")
     args = parser.parse_args()
     if args.preserve_imported and not args.refresh_page_only:
         parser.error("--preserve-imported requires --refresh-page-only")
+    if args.refresh_historical_software and not (args.refresh_page_only and args.preserve_imported):
+        parser.error("--refresh-historical-software requires --refresh-page-only --preserve-imported")
     (DEST / "metadata").mkdir(parents=True, exist_ok=True)
     if args.refresh_page_only:
         data = read(DEST / "metadata/spill_candidate_alignment.json")
@@ -403,10 +407,25 @@ def main():
     if not args.preserve_imported:
         merge_historical_results(data)
         merge_supplemental_results(data, manifest)
+    elif args.refresh_historical_software:
+        from spill_historical_import import comparable_software_pairs, pairs_to_json
+        pairs = comparable_software_pairs(read(DEST / "metadata/data.json")["cases"], DEST)
+        for row in data["rows"]:
+            counterpart = pairs.get((row["case"], row.get("variant")))
+            if row.get("origin") == "historical_membar" and counterpart:
+                row.update(software_comparison=counterpart, software_cycles=counterpart["cycles"],
+                           software_camodel=counterpart["camodel"], strategy=counterpart["strategy"])
+                row["files"]["software"] = (counterpart["files"]["original_cce"]
+                                            + counterpart["files"]["comparison"])
+        data["historical_import"]["software_pairs"] = pairs_to_json(pairs)
+        (DEST / "metadata/spill_historical_import.json").write_text(
+            json.dumps(data["historical_import"], ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     from spill_historical_import import apply_compiled_replay_updates
-    apply_compiled_replay_updates(data, DEST, ARCHIVE, manifest, copy_tree)
+    if not args.refresh_historical_software:
+        apply_compiled_replay_updates(data, DEST, ARCHIVE, manifest, copy_tree)
     from spill_pure_cce_import import apply_pure_cce_updates
-    apply_pure_cce_updates(data, REPO, DEST, ARCHIVE, manifest, copy_tree)
+    if not args.refresh_historical_software:
+        apply_pure_cce_updates(data, REPO, DEST, ARCHIVE, manifest, copy_tree)
     from spill_historical_import import loop_metadata
     for row in data["rows"]:
         if row["origin"]!="round3_search":
