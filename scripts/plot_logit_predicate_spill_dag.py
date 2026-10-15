@@ -36,19 +36,52 @@ def flatten(nodes):
             yield node
 
 
-def build_graph(root, unroll=4):
+def software_memory_access(node, semantic, canonical, variable):
+    operands = semantic["inputs"] + semantic["outputs"]
+    operand, = [item for item in operands if item.get("memory_access")]
+    memory = operand["memory_access"]
+    if canonical["values"][operand["value_id"]]["dtype"] != "fp32":
+        raise ValueError("Software Logit diagrams require the archived FP32 memory form")
+    offset = memory["offset"]
+    if any(term["variable_id"] != variable for term in offset["terms"]):
+        raise ValueError("Unexpected address variable in software U4")
+    start = 4*(offset["constant"] + sum(term["coefficient"]*node["iteration"] for term in offset["terms"]))
+    if memory["span"] != 64 or memory["update_mode"] != "none":
+        raise ValueError("Software Logit diagrams require normal 256-byte accesses")
+    low = int(re.search(r"\bSn\[\d+\]=0x([0-9a-f]+)", node["detail"])[1], 16)
+    high = int(re.search(r"\bSn2\[\d+\]=0x([0-9a-f]+)", node["detail"])[1], 16)
+    mode_offset = int(re.search(r"\bAm\[\d+\]=0x([0-9a-f]+)", node["detail"])[1], 16)
+    if high != 0 or low+mode_offset != start:
+        raise ValueError("Canonical byte address does not match the actual RV address fields")
+    return dict(dynamic_id=node["id"], pc=node["pc"], opcode=semantic["opcode"],
+                kind=memory["access_kind"], byte_start=start, byte_end=start+256)
+
+
+def build_graph(root, unroll=4, software=False):
     folder = root / CASE if unroll == 4 else root / "spill_candidate_alignment/pure_cce/logit-u1"
     paths = dict(log=folder / "cce/core0.veccore0.instr_popped_log.dump",
                  canonical=folder / "prediction/current/canonical/vf_000.json",
                  addresses=folder / "prediction/experiment/memory_address_audit.json",
                  result=folder / "result.json")
+    if software:
+        folder = root / "spill_candidate_alignment/logit/u4/software"
+        paths = dict(log=folder / "cce/core0.veccore0.instr_popped_log.dump",
+                     canonical=folder / "canonical/vf_000.json", result=folder / "validation.json",
+                     cce=folder / "cce/kernel.cce")
     raw = records(paths["log"])
     canonical = json.loads(paths["canonical"].read_text())
     result = json.loads(paths["result"].read_text())
-    if Counter(n["op"] for n in raw) != Counter(result["measurements"]["dynamic_rv_opcounts"]):
-        raise ValueError("Archived RV instructions do not match the measured case")
-    if not result["provenance"]["numerical_validation"]["bitwise_matches_original"]:
-        raise ValueError("The compiled case lacks numerical validation")
+    if software:
+        validation = result["validation"]
+        if not (validation["ok"] and validation["bitwise_matches_u1"] and validation["guard_ok"]):
+            raise ValueError("Software U4 lacks numerical validation")
+        if hashlib.sha256(paths["cce"].read_bytes()).hexdigest() != result["plan"]["source_sha256"]:
+            raise ValueError("Software source differs from the measured version")
+    else:
+        if Counter(n["op"] for n in raw) != Counter(result["measurements"]["dynamic_rv_opcounts"]):
+            raise ValueError("Archived RV instructions do not match the measured case")
+        if not result["provenance"]["numerical_validation"]["bitwise_matches_original"]:
+            raise ValueError("The compiled case lacks numerical validation")
     static = {}
     for node in flatten(canonical["context"]):
         pc = node.get("attributes", {}).get("rv_pc")
@@ -57,12 +90,22 @@ def build_graph(root, unroll=4):
         if pc in static:
             raise ValueError("Expected one canonical node per static PC")
         static[pc] = node
-    accesses = json.loads(paths["addresses"].read_text())["expected"]
+    if software:
+        observed = Counter(static[n["pc"]]["opcode"] for n in raw if n["pc"] in static)
+        expected = result["prediction"]["vf_exports"][0]["expected_counts"]
+        if observed != Counter(expected):
+            raise ValueError("Software RV opcodes differ from its validated replay")
+    accesses = [] if software else json.loads(paths["addresses"].read_text())["expected"]
     memory = {item["dynamic_id"]: item for item in accesses}
     if len(memory) != len(accesses):
         raise ValueError("Duplicate dynamic memory identity")
     loop, = [n for n in raw if n["op"] == "RV_VLOOPv2"]
     loop_pc = int(loop["pc"], 16)
+    if software:
+        canonical_loop, = [n for n in canonical["context"] if n["kind"] == "loop"]
+        if canonical_loop["induction"]["start"] != 0 or canonical_loop["induction"]["step"] != 1:
+            raise ValueError("Unexpected software loop induction")
+        variable = canonical_loop["induction"]["variable_id"]
     words = int(re.search(r"instr_num\s*:\s*(\d+)", loop["detail"])[1])
     occurrences = Counter()
     nodes, edges, last_write, memory_writes = [], [], {}, {}
@@ -119,6 +162,8 @@ def build_graph(root, unroll=4):
                 edges.append(dict(src=last_write[value], dst=iid, value=value, kind="scalar"))
         last_write.update({v: iid for v in node["writes"]+scalar_writes})
         node["memory"] = memory.get(iid)
+        if software and node["lane"] in ("vector_load", "vector_store"):
+            node["memory"] = software_memory_access(node, semantic, canonical, variable)
         if node["lane"] in ("predicate_load", "predicate_store", "vector_load", "vector_store"):
             access = node["memory"]
             if access is None or access["pc"] != node["pc"]:
@@ -155,17 +200,20 @@ def build_graph(root, unroll=4):
     return dict(nodes=nodes, edges=edges, counts=dict(Counter(n["op"] for n in nodes)),
                 sources={key: dict(path=path.relative_to(root).as_posix(),
                     sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for key, path in paths.items()},
-                measurements={key: result[key] for key in ("camodel", "global_cycles", "local_cycles")},
+                measurements=(dict(camodel=result["camodel_cycles"], global_cycles=result["global_cycles"], local_cycles=None)
+                              if software else {key: result[key] for key in ("camodel", "global_cycles", "local_cycles")}),
                 scalar_dependency_scope="Explicit RV scalar register fields only; scalar timings and implicit loop updates are not modeled",
                 memory_dependency_scope="Audited equal byte intervals; register RAW, memory RAW/WAR/WAW and global barrier edges, not a cycle schedule")
 
 
-def prepare(graph, unroll=4):
+def prepare(graph, unroll=4, software=False):
     nodes = [dict(n) for n in graph["nodes"] if n["iteration"] == 0]
     expected = dict(vector_load=8, predicate=24, predicate_store=13, predicate_load=14,
                     compute=44, vector_store=4, barrier=27, scalar=10)
     if unroll == 1:
         expected = dict(vector_load=2, predicate=6, compute=11, vector_store=1, scalar=2)
+    if software:
+        expected = dict(vector_load=8, predicate=24, compute=44, vector_store=4)
     if Counter(n["lane"] for n in nodes) != Counter(expected):
         raise ValueError(f"Unexpected compiled U{unroll} body; expected {sum(expected.values())} instructions")
     for sequence, node in enumerate(nodes, 1):
@@ -180,14 +228,18 @@ def prepare(graph, unroll=4):
             raise ValueError("A data dependency points backwards in program order")
     spill_edges = [e for e in incoming if e["kind"] == "memory_raw"
                    and by_id[e["dst"]]["lane"] == "predicate_load"]
-    expected_loads, expected_stores = (14, 13) if unroll == 4 else (0, 0)
+    expected_loads, expected_stores = (14, 13) if unroll == 4 and not software else (0, 0)
     if len(spill_edges) != expected_loads or len({e["src"] for e in spill_edges}) != expected_stores:
         raise ValueError("Predicate saves and reloads do not match the compiled variant")
     pages = [dict(start=start, end=start+47) for start in (1, 49, 97)] if unroll == 4 else []
+    if software:
+        pages = [dict(start=1, end=40), dict(start=41, end=80)]
+        if [n["sequence"] for n in nodes if n["lane"] == "vector_store"] != [34, 40, 77, 80]:
+            raise ValueError("Software U4 is no longer the verified 2+2 cohort schedule")
     return nodes, incoming, pages
 
 
-def render(nodes, edges, pages, output, metadata, font, unroll=4):
+def render(nodes, edges, pages, output, metadata, font, unroll=4, software=False):
     import matplotlib
     matplotlib.use("Agg")
     from matplotlib import font_manager
@@ -199,6 +251,8 @@ def render(nodes, edges, pages, output, metadata, font, unroll=4):
     plt.rcParams.update({"font.family": font_manager.FontProperties(fname=font).get_name(),
                          "axes.unicode_minus": False, "pdf.fonttype": 42})
     stem_prefix = STEM if unroll == 4 else "logit_grad_u1_instruction_order"
+    if software:
+        stem_prefix = "logit_grad_u4_software_order"
     lanes = [entry for entry in LANES if any(n["lane"] == entry[0] for n in nodes)]
     y_by_lane = {key: len(lanes)-i for i, (key, _, _) in enumerate(lanes)}
     for part, page in enumerate([None, *pages]):
@@ -208,6 +262,10 @@ def render(nodes, edges, pages, output, metadata, font, unroll=4):
         positions = {n["id"]: (n["sequence"], y_by_lane[n["lane"]]) for n in shown}
         fig, ax = plt.subplots(figsize=(16, 9))
         fig.subplots_adjust(left=0.20, right=0.975, top=0.81, bottom=0.30)
+        if software and page is None:
+            ax.axvline(40.5, color="#475569", linestyle="--", linewidth=1.1, zorder=0)
+            for x, label in ((20.5, "第0、1路交错"), (60.5, "第2、3路交错")):
+                ax.text(x, len(lanes)+0.42, label, ha="center", fontsize=12, color="#475569")
         for y in y_by_lane.values():
             ax.axhspan(y-0.36, y+0.36, color="#f3f5f7", zorder=0)
         for edge in edges:
@@ -240,10 +298,15 @@ def render(nodes, edges, pages, output, metadata, font, unroll=4):
         for spine in ("top", "right", "left"):
             ax.spines[spine].set_visible(False)
         title = "U4 Predicate Spill" if unroll == 4 else "U1 无 Spill"
+        if software:
+            title = "U4 软件优化 · 2+2 分组重排"
         fig.suptitle(f"Logit Grad · {title} 指令顺序与数据依赖", fontsize=22, y=0.96)
         subtitle = "首组 144 条指令，重复 4 次；每组 13 次 PSTS、14 次 PLDS、27 条 Membar" if page is None else f"细节 {part}/3：第 {start}–{end} 条指令"
         if unroll == 1:
             subtitle = "首轮 22 条指令，重复 16 次；无 PSTS、PLDS 或 Membar"
+        if software:
+            subtitle = ("首组 80 条指令，重复 4 次；无 spill、无 Membar，虚线仅标记源码分组" if page is None
+                        else f"细节 {part}/2：第 {start}–{end} 条指令 · 第{'0、1' if part == 1 else '2、3'}路交错")
         fig.text(0.59, 0.88, subtitle, ha="center", fontsize=15)
         if detail:
             crossing = defaultdict(set)
@@ -255,11 +318,16 @@ def render(nodes, edges, pages, output, metadata, font, unroll=4):
                 for dst, srcs in sorted(crossing.items())) or "无")
             fig.text(0.20, 0.205, textwrap.fill(text, 110, break_long_words=True, break_on_hyphens=False),
                      fontsize=9, va="top", color="#475569")
-        legend = [Line2D([0], [0], color=color, linestyle=style, label=label) for color, style, label in (
-            ("#64748b", "-", "Vector RAW"), ("#9333ea", "-", "Predicate RAW"), ("#15803d", "--", "Predicate spill UB RAW"))]
+        legend_entries = [("#64748b", "-", "Vector RAW"), ("#9333ea", "-", "Predicate RAW")]
+        if any(e["kind"] == "memory_raw" for e in edges):
+            legend_entries.append(("#15803d", "--", "Predicate spill UB RAW"))
+        legend = [Line2D([0], [0], color=color, linestyle=style, label=label)
+                  for color, style, label in legend_entries]
         fig.legend(handles=legend, loc="lower center", bbox_to_anchor=(0.59, 0.075), ncol=3, frameon=False, fontsize=12)
         footer = ("红菱形为真实 Membar；为便于阅读，不叠加屏障扇出和标量依赖。完整节点与依赖见 JSON。"
                   if unroll == 4 else "循环外 PSET、VDUP 常量未放入横轴；相关初始化输入列在上方，完整数据见 JSON。")
+        if software:
+            footer = "2+2 是指令排列分组，不是两组之间的执行屏障；循环外 PSET 和 VDUP 常量及全部依赖保存在 JSON。"
         fig.text(0.59, 0.035, footer,
                  ha="center", fontsize=10, color="#475569")
         stem = stem_prefix if page is None else f"{stem_prefix}_part{part:02d}"
@@ -274,13 +342,18 @@ def main():
     parser.add_argument("--font", type=Path, default=Path("/mnt/c/Windows/Fonts/msyh.ttc"))
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--unroll", type=int, choices=(1, 4), default=4)
+    parser.add_argument("--software", action="store_true", help="Draw the validated U4 software 2+2 schedule")
     args = parser.parse_args()
+    if args.software and args.unroll != 4:
+        parser.error("--software requires --unroll 4")
     output, metadata = args.root / "figure/DAG", args.root / "metadata/figure_sources/DAG"
     stem_prefix = STEM if args.unroll == 4 else "logit_grad_u1_instruction_order"
+    if args.software:
+        stem_prefix = "logit_grad_u4_software_order"
     if not args.overwrite and any(list(path.glob(stem_prefix+"*")) for path in (output, metadata)):
         parser.error("Logit diagrams already exist; use --overwrite to refresh")
-    graph = build_graph(args.root, args.unroll)
-    nodes, edges, pages = prepare(graph, args.unroll)
+    graph = build_graph(args.root, args.unroll, args.software)
+    nodes, edges, pages = prepare(graph, args.unroll, args.software)
     output.mkdir(parents=True, exist_ok=True)
     metadata.mkdir(parents=True, exist_ok=True)
     graph.update(displayed_nodes=nodes, displayed_edges=edges, pages=pages,
@@ -293,7 +366,7 @@ def main():
             memory = node["memory"] or {}
             writer.writerow((node["sequence"], node["id"], node["pc"], node["op"], node["lane"],
                 " ".join(node["reads"]), " ".join(node["writes"]), memory.get("byte_start"), memory.get("byte_end"), node["detail"]))
-    render(nodes, edges, pages, output, metadata, args.font, args.unroll)
+    render(nodes, edges, pages, output, metadata, args.font, args.unroll, args.software)
     lines = ["# Logit Grad U4 Predicate Spill DAG", "",
         "依据纯 CCE 复测的实际编译日志、Canonical 操作数及动态地址核验记录绘制；不是源码级无 spill 示意图。",
         "首组 144 条指令：8 输入 VLD、24 谓词生成/计算、13 PSTS、14 PLDS、44 向量计算、4 输出 VST、27 Membar、10 标量辅助。重复四次，总计 52 PSTS、56 PLDS、108 Membar。",
@@ -311,6 +384,16 @@ def main():
             f"既有测量：CAModel {graph['measurements']['camodel']}、VfSim 全局 {graph['measurements']['global_cycles']} cycles。本次没有重跑预测。", "",
             "| 范围 | PNG | SVG |", "| --- | --- | --- |"]
     labels = ("总览 1–144", "细节 1–48", "细节 49–96", "细节 97–144") if args.unroll == 4 else ("首轮 1–22",)
+    if args.software:
+        lines = ["# Logit Grad U4 软件优化 DAG", "",
+            "依据实际编译日志和已验证 Canonical 回放重建，不是根据源码画出的理想调度。实际动态访存地址逐条与 RV 的 Sn/Sn2/Am 字段核对。",
+            "首个 U4 循环组共 80 条指令：8 VLD、24 谓词生成/计算、44 向量计算、4 VST。循环重复四次，无 PSTS、PLDS 或 Membar。",
+            "软件策略为 2+2 分组：源码先安排第0、1路的交错计算与输出，再安排第2、3路。竖虚线只标记排列分组，不表示硬件必须等待前组完成。",
+            "比较指令靠近消费者，以缩短掩码的存活区间；不是维持原始四路 AABB 排列下的局部修补，也不是完全退回 U1。",
+            "横轴保留程序顺序，曲线表示真实向量/谓词 RAW；不表示执行周期。初始化 PSET、VDUP 位于循环外，完整动态指令和依赖保存在 JSON。",
+            f"既有测量：CAModel {graph['measurements']['camodel']}、VfSim {graph['measurements']['global_cycles']} cycles。本次没有重跑预测。", "",
+            "| 范围 | PNG | SVG |", "| --- | --- | --- |"]
+        labels = ("总览 1–80", "第0、1路 1–40", "第2、3路 41–80")
     for number, label in enumerate(labels):
         stem = stem_prefix if number == 0 else f"{stem_prefix}_part{number:02d}"
         png, svg = (os.path.relpath(output / f"{stem}.{ext}", metadata) for ext in ("png", "svg"))

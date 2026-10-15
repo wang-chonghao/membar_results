@@ -9,6 +9,7 @@
 | Bank-aware U2 无 Spill | [查看](../../../figure/DAG/u2_bank_aware_instruction_order.png) | [查看](../../../figure/DAG/u2_bank_aware_instruction_order.svg) | [两张分段图及说明](u2_bank_aware_instruction_order.md) |
 | Logit Grad U4 Predicate Spill | [查看](../../../figure/DAG/logit_grad_u4_predicate_spill_order.png) | [查看](../../../figure/DAG/logit_grad_u4_predicate_spill_order.svg) | [三张分段图及说明](logit_grad_u4_predicate_spill_order.md) |
 | Logit Grad U1 无 Spill | [查看](../../../figure/DAG/logit_grad_u1_instruction_order.png) | [查看](../../../figure/DAG/logit_grad_u1_instruction_order.svg) | [说明](logit_grad_u1_instruction_order.md) |
+| Logit Grad U4 软件优化 2+2 | [查看](../../../figure/DAG/logit_grad_u4_software_order.png) | [查看](../../../figure/DAG/logit_grad_u4_software_order.svg) | [两张分段图及说明](logit_grad_u4_software_order.md) |
 
 横轴为编译后循环体的程序顺序，不是执行 cycle。黄色表示 load/reload，绿色表示 store，蓝色表示计算，红色菱形表示 Membar，灰色表示标量辅助指令。曲线表示向量 RAW 和 spill UB RAW 依赖。
 
@@ -28,4 +29,5 @@ python3 scripts/plot_u2_instruction_order.py --overwrite
 python3 scripts/plot_bank_aware_instruction_order.py --overwrite
 python3 scripts/plot_logit_predicate_spill_dag.py --overwrite
 python3 scripts/plot_logit_predicate_spill_dag.py --unroll 1 --overwrite
+python3 scripts/plot_logit_predicate_spill_dag.py --software --overwrite
 ```
