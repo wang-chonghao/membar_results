@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import re
 import textwrap
@@ -47,7 +48,7 @@ def build_groups(data):
     return groups
 
 
-def render(groups, output, font_path):
+def render(groups, output, font_path, metadata):
     import matplotlib
 
     matplotlib.use("Agg")
@@ -93,7 +94,7 @@ def render(groups, output, font_path):
                  ha="center", fontsize=12, color="#555555")
         # Do not use bbox_inches='tight': exported images must remain exactly 16:9.
         fig.savefig(output / f"{group['stem']}.png", dpi=160, facecolor="white")
-        fig.savefig(output / f"{group['stem']}.pdf", facecolor="white",
+        fig.savefig(metadata / f"{group['stem']}.pdf", facecolor="white",
                     metadata={"CreationDate": None, "ModDate": None})
         plt.close(fig)
 
@@ -102,6 +103,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--metadata-dir", type=Path)
     parser.add_argument("--font", type=Path)
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
@@ -118,25 +120,28 @@ def main():
     raw = source.read_bytes()
     data = json.loads(raw)
     groups = build_groups(data)
-    output = args.output_dir or args.root / "figure"
-    targets = [output / f"{group['stem']}.{ext}" for group in groups for ext in ("png", "pdf")]
-    targets += [output / "README.md", output / "index.json"]
+    output = args.output_dir or args.root / "figure/cycles"
+    metadata = args.metadata_dir or args.root / "metadata/figure_sources/cycles"
+    targets = [folder / f"{group['stem']}.{ext}" for group in groups
+               for ext, folder in (("png", output), ("pdf", metadata))]
+    targets += [metadata / "README.md", metadata / "index.json"]
     if not args.overwrite and any(path.exists() for path in targets):
         parser.error("Output files already exist; use another --output-dir or explicit --overwrite")
     output.mkdir(parents=True, exist_ok=True)
-    render(groups, output, font)
+    metadata.mkdir(parents=True, exist_ok=True)
+    render(groups, output, font, metadata)
     for group in groups:
         group["files"] = {
-            ext: dict(path=f"{group['stem']}.{ext}",
-                      sha256=hashlib.sha256((output / f"{group['stem']}.{ext}").read_bytes()).hexdigest())
-            for ext in ("png", "pdf")
+            ext: dict(path=os.path.relpath(folder / f"{group['stem']}.{ext}", metadata),
+                      sha256=hashlib.sha256((folder / f"{group['stem']}.{ext}").read_bytes()).hexdigest())
+            for ext, folder in (("png", output), ("pdf", metadata))
         }
     index = dict(source="metadata/spill_candidate_alignment.json", source_date=data["date"],
                  source_sha256=hashlib.sha256(raw).hexdigest(), width=2560, height=1440,
                  series=[dict(key=key, label=label) for key, label, *_ in SERIES], groups=groups)
-    (output / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+    (metadata / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     lines = ["# 版本周期对比图", "",
-             f"与 [HTML 汇总页](../spill_candidate_alignment_summary.html) 默认完整数据一致，共 {len(groups)} 张图、{len(data['rows'])} 行记录。",
+             f"与 [HTML 汇总页]({os.path.relpath(args.root / 'spill_candidate_alignment_summary.html', metadata)}) 默认完整数据一致，共 {len(groups)} 张图、{len(data['rows'])} 行记录。",
              "每个算子和 shape/参数对照组独立绘图，不跨组连接。横轴沿用 HTML 的分类版本轴，不补入未展示的无 spill U2/U4。",
              "四条曲线分别为原 CAModel、VfSim 全局、VfSim 局部、VfSim 软件优化全局 / 保留原版本。缺失值保留断点，不设为零，也不插值。",
              "PNG 为 2560 × 1440（16:9），PDF 为相同比例的矢量图。未重跑预测或修改周期。",
@@ -145,11 +150,11 @@ def main():
              "| 算子 | Shape / 参数组 | PNG | PDF |", "| --- | --- | --- | --- |"]
     for group in groups:
         lines.append(f"| {group['title']} | {group['comparison_label']} | "
-                     f"[查看]({group['stem']}.png) | [下载]({group['stem']}.pdf) |")
+                     f"[查看]({group['files']['png']['path']}) | [下载]({group['files']['pdf']['path']}) |")
     lines += ["", "## 重新生成", "", "在结果仓库根目录执行（需要 matplotlib 和中文字体）：", "", "```bash",
               "python3 scripts/plot_version_cycles.py --font /path/to/chinese-font.ttf --output-dir figure_new", "```", "",
               "默认不覆盖已有文件；确认需要刷新时可显式添加 `--overwrite`。", ""]
-    (output / "README.md").write_text("\n".join(lines), encoding="utf-8")
+    (metadata / "README.md").write_text("\n".join(lines), encoding="utf-8")
     print(json.dumps(dict(directory=str(output), groups=len(groups), rows=len(data["rows"]),
                           png_size=[2560, 1440]), ensure_ascii=False))
 
