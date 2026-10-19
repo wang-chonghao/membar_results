@@ -25,7 +25,9 @@ Git 已禁用自动换行转换，以保留原始日志及源码的字节校验�
 A6 专题没有 A6 CAModel 实测；32 行完整 buffer 超出 248KiB 预算，只用于趋势比较。
 各版本 CCE、结果、警告和图表均归档在 a6_softmax_fp16_row_scaling/ 内，离线可查看。
 A6 完整运行入口另见 a6_softmax_fp16_row_scaling/runnable_a6/README.md；
-提供 8×1024 的 NDDMA/scatter wrapper、显式同步对照及独立 FP16 golden。
+提供 8/12/16/24×1024 的无 membar 融合版和三循环版完整 CCE，按 rows* 分目录；
+均含 NDDMA/scatter wrapper，支持 --rows 与 --variant 选择，并附独立 FP16 golden。
+32 行不提供完整入口；旧 8 行逐行加 barrier 文件保留，但不等于三循环版。
 历史 source/kernel.cce 仍是 VF-only 快照，不作为 host kernel 入口。
 请保留整个目录；只下载 HTML 文件会缺少数据和图表资源。
 GitHub 的文件页面显示 HTML 源码，下载后的 HTML 才是可交互报告。

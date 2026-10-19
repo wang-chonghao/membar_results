@@ -116,11 +116,17 @@ footer { padding-top: 20px; color: #53615a; font-size: 13px; }
 </section>
 <section id="runnable">
 <h2>完整 A6 运行入口</h2>
-<p>下方历史 CCE 链接是 VF-only 快照，只接收 UB 地址，不能直接由 host 启动。现另提供 8×1024 的完整独立 CCE，保留原 VF，增加 GM→UB NDDMA、UB→GM scatter 和外层同步。</p>
-<p><a href="a6_softmax_fp16_row_scaling/runnable_a6/softmax_8x1024_a6.cce">完整 CCE：无内部 membar</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/softmax_8x1024_a6_membar.cce">完整 CCE：显式同步对照</a></p>
-<p>两份入口适配 microbenchmark-cce-direct/run_test.py 的 MB_KERNEL / MB_TENSOR，GM 输入 FP32 32KiB，GM 输出 FP16 16KiB，memB 是内部工作区。含 offset 表共预留 UB 81952B；外层搬运同步不能替代 VF 内部的 UB 地址依赖同步。</p>
+<p>下方历史 CCE 链接是 VF-only 快照，只接收 UB 地址，不能直接由 host 启动。这里另提供 8/12/16/24×1024 的八份完整独立 CCE，保留原 VF，增加 GM→UB NDDMA、UB→GM scatter 和外层同步。32 行按要求不提供完整入口。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="完整可运行 CCE 索引"><table>
+<thead><tr><th scope="col">Shape</th><th scope="col">两行错位融合</th><th scope="col">三循环同步基线</th></tr></thead>
+<tbody><tr><th scope="row">8 × 1024</th><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows8/no_membar.cce">无 membar 融合版 CCE</a></td><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows8/three_loop.cce">三循环 CCE</a></td></tr>
+<tr><th scope="row">12 × 1024</th><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows12/no_membar.cce">无 membar 融合版 CCE</a></td><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows12/three_loop.cce">三循环 CCE</a></td></tr>
+<tr><th scope="row">16 × 1024</th><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows16/no_membar.cce">无 membar 融合版 CCE</a></td><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows16/three_loop.cce">三循环 CCE</a></td></tr>
+<tr><th scope="row">24 × 1024</th><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows24/no_membar.cce">无 membar 融合版 CCE</a></td><td><a href="a6_softmax_fp16_row_scaling/runnable_a6/rows24/three_loop.cce">三循环 CCE</a></td></tr></tbody></table></div>
+<p>无 membar 版的 VF 内没有同步指令；三循环版保留原有两条循环间 mem_bar(VST_VLD)，不是给融合版加 barrier。每份 CCE 适配 microbenchmark-cce-direct/run_test.py 的 MB_KERNEL / MB_TENSOR；输入 FP32、输出 FP16，只使用 block 0。三循环另为 memMax/memSum 分配空间，避免输出覆盖统计量。</p>
 <p><a href="a6_softmax_fp16_row_scaling/runnable_a6/run_softmax_a6.py">启动及自动精度检查脚本</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/check_softmax.py">独立 FP16 softmax golden</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/README.md">完整运行命令与环境说明</a></p>
-<p class="notice">两份完整 CCE 已通过 A6 kernel 编译，但本机缺少 A6 runtime 模型库，尚未通过 A6 CAModel 数值验证。原 runner 的 MB_GOLDEN 不支持 FP16；请使用配套启动脚本强制检查真实输入/输出，不以正常退出代替精度通过。</p>
+<p><a href="a6_softmax_fp16_row_scaling/runnable_a6/validation/shape_kernel_compile.json">八份 CCE 编译记录</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/cases.json">源码校验与 UB 布局</a>。旧 8 行逐行加 barrier 对照保留在目录根部，不是本表的三循环基线。</p>
+<p class="notice">八份完整 CCE 已通过 A6 kernel 编译和设备链接，但本机缺少 A6 runtime 模型库，尚未通过 A6 CAModel 数值验证。原 runner 的 MB_GOLDEN 不支持 FP16；请使用配套启动脚本强制检查真实输入/输出，不以正常退出代替精度通过。24 行还需在目标环境确认额外 VF 栈开销。</p>
 </section>
 <section id="limits">
 <h2>验证范围与限制</h2>

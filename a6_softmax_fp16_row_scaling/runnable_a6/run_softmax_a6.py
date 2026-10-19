@@ -13,7 +13,8 @@ from check_softmax import check
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--runner', type=Path, required=True, help='microbenchmark-cce-direct/run_test.py')
-    parser.add_argument('--variant', choices=('no_membar', 'membar'), default='no_membar')
+    parser.add_argument('--rows', type=int, choices=(8, 12, 16, 24), default=8)
+    parser.add_argument('--variant', choices=('no_membar', 'three_loop', 'membar'), default='no_membar')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--cann-home', type=Path)
     parser.add_argument('--compile-only', action='store_true')
@@ -23,8 +24,13 @@ def main():
         parser.error('--compile-only 和 --check-only 不能同时使用')
     runner = args.runner.expanduser().resolve()
     destination = args.output.expanduser().resolve()
-    kernel_name = 'softmax_8x1024_a6' + ('_membar' if args.variant == 'membar' else '')
-    kernel = Path(__file__).resolve().parent / f'{kernel_name}.cce'
+    root = Path(__file__).resolve().parent
+    if args.variant == 'membar':
+        if args.rows != 8:
+            parser.error('旧 membar 对照只保留 8 行；多 shape 基线请用 three_loop')
+        kernel = root / 'softmax_8x1024_a6_membar.cce'
+    else:
+        kernel = root / f'rows{args.rows}/{args.variant}.cce'
     if not args.check_only:
         if not runner.is_file() or not kernel.is_file():
             parser.error('runner 或完整 CCE 文件不存在')
@@ -54,8 +60,8 @@ def main():
         print('编译完成；未执行 CAModel，也未通过数值校验。')
         return 0
     run_dir = destination / 'run'
-    report = check(run_dir / 'input_input.bin', run_dir / 'output_output.bin')
-    report.update(variant=args.variant, kernel=kernel.name)
+    report = check(run_dir / 'input_input.bin', run_dir / 'output_output.bin', rows=args.rows)
+    report.update(variant=args.variant, kernel=kernel.relative_to(root).as_posix())
     (run_dir / 'softmax_check.json').write_text(
         json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+'\n', encoding='utf-8')
     print(f"[CHECK] {'PASS' if report['passed'] else 'FAIL'} softmax: "

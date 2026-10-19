@@ -1,56 +1,57 @@
-"""从已归档的 gap2 VF 生成适配 microbenchmark-cce-direct 的 A6 完整入口。"""
+"""将已归档的多 shape VF 包装成独立 A6 kernel，不修改历史 VF。"""
 
 import argparse
 import hashlib
 import json
 from pathlib import Path
-import re
 
 
-def build(archive):
-    source = archive / 'a6_softmax_fp16_row_scaling/rows8/gap2/source/kernel.cce'
-    original = source.read_bytes()
-    text = original.decode('utf-8')
-    target = archive / 'a6_softmax_fp16_row_scaling/runnable_a6'
-    target.mkdir(parents=True, exist_ok=True)
-    records = []
-    for with_bar in (False, True):
-        body = text
-        if with_bar:
-            pattern = r'(?m)^(\s*)vlds\(norm_exp0, memB, (?:norm_row|penultimate_norm_row|final_norm_row) \* cols, NORM\);'
-            body, count = re.subn(pattern, r'\1mem_bar(VST_VLD);\n\g<0>', body)
-            if count != 4:
-                raise ValueError('应在四个静态 NORM 行入口插入同步')
-        name = 'softmax_8x1024_a6' + ('_membar' if with_bar else '')
-        header = f'''// A6 完整运行入口；原始 VF 快照与历史预测保持不变。
-// 无 MB_GOLDEN：按行 softmax 和 FP16 由 check_softmax.py 独立校验。
+ROWS = (8, 12, 16, 24)
+COLS = 1024
+UB_BUDGET = 248 * 1024
+VF_NAME = 'attention_softmax_8row_deferbar1024_simd_ub_fixed'
+
+
+def render_kernel(name, body, rows, scalar_bytes):
+    input_bytes = rows * COLS * 4
+    output_bytes = rows * COLS * 2
+    output_base = input_bytes * 2 + scalar_bytes
+    offsets_base = output_base + output_bytes
+    reserved_bytes = offsets_base + 32
+    if reserved_bytes > UB_BUDGET or offsets_base % 32:
+        raise ValueError('UB 布局超出预算或未按 32B 对齐')
+    header = f'''// A6 完整运行入口；GM 输入 FP32，GM 输出 FP16，block_dim=1。
+// 原 VF 保留不变；按行 softmax 由 check_softmax.py 独立校验。
 // MB_KERNEL {name}
-// MB_TENSOR input input fp32 8x1024
-// MB_TENSOR output output fp16 8x1024
+// MB_TENSOR input input fp32 {rows}x{COLS}
+// MB_TENSOR output output fp16 {rows}x{COLS}
 #if __NPU_ARCH__ != 9201
 #error "需要 A6 dav-920r1-vec 编译目标"
 #endif
 
 '''
-        wrapper = f'''
+    wrapper = f'''
 extern "C" __global__ __aicore__
 void {name}(__gm__ float* input, __gm__ half* output)
 {{
-    constexpr uint32_t elements = 8 * 1024;
+    if (get_block_idx() != 0) {{
+        return;
+    }}
+    constexpr uint32_t elements = {rows} * {COLS};
     constexpr uint32_t outputBytes = elements * sizeof(half);
-    // [0, 0x8000) 输入；[0x8000, 0x10000) exp；
-    // [0x10000, 0x14000) FP16 输出；[0x14000, 0x14020) offset 表预留。
+    // memB 的 exp 后另留 {scalar_bytes}B 给三循环的 memMax/memSum。
+    // UB 共预留 {reserved_bytes}B，不含编译器额外 VF 栈。
     __ubuf__ float* memA = (__ubuf__ float*)get_imm(0x0000);
-    __ubuf__ float* memB = (__ubuf__ float*)get_imm(0x8000);
-    __ubuf__ half* memOutput = (__ubuf__ half*)get_imm(0x10000);
-    __ubuf__ uint32_t* offsets = (__ubuf__ uint32_t*)get_imm(0x14000);
+    __ubuf__ float* memB = (__ubuf__ float*)get_imm(0x{input_bytes:x});
+    __ubuf__ half* memOutput = (__ubuf__ half*)get_imm(0x{output_base:x});
+    __ubuf__ uint32_t* offsets = (__ubuf__ uint32_t*)get_imm(0x{offsets_base:x});
 
     nddma_desc inputDesc(nddma_desc::loop_desc(elements, 1, 1));
     nddma_out_to_ub(memA, input, 0, inputDesc, 0, NEAREST_PADDING, 0);
     set_flag(PIPE_MTE2, PIPE_V, EVENT_ID0);
     wait_flag(PIPE_MTE2, PIPE_V, EVENT_ID0);
 
-    attention_softmax_8row_deferbar1024_simd_ub_fixed(memA, memB, memOutput);
+    {VF_NAME}(memA, memB, memOutput);
 
     offsets[0] = 0;
     pipe_barrier(PIPE_ALL);
@@ -58,7 +59,7 @@ void {name}(__gm__ float* input, __gm__ half* output)
     wait_flag(PIPE_V, PIPE_MTE3, EVENT_ID0);
     set_flag(PIPE_S, PIPE_MTE3, EVENT_ID1);
     wait_flag(PIPE_S, PIPE_MTE3, EVENT_ID1);
-    // 按字节搬运 16384B，uint32_t 指针转换不改变 FP16 数据。
+    // outputBytes 是 FP16 输出的字节数，uint32_t 转换不改变位模式。
     scatter_ubuf_to_gm(reinterpret_cast<__gm__ uint32_t*>(output),
                        reinterpret_cast<__ubuf__ uint32_t*>(memOutput),
                        0, 0, offsets, 0, outputBytes, 0, 1);
@@ -66,20 +67,51 @@ void {name}(__gm__ float* input, __gm__ half* output)
     wait_flag(PIPE_MTE3, PIPE_S, EVENT_ID0);
 }}
 '''
-        destination = target / f'{name}.cce'
-        destination.write_text(header+body+wrapper, encoding='utf-8')
-        records.append({'kernel': destination.name, 'kernel_name': name,
-                        'sha256': hashlib.sha256(destination.read_bytes()).hexdigest(),
-                        'internal_membar': with_bar})
-    (target / 'source_provenance.json').write_text(json.dumps({
-        'vf_source': '../rows8/gap2/source/kernel.cce',
-        'vf_source_sha256': hashlib.sha256(original).hexdigest(),
-        'shape': [8, 1024], 'ub_reserved_bytes': 81952,
-        'copyin': 'nddma_out_to_ub, fp32 8192 elements',
-        'copyout': 'scatter_ubuf_to_gm, 16384 bytes, offset_type=0, source_stride=0',
-        'artifacts': records,
-    }, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
-    print(json.dumps(records, ensure_ascii=False))
+    return header + body + wrapper
+
+
+def build(archive):
+    experiment = archive / 'a6_softmax_fp16_row_scaling'
+    target = experiment / 'runnable_a6'
+    records = []
+    for rows in ROWS:
+        for variant, source_variant in (('no_membar', 'gap2'), ('three_loop', 'three_loop')):
+            source_path = Path(f'rows{rows}/{source_variant}/source/kernel.cce')
+            original = (experiment / source_path).read_bytes()
+            body = original.decode('utf-8')
+            expected_bars = 0 if variant == 'no_membar' else 2
+            if f'constexpr int rows = {rows};' not in body or body.count('mem_bar(') != expected_bars:
+                raise ValueError(f'历史 VF 的 shape 或同步数量不符：{source_path}')
+            scalar_bytes = rows * 8 if variant == 'three_loop' else 0
+            name = f'softmax_{rows}x{COLS}_a6_{variant}'
+            destination = target / f'rows{rows}/{variant}.cce'
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(render_kernel(name, body, rows, scalar_bytes), encoding='utf-8')
+            input_bytes, output_bytes = rows * COLS * 4, rows * COLS * 2
+            output_base = input_bytes * 2 + scalar_bytes
+            offsets_base = output_base + output_bytes
+            records.append({
+                'shape': [rows, COLS], 'variant': variant,
+                'kernel': destination.relative_to(target).as_posix(), 'kernel_name': name,
+                'sha256': hashlib.sha256(destination.read_bytes()).hexdigest(),
+                'vf_source': '../' + source_path.as_posix(),
+                'vf_source_sha256': hashlib.sha256(original).hexdigest(),
+                'static_membar_count': expected_bars, 'block_dim': 1,
+                'ub_regions': [
+                    {'name': 'memA', 'start': 0, 'end': input_bytes},
+                    {'name': 'memB_exp', 'start': input_bytes, 'end': 2 * input_bytes},
+                    {'name': 'memB_scalars', 'start': 2 * input_bytes, 'end': output_base},
+                    {'name': 'memOutput', 'start': output_base, 'end': offsets_base},
+                    {'name': 'offsets', 'start': offsets_base, 'end': offsets_base + 32},
+                ],
+                'ub_reserved_bytes': offsets_base + 32,
+            })
+    (target / 'cases.json').write_text(json.dumps({
+        'ub_budget_bytes': UB_BUDGET,
+        'note': '仅完整 kernel 源码与编译验证；没有 A6 CAModel 数值通过结论。32 行不在本次范围内。',
+        'cases': records,
+    }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    print(f'已生成 {len(records)} 份完整 CCE')
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import struct
 import sys
 import tempfile
@@ -82,6 +83,42 @@ class GoldenTest(unittest.TestCase):
 
 
 class BundleTest(unittest.TestCase):
+    def test_shape_kernels_preserve_vf_and_ub_layout(self):
+        catalog = json.loads((HERE / 'cases.json').read_text())
+        cases = catalog['cases']
+        self.assertEqual({(c['shape'][0], c['variant']) for c in cases},
+                         {(r, v) for r in (8, 12, 16, 24) for v in ('no_membar', 'three_loop')})
+        self.assertEqual(len(cases), 8)
+        for case in cases:
+            with self.subTest(kernel=case['kernel']):
+                code = (HERE / case['kernel']).read_bytes()
+                original = (HERE / case['vf_source']).read_bytes()
+                self.assertIn(original, code)
+                self.assertEqual(hashlib.sha256(code).hexdigest(), case['sha256'])
+                self.assertEqual(hashlib.sha256(original).hexdigest(), case['vf_source_sha256'])
+                rows, cols = case['shape']
+                self.assertIn(f'constexpr uint32_t elements = {rows} * {cols};'.encode(), code)
+                self.assertEqual(code.count(b'mem_bar('), case['static_membar_count'])
+                self.assertIn(b'get_block_idx() != 0', code)
+                regions = case['ub_regions']
+                self.assertEqual(regions[0]['start'], 0)
+                for before, after in zip(regions, regions[1:]):
+                    self.assertEqual(before['end'], after['start'])
+                self.assertEqual(regions[0]['end'], rows * cols * 4)
+                self.assertEqual(regions[2]['end'] - regions[2]['start'],
+                                 rows * 8 if case['variant'] == 'three_loop' else 0)
+                self.assertEqual(regions[3]['end'] - regions[3]['start'], rows * cols * 2)
+                self.assertEqual(regions[-1]['end'], case['ub_reserved_bytes'])
+                self.assertLessEqual(case['ub_reserved_bytes'], catalog['ub_budget_bytes'])
+                for name in ('memA', 'memB', 'memOutput', 'offsets'):
+                    region_name = 'memB_exp' if name == 'memB' else name
+                    start = next(r['start'] for r in regions if r['name'] == region_name)
+                    match = re.search(rf'\* {name} = .*get_imm\((0x[0-9a-f]+)\)', code.decode())
+                    self.assertIsNotNone(match)
+                    self.assertEqual(int(match.group(1), 16), start)
+                self.assertIn(b'outputBytes = elements * sizeof(half)', code)
+                self.assertIn(b'0, 0, offsets, 0, outputBytes, 0, 1', code)
+
     def test_provenance_and_original_vf(self):
         provenance = json.loads((HERE / 'source_provenance.json').read_text())
         original = (HERE.parent / 'rows8/gap2/source/kernel.cce').read_bytes()
@@ -112,6 +149,43 @@ class BundleTest(unittest.TestCase):
             self.assertEqual([(t.direction, t.name, t.dtype, t.elements) for t in manifest.tensors],
                              [('input', 'input', 'fp32', 8192), ('output', 'output', 'fp16', 8192)])
             self.assertEqual(manifest.goldens, ())
+        for case in json.loads((HERE / 'cases.json').read_text())['cases']:
+            with self.subTest(kernel=case['kernel']):
+                manifest = module.parse_kernel_manifest(HERE / case['kernel'], 256)
+                self.assertEqual(manifest.kernel_name, case['kernel_name'])
+                elements = math.prod(case['shape'])
+                self.assertEqual([(t.direction, t.name, t.dtype, t.elements) for t in manifest.tensors],
+                                 [('input', 'input', 'fp32', elements),
+                                  ('output', 'output', 'fp16', elements)])
+                self.assertEqual(manifest.goldens, ())
+
+    def test_launcher_selects_all_shapes_and_variants(self):
+        for rows in (8, 12, 16, 24):
+            for variant in ('no_membar', 'three_loop'):
+                with self.subTest(rows=rows, variant=variant), tempfile.TemporaryDirectory() as folder:
+                    folder = Path(folder)
+                    runner = folder / 'run_test.py'
+                    runner.touch()
+                    output = folder / 'result'
+
+                    def run(command, **kwargs):
+                        self.assertEqual(Path(command[command.index('--kernel') + 1]),
+                                         HERE / f'rows{rows}/{variant}.cce')
+                        self.assertEqual(command[command.index('--block-dim') + 1], '1')
+                        run_dir = output / 'run'
+                        run_dir.mkdir(parents=True)
+                        (run_dir / 'input_input.bin').write_bytes(struct.pack('<f', 0) * rows * 1024)
+                        (run_dir / 'output_output.bin').write_bytes(struct.pack('<e', 1/1024) * rows * 1024)
+
+                    with patch.object(sys, 'argv', ['run_softmax_a6.py', '--runner', str(runner),
+                                                   '--output', str(output), '--rows', str(rows),
+                                                   '--variant', variant]), \
+                            patch.object(run_softmax_a6.subprocess, 'run', side_effect=run), \
+                            contextlib.redirect_stdout(io.StringIO()):
+                        self.assertEqual(run_softmax_a6.main(), 0)
+                    report = json.loads((output / 'run/softmax_check.json').read_text())
+                    self.assertEqual(report['shape'], [rows, 1024])
+                    self.assertTrue(report['passed'])
 
     def test_launcher_forces_a6_and_checks_fp16(self):
         with tempfile.TemporaryDirectory() as folder:
