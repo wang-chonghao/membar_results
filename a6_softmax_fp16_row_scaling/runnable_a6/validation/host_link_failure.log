@@ -1,0 +1,49 @@
+CANN_HOME=/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0
+ARCH=x86_64-linux
+SOC_VERSION=Ascend910_9691
+CORE_ARCH=dav-920r1-vec
+CORE_SIM_DIR=dav_9201
+FULL_SIMULATOR_HOME=
+OUTPUT=/tmp/vfsim-a6-softmax-compile-20261019/no_membar
+[INFO] generic tensor mode: kernel=softmax_8x1024_a6, args=2
+  arg[0] input input: fp32[8192]
+  arg[1] output output: fp16[8192]
+
+[STAGE] compile kernel
+[INFO] ccec=/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/bin/ccec
+[INFO] ld.lld=/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/bin/ld.lld
+[INFO] kernel=/mnt/e/vfsimulator/results/membar_results/a6_softmax_fp16_row_scaling/runnable_a6/softmax_8x1024_a6.cce
+[INFO] cce_aicore_arch=dav-920r1-vec
+ld.lld: warning: cannot find entry symbol _start; not setting start address
+
+[STAGE] compile native runner
+[INFO] runner_source=/mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp
+/mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp: In function ‘int {anonymous}::Run(const std::string&, const std::string&, const std::string&, uint32_t, uint32_t)’:
+/mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp:251:19: warning: ‘ACL_RT_LAUNCH_KERNEL_ATTR_LOCAL_MEMORY_SIZE’ is deprecated: Use ACL_RT_LAUNCH_KERNEL_ATTR_DYN_UBUF_SIZE instead [-Wdeprecated-declarations]
+  251 |         attr.id = ACL_RT_LAUNCH_KERNEL_ATTR_LOCAL_MEMORY_SIZE;
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/include/acl/acl.h:14,
+                 from /mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp:11:
+/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/include/acl/acl_rt.h:450:5: note: declared here
+  450 |     ACL_RT_LAUNCH_KERNEL_ATTR_LOCAL_MEMORY_SIZE
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp:252:20: warning: ‘aclrtLaunchKernelAttrValue::localMemorySize’ is deprecated: Use dynUbufSize instead [-Wdeprecated-declarations]
+  252 |         attr.value.localMemorySize = localMemorySize;
+      |                    ^~~~~~~~~~~~~~~
+/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/include/acl/acl_rt.h:474:14: note: declared here
+  474 |     uint32_t localMemorySize; // DEPRECATED: Use dynUBufSize
+      |              ^~~~~~~~~~~~~~~
+/mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp:252:20: warning: ‘aclrtLaunchKernelAttrValue::localMemorySize’ is deprecated: Use dynUbufSize instead [-Wdeprecated-declarations]
+  252 |         attr.value.localMemorySize = localMemorySize;
+      |                    ^~~~~~~~~~~~~~~
+/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/include/acl/acl_rt.h:474:14: note: declared here
+  474 |     uint32_t localMemorySize; // DEPRECATED: Use dynUBufSize
+      |              ^~~~~~~~~~~~~~~
+/mnt/d/mask_test/microbenchmark-cce-direct/runner/generic_runner.cpp:252:20: warning: ‘aclrtLaunchKernelAttrValue::localMemorySize’ is deprecated: Use dynUbufSize instead [-Wdeprecated-declarations]
+  252 |         attr.value.localMemorySize = localMemorySize;
+      |                    ^~~~~~~~~~~~~~~
+/home/lenovo/.codex/memories/cann-9.0.0/cann-9.0.0/x86_64-linux/include/acl/acl_rt.h:474:14: note: declared here
+  474 |     uint32_t localMemorySize; // DEPRECATED: Use dynUBufSize
+      |              ^~~~~~~~~~~~~~~
+/usr/bin/ld: cannot find -lruntime_camodel: No such file or directory
+collect2: error: ld returned 1 exit status

@@ -182,6 +182,7 @@ footer { padding-top: 20px; color: #53615a; font-size: 13px; }
 <a href="#schedule">两行错位流水</a>
 <a href="#results">多 Shape 周期与 UB</a>
 <a href="#ipc">计算完成 IPC</a>
+<a href="#runnable">完整 A6 运行入口</a>
 <a href="#limits">验证范围与限制</a>
 <a href="#sources">各版本 CCE 与证据</a>
 <a href="spill_candidate_alignment_summary.html">A5 实验汇总</a>
@@ -228,6 +229,14 @@ footer { padding-top: 20px; color: #53615a; font-size: 13px; }
 <figure><a href="a6_softmax_fp16_row_scaling/plots/ipc_five_rows_window10.png"><img src="a6_softmax_fp16_row_scaling/plots/ipc_five_rows_window10.png" width="3240" height="2700" alt="8、12、16、24、32 行的三循环与融合版计算完成 IPC 五联图" loading="lazy"></a>
 <figcaption>从上到下为 8、12、16、24、32 行；最后一组仅供趋势观察。图表元数据与十组周期、计算事件数已核对。</figcaption></figure>
 <p>IPC CSV：<a href="a6_softmax_fp16_row_scaling/plots/ipc_rows8_window10.csv">8 行</a> · <a href="a6_softmax_fp16_row_scaling/plots/ipc_rows12_window10.csv">12 行</a> · <a href="a6_softmax_fp16_row_scaling/plots/ipc_rows16_window10.csv">16 行</a> · <a href="a6_softmax_fp16_row_scaling/plots/ipc_rows24_window10.csv">24 行</a> · <a href="a6_softmax_fp16_row_scaling/plots/ipc_rows32_window10.csv">32 行</a></p>
+</section>
+<section id="runnable">
+<h2>完整 A6 运行入口</h2>
+<p>下方历史 CCE 链接是 VF-only 快照，只接收 UB 地址，不能直接由 host 启动。现另提供 8×1024 的完整独立 CCE，保留原 VF，增加 GM→UB NDDMA、UB→GM scatter 和外层同步。</p>
+<p><a href="a6_softmax_fp16_row_scaling/runnable_a6/softmax_8x1024_a6.cce">完整 CCE：无内部 membar</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/softmax_8x1024_a6_membar.cce">完整 CCE：显式同步对照</a></p>
+<p>两份入口适配 microbenchmark-cce-direct/run_test.py 的 MB_KERNEL / MB_TENSOR，GM 输入 FP32 32KiB，GM 输出 FP16 16KiB，memB 是内部工作区。含 offset 表共预留 UB 81952B；外层搬运同步不能替代 VF 内部的 UB 地址依赖同步。</p>
+<p><a href="a6_softmax_fp16_row_scaling/runnable_a6/run_softmax_a6.py">启动及自动精度检查脚本</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/check_softmax.py">独立 FP16 softmax golden</a> · <a href="a6_softmax_fp16_row_scaling/runnable_a6/README.md">完整运行命令与环境说明</a></p>
+<p class="notice">两份完整 CCE 已通过 A6 kernel 编译，但本机缺少 A6 runtime 模型库，尚未通过 A6 CAModel 数值验证。原 runner 的 MB_GOLDEN 不支持 FP16；请使用配套启动脚本强制检查真实输入/输出，不以正常退出代替精度通过。</p>
 </section>
 <section id="limits">
 <h2>验证范围与限制</h2>

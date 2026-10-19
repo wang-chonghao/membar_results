@@ -1,0 +1,25 @@
+{
+  "vf_source": "../rows8/gap2/source/kernel.cce",
+  "vf_source_sha256": "070889258b74dadc00447f04b0abe900b7fe7849d4012d517cb3bf1a02bb635a",
+  "shape": [
+    8,
+    1024
+  ],
+  "ub_reserved_bytes": 81952,
+  "copyin": "nddma_out_to_ub, fp32 8192 elements",
+  "copyout": "scatter_ubuf_to_gm, 16384 bytes, offset_type=0, source_stride=0",
+  "artifacts": [
+    {
+      "kernel": "softmax_8x1024_a6.cce",
+      "kernel_name": "softmax_8x1024_a6",
+      "sha256": "4f0996e6ea5eb00f8ae6f1bc5740cf235b0c09aea9841b77292101cf605e725e",
+      "internal_membar": false
+    },
+    {
+      "kernel": "softmax_8x1024_a6_membar.cce",
+      "kernel_name": "softmax_8x1024_a6_membar",
+      "sha256": "f66a17efbc43f9c15172ec15bcf801e7ffbe14b8fcc157cf1d93a3b106740ac1",
+      "internal_membar": true
+    }
+  ]
+}
