@@ -334,7 +334,7 @@ def build_page(data):
 </head>
 <body>
 <header><div><p>A5 / DV100 · CANN 9.0.0-beta.1 · 本轮寻优与历史归档</p><h1>Spill 与同步优化结果</h1></div>
-<nav aria-label="归档导航"><a href="spill_candidate_alignment_summary.md">实验总结与字段说明</a><a href="spill_candidate_alignment.csv" download>结果 CSV</a><a href="metadata/spill_candidate_manifest.json">文件校验清单</a></nav></header>
+<nav aria-label="归档导航"><a href="spill_candidate_alignment_summary.md">实验总结与字段说明</a><a href="spill_candidate_alignment.csv" download>结果 CSV</a><a href="metadata/spill_candidate_manifest.json">文件校验清单</a><a href="a6_softmax_fusion_results_summary.html">A6 Softmax 融合与多 Shape</a></nav></header>
 <main>
 <section class="totals" aria-label="实验统计">
 <div><span>Case 分组</span><strong>{len(data['case_order'])}</strong></div><div><span>Spill 版本 / U1 与原始基线</span><strong>{sum(row['spill'] for row in data['rows'])} / {sum(not row['spill'] for row in data['rows'])}</strong></div><div><span>已验证无 spill 软件方案</span><strong>{sum(row.get('plan') is not None for row in data['rows'])}</strong></div><div><span>搜索候选 / 编译验证</span><strong>{data['candidate_count']} / {data['finalists']}</strong></div>
