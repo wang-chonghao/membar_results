@@ -1,0 +1,86 @@
+{
+  "case": "gelu_poly",
+  "variant": "u12",
+  "original_cycles": 6037,
+  "explicit_cycles": 6050,
+  "cycle_delta": 13,
+  "golden": {
+    "passed": true,
+    "checks": [
+      {
+        "output": "output0.bin",
+        "elements": 6144,
+        "mismatches": 0,
+        "max_abs_error": 1.1920928955078125e-07
+      }
+    ]
+  },
+  "output_checks": [
+    {
+      "output": "output0.bin",
+      "byte_equal": true,
+      "original_sha256": "ee7fc9cef6d98e74d68f92bd244d29a79471a7bbf16cd0e8579074eb317e0dc6",
+      "explicit_sha256": "ee7fc9cef6d98e74d68f92bd244d29a79471a7bbf16cd0e8579074eb317e0dc6"
+    }
+  ],
+  "original": {
+    "opcode_counts": {
+      "RV_PSET": 2,
+      "RV_VLD": 96,
+      "RV_VMULS": 288,
+      "RV_SMEM_BAR": 320,
+      "RV_VSTI": 144,
+      "RV_VMINS": 96,
+      "RV_VMAXS": 96,
+      "RV_VSTS": 16,
+      "RV_VMUL": 1056,
+      "RV_VADDS": 1056,
+      "RV_VLDI": 144,
+      "RV_VLDS": 16,
+      "RV_VDIV": 96,
+      "RV_VST": 96
+    },
+    "spill_counts": {
+      "vector_store": 160,
+      "vector_load": 160
+    },
+    "scalar_spill_counts": {
+      "RV_SSTI": 32,
+      "RV_SLDI": 32
+    }
+  },
+  "recompiled": {
+    "opcode_counts": {
+      "RV_PSET": 2,
+      "RV_VLD": 96,
+      "RV_VMULS": 288,
+      "RV_SMEM_BAR": 320,
+      "RV_VSTI": 144,
+      "RV_VMINS": 96,
+      "RV_VMAXS": 96,
+      "RV_VSTS": 16,
+      "RV_VMUL": 1056,
+      "RV_VADDS": 1056,
+      "RV_VLDI": 144,
+      "RV_VLDS": 16,
+      "RV_VDIV": 96,
+      "RV_VST": 96
+    },
+    "spill_counts": {
+      "vector_store": 160,
+      "vector_load": 160
+    },
+    "scalar_spill_counts": {}
+  },
+  "original_semantic_events": 3520,
+  "recompiled_semantic_events": 3520,
+  "normalized_dynamic_dataflow_and_addresses_equal": true,
+  "difference_count": 0,
+  "first_differences": [],
+  "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+  "source_sha256": "b3c364e83e1254ed4b737b0315b887e5c8c35d832d22a97bfde8f2a3b1800ac2",
+  "log_sha256": {
+    "original": "960dae24932661cd0ac12332e01f5fd5786ff2f99876fe23e5048dbcce689d55",
+    "explicit": "d19396b7111dc7d0269f23faf641a5e18e5f82a2c8f61a090d59354ab14619ba"
+  }
+}

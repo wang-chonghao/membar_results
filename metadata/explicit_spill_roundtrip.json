@@ -1,0 +1,473 @@
+[
+  {
+    "case": "adam_apply_one",
+    "variant": "u6",
+    "original_cycles": 1435,
+    "explicit_cycles": 1438,
+    "cycle_delta": 3,
+    "golden": {
+      "passed": true,
+      "checks": [
+        {
+          "output": "output0.bin",
+          "elements": 3072,
+          "mismatches": 0,
+          "max_abs_error": 5.960464477539063e-08
+        },
+        {
+          "output": "output1.bin",
+          "elements": 3072,
+          "mismatches": 0,
+          "max_abs_error": 5.960464477539063e-08
+        },
+        {
+          "output": "output2.bin",
+          "elements": 3072,
+          "mismatches": 0,
+          "max_abs_error": 1.1920928955078125e-07
+        }
+      ]
+    },
+    "output_checks": [
+      {
+        "output": "output0.bin",
+        "byte_equal": true,
+        "original_sha256": "4f54a40afdd15806ea2999e2ec33f605755b33f42d2c819e79705600c214b160",
+        "explicit_sha256": "4f54a40afdd15806ea2999e2ec33f605755b33f42d2c819e79705600c214b160"
+      },
+      {
+        "output": "output1.bin",
+        "byte_equal": true,
+        "original_sha256": "757bfa61c0b3c79aa1cdcc2e020b758404ee026d486cf8a6e3f1de3ad7179eb7",
+        "explicit_sha256": "757bfa61c0b3c79aa1cdcc2e020b758404ee026d486cf8a6e3f1de3ad7179eb7"
+      },
+      {
+        "output": "output2.bin",
+        "byte_equal": true,
+        "original_sha256": "746016a0f0fa7af60f48b9394f742597d5a17a366b5e30a98cf57bcd5b4f5b0a",
+        "explicit_sha256": "746016a0f0fa7af60f48b9394f742597d5a17a366b5e30a98cf57bcd5b4f5b0a"
+      }
+    ],
+    "original": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VLDI": 38,
+        "RV_VLD": 192,
+        "RV_SMEM_BAR": 64,
+        "RV_VSTI": 32,
+        "RV_VMUL": 288,
+        "RV_VADD": 144,
+        "RV_VSQRT": 48,
+        "RV_VDIV": 48,
+        "RV_VSUB": 48,
+        "RV_VST": 144
+      },
+      "spill_counts": {
+        "vector_store": 32,
+        "vector_load": 32
+      },
+      "scalar_spill_counts": {}
+    },
+    "recompiled": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VLDI": 38,
+        "RV_VLD": 192,
+        "RV_SMEM_BAR": 64,
+        "RV_VSTI": 32,
+        "RV_VMUL": 288,
+        "RV_VADD": 144,
+        "RV_VSQRT": 48,
+        "RV_VDIV": 48,
+        "RV_VSUB": 48,
+        "RV_VST": 144
+      },
+      "spill_counts": {
+        "vector_store": 32,
+        "vector_load": 32
+      },
+      "scalar_spill_counts": {}
+    },
+    "original_semantic_events": 1046,
+    "recompiled_semantic_events": 1046,
+    "normalized_dynamic_dataflow_and_addresses_equal": true,
+    "difference_count": 0,
+    "first_differences": [],
+    "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+    "source_sha256": "86c8abd1a4dba54a5f4feea109a424088bdee58dfd23d18921b50070fa82c697",
+    "log_sha256": {
+      "original": "1766a57f9cb6af409b206f21f27d1025662b2efb863a3c3ae80bce2c17f434ac",
+      "explicit": "d682ad48f4f1ce6f5025dd37c78fe43686a79fa2af7f0014f39dba99237b64bd"
+    }
+  },
+  {
+    "case": "gelu_poly",
+    "variant": "u12",
+    "original_cycles": 6037,
+    "explicit_cycles": 6050,
+    "cycle_delta": 13,
+    "golden": {
+      "passed": true,
+      "checks": [
+        {
+          "output": "output0.bin",
+          "elements": 6144,
+          "mismatches": 0,
+          "max_abs_error": 1.1920928955078125e-07
+        }
+      ]
+    },
+    "output_checks": [
+      {
+        "output": "output0.bin",
+        "byte_equal": true,
+        "original_sha256": "ee7fc9cef6d98e74d68f92bd244d29a79471a7bbf16cd0e8579074eb317e0dc6",
+        "explicit_sha256": "ee7fc9cef6d98e74d68f92bd244d29a79471a7bbf16cd0e8579074eb317e0dc6"
+      }
+    ],
+    "original": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VLD": 96,
+        "RV_VMULS": 288,
+        "RV_SMEM_BAR": 320,
+        "RV_VSTI": 144,
+        "RV_VMINS": 96,
+        "RV_VMAXS": 96,
+        "RV_VSTS": 16,
+        "RV_VMUL": 1056,
+        "RV_VADDS": 1056,
+        "RV_VLDI": 144,
+        "RV_VLDS": 16,
+        "RV_VDIV": 96,
+        "RV_VST": 96
+      },
+      "spill_counts": {
+        "vector_store": 160,
+        "vector_load": 160
+      },
+      "scalar_spill_counts": {
+        "RV_SSTI": 32,
+        "RV_SLDI": 32
+      }
+    },
+    "recompiled": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VLD": 96,
+        "RV_VMULS": 288,
+        "RV_SMEM_BAR": 320,
+        "RV_VSTI": 144,
+        "RV_VMINS": 96,
+        "RV_VMAXS": 96,
+        "RV_VSTS": 16,
+        "RV_VMUL": 1056,
+        "RV_VADDS": 1056,
+        "RV_VLDI": 144,
+        "RV_VLDS": 16,
+        "RV_VDIV": 96,
+        "RV_VST": 96
+      },
+      "spill_counts": {
+        "vector_store": 160,
+        "vector_load": 160
+      },
+      "scalar_spill_counts": {}
+    },
+    "original_semantic_events": 3520,
+    "recompiled_semantic_events": 3520,
+    "normalized_dynamic_dataflow_and_addresses_equal": true,
+    "difference_count": 0,
+    "first_differences": [],
+    "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+    "source_sha256": "b3c364e83e1254ed4b737b0315b887e5c8c35d832d22a97bfde8f2a3b1800ac2",
+    "log_sha256": {
+      "original": "960dae24932661cd0ac12332e01f5fd5786ff2f99876fe23e5048dbcce689d55",
+      "explicit": "d19396b7111dc7d0269f23faf641a5e18e5f82a2c8f61a090d59354ab14619ba"
+    }
+  },
+  {
+    "case": "swiglu_grad",
+    "variant": "u6",
+    "original_cycles": 3281,
+    "explicit_cycles": 3283,
+    "cycle_delta": 2,
+    "golden": {
+      "passed": true,
+      "checks": [
+        {
+          "output": "output0.bin",
+          "elements": 6144,
+          "mismatches": 0,
+          "max_abs_error": 1.6689300537109375e-06
+        },
+        {
+          "output": "output1.bin",
+          "elements": 6144,
+          "mismatches": 0,
+          "max_abs_error": 9.5367431640625e-07
+        }
+      ]
+    },
+    "output_checks": [
+      {
+        "output": "output0.bin",
+        "byte_equal": true,
+        "original_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2",
+        "explicit_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2"
+      },
+      {
+        "output": "output1.bin",
+        "byte_equal": true,
+        "original_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7",
+        "explicit_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7"
+      }
+    ],
+    "original": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VDUPS": 1,
+        "RV_VLD": 288,
+        "RV_SMEM_BAR": 160,
+        "RV_VSTI": 80,
+        "RV_VMULS": 192,
+        "RV_VEXP": 96,
+        "RV_VADDS": 288,
+        "RV_VDIV": 96,
+        "RV_VMUL": 576,
+        "RV_VLDI": 80,
+        "RV_VST": 192
+      },
+      "spill_counts": {
+        "vector_store": 80,
+        "vector_load": 80
+      },
+      "scalar_spill_counts": {}
+    },
+    "recompiled": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VDUPS": 1,
+        "RV_VLD": 288,
+        "RV_SMEM_BAR": 160,
+        "RV_VSTI": 80,
+        "RV_VMULS": 192,
+        "RV_VEXP": 96,
+        "RV_VADDS": 288,
+        "RV_VDIV": 96,
+        "RV_VMUL": 576,
+        "RV_VLDI": 80,
+        "RV_VST": 192
+      },
+      "spill_counts": {
+        "vector_store": 80,
+        "vector_load": 80
+      },
+      "scalar_spill_counts": {}
+    },
+    "original_semantic_events": 2049,
+    "recompiled_semantic_events": 2049,
+    "normalized_dynamic_dataflow_and_addresses_equal": true,
+    "difference_count": 0,
+    "first_differences": [],
+    "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+    "source_sha256": "de2204df1f5c17713fbbddc385d7fc040a4a91127ceef3d72b33853269f0d54b",
+    "log_sha256": {
+      "original": "7928eb0fb82d617968f2b031317ecd210d97e3f19098737d2ae86c73c06f3252",
+      "explicit": "e5a3594c1a329cb3daea8618b2f10c0d0b7b2ad03159e9d6cb028aa7a56dad17"
+    }
+  },
+  {
+    "case": "swiglu_grad",
+    "variant": "u8",
+    "original_cycles": 8243,
+    "explicit_cycles": 8233,
+    "cycle_delta": -10,
+    "golden": {
+      "passed": true,
+      "checks": [
+        {
+          "output": "output0.bin",
+          "elements": 6144,
+          "mismatches": 0,
+          "max_abs_error": 1.6689300537109375e-06
+        },
+        {
+          "output": "output1.bin",
+          "elements": 6144,
+          "mismatches": 0,
+          "max_abs_error": 9.5367431640625e-07
+        }
+      ]
+    },
+    "output_checks": [
+      {
+        "output": "output0.bin",
+        "byte_equal": true,
+        "original_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2",
+        "explicit_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2"
+      },
+      {
+        "output": "output1.bin",
+        "byte_equal": true,
+        "original_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7",
+        "explicit_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7"
+      }
+    ],
+    "original": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VDUPS": 1,
+        "RV_SMEM_BAR": 421,
+        "RV_VSTS": 25,
+        "RV_VLD": 288,
+        "RV_VSTI": 180,
+        "RV_VMULS": 192,
+        "RV_VMOV": 120,
+        "RV_VEXP": 96,
+        "RV_VADDS": 288,
+        "RV_VLDS": 36,
+        "RV_VDIV": 96,
+        "RV_VMUL": 576,
+        "RV_VLDI": 180,
+        "RV_VST": 192
+      },
+      "spill_counts": {
+        "vector_store": 205,
+        "vector_load": 216
+      },
+      "scalar_spill_counts": {
+        "RV_SSTI": 61,
+        "RV_SLDI": 61
+      }
+    },
+    "recompiled": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VDUPS": 1,
+        "RV_SMEM_BAR": 421,
+        "RV_VSTS": 25,
+        "RV_VLD": 288,
+        "RV_VSTI": 180,
+        "RV_VMULS": 192,
+        "RV_VMOV": 120,
+        "RV_VEXP": 96,
+        "RV_VADDS": 288,
+        "RV_VLDS": 36,
+        "RV_VDIV": 96,
+        "RV_VMUL": 576,
+        "RV_VLDI": 180,
+        "RV_VST": 192
+      },
+      "spill_counts": {
+        "vector_store": 205,
+        "vector_load": 216
+      },
+      "scalar_spill_counts": {}
+    },
+    "original_semantic_events": 2571,
+    "recompiled_semantic_events": 2571,
+    "normalized_dynamic_dataflow_and_addresses_equal": true,
+    "difference_count": 0,
+    "first_differences": [],
+    "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+    "source_sha256": "00dbf6e24aa84d5c1e725561eefd6e3c90e915b90eef59c55886c8f4f2efa33a",
+    "log_sha256": {
+      "original": "ce3a69d0e06dee2562012c6b63642fa7f387cb1a57701a689823924bdad59da5",
+      "explicit": "a186db272d983a8207fff1448494a5a50135b2d644fecc32931bcd345e32d0d6"
+    }
+  },
+  {
+    "case": "gelu_grad",
+    "variant": "u8",
+    "original_cycles": 2553,
+    "explicit_cycles": 2541,
+    "cycle_delta": -12,
+    "golden": {
+      "passed": true,
+      "checks": [
+        {
+          "output": "output.bin",
+          "elements": 4096,
+          "mismatches": 0,
+          "max_abs_error": 4.76837158203125e-07
+        }
+      ]
+    },
+    "output_checks": [
+      {
+        "output": "output.bin",
+        "byte_equal": true,
+        "original_sha256": "49f05160fb49e1efd3381e8e14ce7e778f322dd4fe3f9bc38fa0ed9252d09314",
+        "explicit_sha256": "49f05160fb49e1efd3381e8e14ce7e778f322dd4fe3f9bc38fa0ed9252d09314"
+      }
+    ],
+    "original": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VDUPS": 4,
+        "RV_VMOV": 130,
+        "RV_VLDS": 128,
+        "RV_SMEM_BAR": 128,
+        "RV_VSTI": 40,
+        "RV_VMUL": 448,
+        "RV_VAXPY": 128,
+        "RV_VEXP": 64,
+        "RV_VADDS": 64,
+        "RV_VDIV": 64,
+        "RV_VCMP_EQ": 64,
+        "RV_PSTI": 24,
+        "RV_PLDI": 24,
+        "RV_VSEL": 64,
+        "RV_VADD": 64,
+        "RV_VLDI": 40,
+        "RV_VSTS": 64
+      },
+      "spill_counts": {
+        "vector_store": 40,
+        "predicate_store": 24,
+        "predicate_load": 24,
+        "vector_load": 40
+      },
+      "scalar_spill_counts": {}
+    },
+    "recompiled": {
+      "opcode_counts": {
+        "RV_PSET": 2,
+        "RV_VDUPS": 4,
+        "RV_VMOV": 132,
+        "RV_VLDI": 168,
+        "RV_SMEM_BAR": 128,
+        "RV_VSTI": 104,
+        "RV_VMUL": 448,
+        "RV_VAXPY": 128,
+        "RV_VEXP": 64,
+        "RV_VADDS": 64,
+        "RV_VDIV": 64,
+        "RV_VCMP_EQ": 64,
+        "RV_PSTI": 24,
+        "RV_PLDI": 24,
+        "RV_VSEL": 64,
+        "RV_VADD": 64
+      },
+      "spill_counts": {
+        "vector_store": 40,
+        "predicate_store": 24,
+        "predicate_load": 24,
+        "vector_load": 40
+      },
+      "scalar_spill_counts": {}
+    },
+    "original_semantic_events": 1412,
+    "recompiled_semantic_events": 1412,
+    "normalized_dynamic_dataflow_and_addresses_equal": true,
+    "difference_count": 0,
+    "first_differences": [],
+    "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+    "source_sha256": "94a4bab2017a4c932752fe5c688b7c358cb828b86ffb55a6c37e4214fe0761d4",
+    "log_sha256": {
+      "original": "04b58757b17b6481c2cf3e45ebb797247d28f9e664f8d0edafe22eb4103d75e7",
+      "explicit": "a3cf66aeb47ecafee2a5b48e052366431ed2c8dbd9cedd72e5f5e6cc3e9c431c"
+    }
+  }
+]

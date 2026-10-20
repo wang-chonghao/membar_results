@@ -1,0 +1,100 @@
+{
+  "case": "swiglu_grad",
+  "variant": "u8",
+  "original_cycles": 8243,
+  "explicit_cycles": 8233,
+  "cycle_delta": -10,
+  "golden": {
+    "passed": true,
+    "checks": [
+      {
+        "output": "output0.bin",
+        "elements": 6144,
+        "mismatches": 0,
+        "max_abs_error": 1.6689300537109375e-06
+      },
+      {
+        "output": "output1.bin",
+        "elements": 6144,
+        "mismatches": 0,
+        "max_abs_error": 9.5367431640625e-07
+      }
+    ]
+  },
+  "output_checks": [
+    {
+      "output": "output0.bin",
+      "byte_equal": true,
+      "original_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2",
+      "explicit_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2"
+    },
+    {
+      "output": "output1.bin",
+      "byte_equal": true,
+      "original_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7",
+      "explicit_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7"
+    }
+  ],
+  "original": {
+    "opcode_counts": {
+      "RV_PSET": 2,
+      "RV_VDUPS": 1,
+      "RV_SMEM_BAR": 421,
+      "RV_VSTS": 25,
+      "RV_VLD": 288,
+      "RV_VSTI": 180,
+      "RV_VMULS": 192,
+      "RV_VMOV": 120,
+      "RV_VEXP": 96,
+      "RV_VADDS": 288,
+      "RV_VLDS": 36,
+      "RV_VDIV": 96,
+      "RV_VMUL": 576,
+      "RV_VLDI": 180,
+      "RV_VST": 192
+    },
+    "spill_counts": {
+      "vector_store": 205,
+      "vector_load": 216
+    },
+    "scalar_spill_counts": {
+      "RV_SSTI": 61,
+      "RV_SLDI": 61
+    }
+  },
+  "recompiled": {
+    "opcode_counts": {
+      "RV_PSET": 2,
+      "RV_VDUPS": 1,
+      "RV_SMEM_BAR": 421,
+      "RV_VSTS": 25,
+      "RV_VLD": 288,
+      "RV_VSTI": 180,
+      "RV_VMULS": 192,
+      "RV_VMOV": 120,
+      "RV_VEXP": 96,
+      "RV_VADDS": 288,
+      "RV_VLDS": 36,
+      "RV_VDIV": 96,
+      "RV_VMUL": 576,
+      "RV_VLDI": 180,
+      "RV_VST": 192
+    },
+    "spill_counts": {
+      "vector_store": 205,
+      "vector_load": 216
+    },
+    "scalar_spill_counts": {}
+  },
+  "original_semantic_events": 2571,
+  "recompiled_semantic_events": 2571,
+  "normalized_dynamic_dataflow_and_addresses_equal": true,
+  "difference_count": 0,
+  "first_differences": [],
+  "comparison_policy": "All dynamic vector/predicate dataflow, scalar constants, effective UB byte addresses, memory modes and barrier order; transparent VMOV and constant PAT_ALL PSET normalized; scalar instruction timing and exact machine encoding excluded.",
+  "source_sha256": "00dbf6e24aa84d5c1e725561eefd6e3c90e915b90eef59c55886c8f4f2efa33a",
+  "log_sha256": {
+    "original": "ce3a69d0e06dee2562012c6b63642fa7f387cb1a57701a689823924bdad59da5",
+    "explicit": "a186db272d983a8207fff1448494a5a50135b2d644fecc32931bcd345e32d0d6"
+  }
+}

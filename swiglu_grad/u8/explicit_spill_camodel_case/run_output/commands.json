@@ -1,0 +1,86 @@
+[
+  {
+    "argv": [
+      "/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/bin/bisheng",
+      "-std=c++17",
+      "-O2",
+      "/mnt/e/vfsimulator/results/membar_results/swiglu_grad/u8/explicit_spill_camodel_case/host.cpp",
+      "-o",
+      "host",
+      "-Wl,--allow-shlib-undefined",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/include",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/include",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/include/experiment/msprof",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/include/experiment/msprof/toolchain",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/pkg_inc/profiling",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/pkg_inc",
+      "-I/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/pkg_inc/runtime",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/tools/simulator/Ascend950PR_9599/lib",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/lib64",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/lib64",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/devlib",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/devlib/device",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/x86_64-linux/lib64/device/lib64",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/aarch64-linux/simulator/Ascend950PR_9599/lib",
+      "-L/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/simulator/Ascend950PR_9599/lib",
+      "-lruntime_camodel",
+      "-lstdc++",
+      "-lascendcl",
+      "-lm",
+      "-ltiling_api",
+      "-lplatform",
+      "-lc_sec",
+      "-ldl",
+      "-lnnopbase"
+    ],
+    "log": "host_build.log"
+  },
+  {
+    "argv": [
+      "/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/bin/ccec",
+      "-g",
+      "-std=c++17",
+      "-c",
+      "-O2",
+      "/mnt/e/vfsimulator/results/membar_results/swiglu_grad/u8/explicit_spill_camodel_case/source/kernel.cce",
+      "-o",
+      "kernel_aiv.o",
+      "--cce-aicore-arch=dav-c310-vec",
+      "--cce-aicore-only",
+      "-mllvm",
+      "-cce-aicore-function-stack-size=16000",
+      "-mllvm",
+      "-cce-aicore-record-overflow=false",
+      "-mllvm",
+      "-cce-aicore-addr-transform",
+      "-mllvm",
+      "-cce-aicore-jump-expand=true",
+      "--cce-simd-vf-fusion=false",
+      "-mllvm",
+      "-cce-aicore-vec-misched=0"
+    ],
+    "log": "compile.log"
+  },
+  {
+    "argv": [
+      "/home/lenovo/Ascend/ascend-toolkit/cann-9.0.0-beta.1/bin/ld.lld",
+      "-Ttext=0",
+      "kernel_aiv.o",
+      "-static",
+      "-o",
+      "kernel.o"
+    ],
+    "log": "link.log"
+  },
+  {
+    "argv": [
+      "/tmp/membar-explicit-spill-v3/swiglu_grad/u8/host",
+      "/tmp/membar-explicit-spill-v3/swiglu_grad/u8/kernel.o",
+      "swiglu_grad_kernel",
+      "3",
+      "2",
+      "6144"
+    ],
+    "log": "camodel.log"
+  }
+]
