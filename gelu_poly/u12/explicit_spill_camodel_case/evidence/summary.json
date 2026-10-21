@@ -1,0 +1,49 @@
+{
+  "case": "gelu_poly",
+  "variant": "u12",
+  "kernel_name": "foo_add",
+  "host_args": [
+    "2",
+    "1",
+    "6144"
+  ],
+  "host_defines": [],
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "original_cycles": 6037,
+  "explicit_cycles": 6050,
+  "golden": {
+    "passed": true,
+    "checks": [
+      {
+        "output": "output0.bin",
+        "elements": 6144,
+        "mismatches": 0,
+        "max_abs_error": 1.1920928955078125e-07
+      }
+    ]
+  },
+  "output_checks": [
+    {
+      "output": "output0.bin",
+      "byte_equal": true,
+      "original_sha256": "ee7fc9cef6d98e74d68f92bd244d29a79471a7bbf16cd0e8579074eb317e0dc6",
+      "explicit_sha256": "ee7fc9cef6d98e74d68f92bd244d29a79471a7bbf16cd0e8579074eb317e0dc6"
+    }
+  ],
+  "dynamic_dataflow_and_addresses_equal": true,
+  "comparison_file": "../comparison.json",
+  "historical_commands": "../run_output/commands.json",
+  "environment_file": "../set_env.sh"
+}

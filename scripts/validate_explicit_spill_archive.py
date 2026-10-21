@@ -12,6 +12,10 @@ def main():
     for item in results:
         base = root / item["case"] / item["variant"]
         folder = base / "explicit_spill_camodel_case"
+        for name in ("host.cpp", "run.py", "run.sh", "set_env.sh", "README.txt",
+                     "evidence/summary.json", "source/original_pc_mapping.json"):
+            if not (folder / name).is_file():
+                raise FileNotFoundError(folder / name)
         original = base / "camodel/core0.veccore0.instr_popped_log.dump"
         explicit = folder / "run_output/core0.veccore0.instr_popped_log.dump"
         expected_hashes = [(original, item["log_sha256"]["original"]),

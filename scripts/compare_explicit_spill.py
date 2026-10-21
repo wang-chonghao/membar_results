@@ -9,6 +9,7 @@ import shutil
 
 from explicit_spill_roundtrip import CASES, LOG, ROOT, address, relevant
 from prepare_hardware_equivalent import field, scalar_bits
+from package_explicit_spill_cases import package_case
 
 
 ALIASES = {"RV_VLD": "VLDS", "RV_VLDI": "VLDS", "RV_VLDS": "VLDS",
@@ -172,6 +173,7 @@ def compare(case, variant, output, archive=False):
             f"python3 {case}/{variant}/explicit_spill_camodel_case/run.py "
             f"--out-dir /tmp/{case}_{variant}_explicit_rerun\n```\n\n"
             "新输出目录必须为空，不能覆盖归档目录。仅保留主要日志、输入输出和运行命令，不归档 VCD 等大文件。\n")
+        package_case(ROOT, case, variant)
     return result
 
 

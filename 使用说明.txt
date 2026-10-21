@@ -45,6 +45,14 @@ scripts/                    生成、还原和验证工具；查看结果时无�
 set_env.sh                  CANN 路径、模拟型号、编译目标、额外头文件/库及编译器的集中环境配置。
 各 case 目录/               每个版本的源码、两份 CAModel 日志、IPC PNG 和实验记录。
 各版本/camodel_case/        CAModel 用例：host 源码、构建运行入口、输入输出、golden、完整已保存日志及仍存在的编译产物。
+explicit_spill_roundtrip.md 显式补入 spill 的 CCE 重编译核查；对比动态数据流、字节地址、模式、同步和原输出。
+各版本/explicit_spill_camodel_case/ 独立显式 spill 用例及验证证据；不覆盖相邻的原始用例。
+已验证的完整显式用例：AdamApplyOne U6、GeLU poly U12、SwiGLU Grad U6/U8、GeLU Grad U8。
+等效 CCE、配套文件入口和五条运行命令见 explicit_spill_roundtrip.md 的“完整用例入口”和“复现”。
+AdamApplyOne U8 尚未通过，不作为可用的显式等效用例发布。
+这五个 explicit_spill_camodel_case 目录均带独立 set_env.sh、run.sh 和 README.txt，
+可以单独复制到新机器；编辑该目录内环境配置后，执行 bash ./run.sh --out-dir /tmp/新的目录。
+完整 CCE 包括 kernel 入口、GM/UB 搬运和同步；host.cpp 包括输入构造、运行与 golden 校验。
 
 CAModel 用例复现
 ---------------
@@ -198,7 +206,3 @@ bundle_camodel_cases.py 按 manifest 的原始日志来源补齐用例目录，�
 build_archive.py 和数值核查需要原实验数据；这些数据不是打开报告的依赖。
 数值核查还需要 NumPy，前端核查需要 VfSimulator 自身的 Python 依赖。
 无需为了查看已有结果而运行生成脚本。
-
-显式 Spill 重编译核查
---------------------
-见 explicit_spill_roundtrip.md。完整 CCE、host、精度与动态流核查结果位于各版本的 explicit_spill_camodel_case/，原结果不覆盖。

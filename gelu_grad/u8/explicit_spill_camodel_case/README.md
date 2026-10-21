@@ -16,3 +16,11 @@ python3 gelu_grad/u8/explicit_spill_camodel_case/run.py --out-dir /tmp/gelu_grad
 ```
 
 新输出目录必须为空，不能覆盖归档目录。仅保留主要日志、输入输出和运行命令，不归档 VCD 等大文件。
+
+## 单目录独立运行
+
+可只复制本目录到新机器。完整文件清单和配置步骤见 [README.txt](README.txt)。编辑本目录 `set_env.sh` 后，在本目录执行：
+
+```bash
+bash ./run.sh --out-dir /tmp/gelu_grad_u8_explicit_rerun
+```

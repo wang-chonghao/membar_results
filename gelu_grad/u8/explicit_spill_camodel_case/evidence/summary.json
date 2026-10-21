@@ -1,0 +1,40 @@
+{
+  "case": "gelu_grad",
+  "variant": "u8",
+  "kernel_name": "gelu_grad_fp32",
+  "host_args": [],
+  "host_defines": [
+    "-DPROBE_INPUT_BYTES=32768",
+    "-DPROBE_OUTPUT_BYTES=16384"
+  ],
+  "ccec_flags": [
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "original_cycles": 2553,
+  "explicit_cycles": 2541,
+  "golden": {
+    "passed": true,
+    "checks": [
+      {
+        "output": "output.bin",
+        "elements": 4096,
+        "mismatches": 0,
+        "max_abs_error": 4.76837158203125e-07
+      }
+    ]
+  },
+  "output_checks": [
+    {
+      "output": "output.bin",
+      "byte_equal": true,
+      "original_sha256": "49f05160fb49e1efd3381e8e14ce7e778f322dd4fe3f9bc38fa0ed9252d09314",
+      "explicit_sha256": "49f05160fb49e1efd3381e8e14ce7e778f322dd4fe3f9bc38fa0ed9252d09314"
+    }
+  ],
+  "dynamic_dataflow_and_addresses_equal": true,
+  "comparison_file": "../comparison.json",
+  "historical_commands": "../run_output/commands.json",
+  "environment_file": "../set_env.sh"
+}

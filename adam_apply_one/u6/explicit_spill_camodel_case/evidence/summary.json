@@ -1,0 +1,73 @@
+{
+  "case": "adam_apply_one",
+  "variant": "u6",
+  "kernel_name": "adam_kernel",
+  "host_args": [
+    "10",
+    "3",
+    "3072"
+  ],
+  "host_defines": [],
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "original_cycles": 1435,
+  "explicit_cycles": 1438,
+  "golden": {
+    "passed": true,
+    "checks": [
+      {
+        "output": "output0.bin",
+        "elements": 3072,
+        "mismatches": 0,
+        "max_abs_error": 5.960464477539063e-08
+      },
+      {
+        "output": "output1.bin",
+        "elements": 3072,
+        "mismatches": 0,
+        "max_abs_error": 5.960464477539063e-08
+      },
+      {
+        "output": "output2.bin",
+        "elements": 3072,
+        "mismatches": 0,
+        "max_abs_error": 1.1920928955078125e-07
+      }
+    ]
+  },
+  "output_checks": [
+    {
+      "output": "output0.bin",
+      "byte_equal": true,
+      "original_sha256": "4f54a40afdd15806ea2999e2ec33f605755b33f42d2c819e79705600c214b160",
+      "explicit_sha256": "4f54a40afdd15806ea2999e2ec33f605755b33f42d2c819e79705600c214b160"
+    },
+    {
+      "output": "output1.bin",
+      "byte_equal": true,
+      "original_sha256": "757bfa61c0b3c79aa1cdcc2e020b758404ee026d486cf8a6e3f1de3ad7179eb7",
+      "explicit_sha256": "757bfa61c0b3c79aa1cdcc2e020b758404ee026d486cf8a6e3f1de3ad7179eb7"
+    },
+    {
+      "output": "output2.bin",
+      "byte_equal": true,
+      "original_sha256": "746016a0f0fa7af60f48b9394f742597d5a17a366b5e30a98cf57bcd5b4f5b0a",
+      "explicit_sha256": "746016a0f0fa7af60f48b9394f742597d5a17a366b5e30a98cf57bcd5b4f5b0a"
+    }
+  ],
+  "dynamic_dataflow_and_addresses_equal": true,
+  "comparison_file": "../comparison.json",
+  "historical_commands": "../run_output/commands.json",
+  "environment_file": "../set_env.sh"
+}

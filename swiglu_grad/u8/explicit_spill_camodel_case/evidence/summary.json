@@ -1,0 +1,61 @@
+{
+  "case": "swiglu_grad",
+  "variant": "u8",
+  "kernel_name": "swiglu_grad_kernel",
+  "host_args": [
+    "3",
+    "2",
+    "6144"
+  ],
+  "host_defines": [],
+  "ccec_flags": [
+    "-mllvm",
+    "-cce-aicore-function-stack-size=16000",
+    "-mllvm",
+    "-cce-aicore-record-overflow=false",
+    "-mllvm",
+    "-cce-aicore-addr-transform",
+    "-mllvm",
+    "-cce-aicore-jump-expand=true",
+    "--cce-simd-vf-fusion=false",
+    "-mllvm",
+    "-cce-aicore-vec-misched=0"
+  ],
+  "original_cycles": 8243,
+  "explicit_cycles": 8233,
+  "golden": {
+    "passed": true,
+    "checks": [
+      {
+        "output": "output0.bin",
+        "elements": 6144,
+        "mismatches": 0,
+        "max_abs_error": 1.6689300537109375e-06
+      },
+      {
+        "output": "output1.bin",
+        "elements": 6144,
+        "mismatches": 0,
+        "max_abs_error": 9.5367431640625e-07
+      }
+    ]
+  },
+  "output_checks": [
+    {
+      "output": "output0.bin",
+      "byte_equal": true,
+      "original_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2",
+      "explicit_sha256": "0cbf93063bc1c2cfafa795202b7d305d959a8d76dbcdbb751cb27ad742d96ae2"
+    },
+    {
+      "output": "output1.bin",
+      "byte_equal": true,
+      "original_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7",
+      "explicit_sha256": "0985587faa9684405df7ae1847547b9bb7c2374b9548fdea21e5ffc5050fe4b7"
+    }
+  ],
+  "dynamic_dataflow_and_addresses_equal": true,
+  "comparison_file": "../comparison.json",
+  "historical_commands": "../run_output/commands.json",
+  "environment_file": "../set_env.sh"
+}
