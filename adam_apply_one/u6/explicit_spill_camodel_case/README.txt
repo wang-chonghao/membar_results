@@ -1,5 +1,9 @@
 adam_apply_one / U6 显式 Spill 完整 CAModel 用例
 
+当前无 Membar 实验版本
+
+当前默认 source/kernel.cce 已注释全部 mem_bar(...)，用于无显式 Membar 实验；尚未重新运行 CAModel，周期和精度待验证。source/kernel_with_membar.cce 保留修改前源码；comparison.json、run_output/ 和下方旧周期/精度记录仅对应这个带屏障版本。pipe_barrier、set_flag/wait_flag 和其他指令不变。
+
 本目录可以单独复制到新机器，不需要相邻的原版用例、上层 set_env.sh 或 VfSimulator。
 依赖 Linux/WSL、Bash、Python 3.11+，以及带匹配模拟器的 CANN。
 原验证环境：CANN 9.0.0-beta.1 / Ascend950PR_9599 / dav-c310-vec。

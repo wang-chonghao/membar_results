@@ -206,3 +206,7 @@ bundle_camodel_cases.py 按 manifest 的原始日志来源补齐用例目录，�
 build_archive.py 和数值核查需要原实验数据；这些数据不是打开报告的依赖。
 数值核查还需要 NumPy，前端核查需要 VfSimulator 自身的 Python 依赖。
 无需为了查看已有结果而运行生成脚本。
+
+显式用例当前默认无 Membar
+-------------------------
+当前默认 source/kernel.cce 已注释全部 mem_bar(...)，用于无显式 Membar 实验；尚未重新运行 CAModel，周期和精度待验证。source/kernel_with_membar.cce 保留修改前源码；comparison.json、run_output/ 和下方旧周期/精度记录仅对应这个带屏障版本。pipe_barrier、set_flag/wait_flag 和其他指令不变。

@@ -1,16 +1,22 @@
 # 显式 Spill CCE 重编译验证
 
+## 当前默认源码
+
+当前默认 source/kernel.cce 已注释全部 mem_bar(...)，用于无显式 Membar 实验；尚未重新运行 CAModel，周期和精度待验证。source/kernel_with_membar.cce 保留修改前源码；comparison.json、run_output/ 和下方旧周期/精度记录仅对应这个带屏障版本。pipe_barrier、set_flag/wait_flag 和其他指令不变。
+
+以下表格保留带屏障版本的历史验证结果，不代表当前无屏障版本。
+
 日期：2026-10-20。A5 / Ascend950PR_9599，CANN 9.0.0-beta.1，O2、vec-misched=0。
 
 原 CCE 不动；在每个版本下增加 `explicit_spill_camodel_case/`，包含完整 kernel、host、运行配置、PC 对照、输出及两份主要 CAModel 日志。
 
 | Case | 原版 cycles | 显式版 cycles | 差值 | Vector 写/读 | Predicate 写/读 | 原版/显式 Membar | 动态流核对 | 数值校验 |
 |---|---:|---:|---:|---:|---:|---:|---|---|
-| [adam_apply_one u6](adam_apply_one/u6/explicit_spill_camodel_case/source/kernel.cce) | 1435 | 1438 | +3 | 32 / 32 | 0 / 0 | 64 / 64 | 一致 | golden 通过，原输出逐字节相同 |
-| [gelu_poly u12](gelu_poly/u12/explicit_spill_camodel_case/source/kernel.cce) | 6037 | 6050 | +13 | 160 / 160 | 0 / 0 | 320 / 320 | 一致 | golden 通过，原输出逐字节相同 |
-| [swiglu_grad u6](swiglu_grad/u6/explicit_spill_camodel_case/source/kernel.cce) | 3281 | 3283 | +2 | 80 / 80 | 0 / 0 | 160 / 160 | 一致 | golden 通过，原输出逐字节相同 |
-| [swiglu_grad u8](swiglu_grad/u8/explicit_spill_camodel_case/source/kernel.cce) | 8243 | 8233 | -10 | 205 / 216 | 0 / 0 | 421 / 421 | 一致 | golden 通过，原输出逐字节相同 |
-| [gelu_grad u8](gelu_grad/u8/explicit_spill_camodel_case/source/kernel.cce) | 2553 | 2541 | -12 | 40 / 40 | 24 / 24 | 128 / 128 | 一致 | golden 通过，原输出逐字节相同 |
+| [adam_apply_one u6](adam_apply_one/u6/explicit_spill_camodel_case/source/kernel_with_membar.cce) | 1435 | 1438 | +3 | 32 / 32 | 0 / 0 | 64 / 64 | 一致 | golden 通过，原输出逐字节相同 |
+| [gelu_poly u12](gelu_poly/u12/explicit_spill_camodel_case/source/kernel_with_membar.cce) | 6037 | 6050 | +13 | 160 / 160 | 0 / 0 | 320 / 320 | 一致 | golden 通过，原输出逐字节相同 |
+| [swiglu_grad u6](swiglu_grad/u6/explicit_spill_camodel_case/source/kernel_with_membar.cce) | 3281 | 3283 | +2 | 80 / 80 | 0 / 0 | 160 / 160 | 一致 | golden 通过，原输出逐字节相同 |
+| [swiglu_grad u8](swiglu_grad/u8/explicit_spill_camodel_case/source/kernel_with_membar.cce) | 8243 | 8233 | -10 | 205 / 216 | 0 / 0 | 421 / 421 | 一致 | golden 通过，原输出逐字节相同 |
+| [gelu_grad u8](gelu_grad/u8/explicit_spill_camodel_case/source/kernel_with_membar.cce) | 2553 | 2541 | -12 | 40 / 40 | 24 / 24 | 128 / 128 | 一致 | golden 通过，原输出逐字节相同 |
 
 ## 完整用例入口
 

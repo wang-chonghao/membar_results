@@ -8,6 +8,8 @@ import shutil
 def package_case(root, case, variant):
     folder = root / case / variant / "explicit_spill_camodel_case"
     config = json.loads((folder / "case.json").read_text())
+    if config.get("membar_disabled", False):
+        raise ValueError("Current no-membar source is not the validated archive; preserve its experiment metadata")
     comparison = json.loads((folder / "comparison.json").read_text())
     if (not comparison["golden"]["passed"]
             or not comparison["normalized_dynamic_dataflow_and_addresses_equal"]

@@ -1,5 +1,9 @@
 # 显式 Spill CCE 重编译验证
 
+## 当前无 Membar 实验版本
+
+当前默认 source/kernel.cce 已注释全部 mem_bar(...)，用于无显式 Membar 实验；尚未重新运行 CAModel，周期和精度待验证。source/kernel_with_membar.cce 保留修改前源码；comparison.json、run_output/ 和下方旧周期/精度记录仅对应这个带屏障版本。pipe_barrier、set_flag/wait_flag 和其他指令不变。
+
 `source/kernel.cce` 是完整可编译内核，保留原 host、GM/UB 布局和输入。每条 VF 指令标注原日志 PC。原用例在相邻 `camodel_case/`，未修改。
 
 这是对应固定 shape/unroll 的硬件流回放，不是通用算法实现；标量地址效果已折入访存表达式，没有逐条重放原来的标量指令。

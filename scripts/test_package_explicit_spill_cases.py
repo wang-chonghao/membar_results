@@ -68,6 +68,16 @@ class StandaloneCaseTests(unittest.TestCase):
             with self.assertRaises(FileNotFoundError):
                 package_case(root, "example", "u2")
 
+    def test_no_membar_variant_cannot_inherit_archived_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            folder = self.make_case(root)
+            config = json.loads((folder / "case.json").read_text())
+            config["membar_disabled"] = True
+            (folder / "case.json").write_text(json.dumps(config))
+            with self.assertRaises(ValueError):
+                package_case(root, "example", "u2")
+
 
 if __name__ == "__main__":
     unittest.main()
