@@ -110,6 +110,11 @@ def main():
     checksum_asset = upload("SHA256SUMS.txt", len(checksums), hashlib.sha256(checksums).hexdigest(),
                             checksums, "text/plain")
     release = request(base + "/releases/" + str(release["id"]), "PATCH", payload=dict(draft=False, make_latest="true"))
+    # Draft assets use temporary "untagged-*" URLs; read the published URLs.
+    release = request(base + "/releases/" + str(release["id"]))
+    published_assets = {asset["name"]: asset for asset in release["assets"]}
+    html_asset = published_assets[args.html.name]
+    checksum_asset = published_assets["SHA256SUMS.txt"]
     record = dict(release_url=release["html_url"], tag=args.tag, source_commit=args.commit,
                   html_url=html_asset["browser_download_url"], html_bytes=html_asset["size"], html_sha256=digest,
                   checksum_url=checksum_asset["browser_download_url"], published=True)
