@@ -87,6 +87,10 @@ footer { padding-top: 20px; color: #53615a; font-size: 13px; }
       NORM(R-1)</pre>
 <p>同一行的 SUM 与 NORM 相隔两次外层迭代，为求和、除法和倒数准备留出时间。倒数由两个寄存器状态传递；中间 exp 仍写入 UB，再由 NORM 读取，相关访存由局部地址依赖保护。</p>
 <p>输出链为 <code>VMUL → VCVT(FP32→FP16) → VSTS(PK_B32)</code>，没有独立 VPACK。这里是浮点精度转换，不是 INT8 量化。</p>
+<figure><a href="a6_softmax_fp16_row_scaling/plots/giant_loop_interleaving.png"><img src="a6_softmax_fp16_row_scaling/plots/giant_loop_interleaving.png" width="4160" height="1680" alt="Softmax giant-loop 128元素分段交错排列"></a>
+<figcaption>上方对比按阶段集中排列与按128元素交错；下方展开稳态 pair=1 的20条实际指令。箭头仅表示源码顺序，不是数据依赖边或硬件周期。</figcaption></figure>
+<p id="first-segment-note"><strong>首段初始化例外：</strong>第0段的 I0 只含两条 VLDS，直接初始化 max_acc0/max_acc1，不执行 VMAX；因此 steady loop 开头第一个计算指令是 VEXPDIF。VMAX 更新从内层 pair=1 开始。</p>
+<p><a href="a6_softmax_fp16_row_scaling/plots/giant_loop_interleaving.svg">交错排列矢量图</a> · <a href="a6_softmax_fp16_row_scaling/plots/giant_loop_interleaving.md">逐段说明</a> · <a href="a6_softmax_fp16_row_scaling/plots/giant_loop_interleaving.json">源码核对记录</a></p>
 <p>8×1024 的历史一行间距版本为 776 cycles，两行间距为 570 cycles，减少 206 cycles（26.55%）；这是另外一组同 shape 调度对照，不是下面多 shape 表的基线。</p>
 </section>
 <section id="results">

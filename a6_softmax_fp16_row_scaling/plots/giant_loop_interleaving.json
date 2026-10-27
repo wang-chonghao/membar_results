@@ -1,0 +1,67 @@
+{
+  "source": "a6_softmax_fp16_row_scaling/runnable_a6/rows8/no_membar.cce",
+  "source_sha256": "d8a5cb477e24e9273b9ea9d367d4e23465909ef92e3788564d0efc417584986c",
+  "steady_state_pipe_i": 3,
+  "row_mapping": {
+    "MAX": 3,
+    "EXP_SUM": 2,
+    "NORM": 0
+  },
+  "columns": 1024,
+  "segment_elements": 128,
+  "vector_elements": 64,
+  "zoom_pair": 1,
+  "zoom_element_range": [
+    128,
+    256
+  ],
+  "zoom_stage_opcodes": [
+    [
+      "vlds",
+      "vlds",
+      "vmax",
+      "vmax"
+    ],
+    [
+      "vlds",
+      "vlds",
+      "vexpdif",
+      "vexpdif",
+      "vadd",
+      "vadd",
+      "vsts",
+      "vsts"
+    ],
+    [
+      "vlds",
+      "vlds",
+      "vmul",
+      "vmul",
+      "vcvt",
+      "vsts",
+      "vcvt",
+      "vsts"
+    ]
+  ],
+  "first_segment_opcodes": [
+    "vlds",
+    "vlds",
+    "vlds",
+    "vlds",
+    "vexpdif",
+    "vexpdif",
+    "vadd",
+    "vsts",
+    "vsts",
+    "vlds",
+    "vlds",
+    "vmul",
+    "vmul",
+    "vcvt",
+    "vsts",
+    "vcvt",
+    "vsts"
+  ],
+  "first_compute_opcode": "vexpdif",
+  "note": "源码顺序示意，非硬件时序图；I0 是 VLDS 初始化，不含 VMAX。省略流水启动排空和行末归约。"
+}

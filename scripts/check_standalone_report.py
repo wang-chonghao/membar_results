@@ -110,6 +110,9 @@ def main():
                 page.wait_for_function("document.querySelector('#embedded-body iframe') !== null")
                 frame = page.frame_locator("#embedded-body iframe")
                 assert "Softmax" in frame.locator("h1").inner_text()
+                assert frame.locator('img[alt="Softmax giant-loop 128元素分段交错排列"]').count() == 1
+                assert "VEXPDIF" in frame.locator("#first-segment-note").inner_text()
+                assert "pair=1" in frame.locator("#first-segment-note").inner_text()
                 assert frame.locator("img").count() > 0
                 for image_node in frame.locator("img").all():
                     image_node.scroll_into_view_if_needed()

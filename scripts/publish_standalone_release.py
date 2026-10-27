@@ -42,6 +42,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default="wang-chonghao/membar_results")
     parser.add_argument("--tag", required=True)
+    parser.add_argument("--name", default="Membar results 2026-10-27 · A5/A6 与 Spill DAG")
     parser.add_argument("--commit", required=True)
     parser.add_argument("--html", type=Path, required=True)
     parser.add_argument("--notes", type=Path, required=True)
@@ -83,7 +84,7 @@ def main():
             raise
         release = request(base + "/releases", "POST", payload=dict(
             tag_name=args.tag, target_commitish=args.commit,
-            name="Membar results 2026-10-27 · A5/A6 与 Spill DAG",
+            name=args.name,
             body=args.notes.read_text() + f"\n\nSource commit: `{args.commit}`\nHTML SHA256: `{digest}`\n",
             draft=True, prerelease=False))
     if not release["draft"] or release["target_commitish"] != args.commit:
