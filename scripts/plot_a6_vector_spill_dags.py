@@ -16,13 +16,31 @@ CASES = {
     "logit_u3": ("logit-u3", "Logit Grad U3"),
     "logit_u4": ("logit-u4", "Logit Grad U4"),
     "logit_u8": ("logit-u8", "Logit Grad U8"),
+    "logsigmoid_u4": ("round2-logsigmoid_grad-u4", "LogSigmoidGrad U4"),
+    "logsigmoid_u1": ("round2-logsigmoid_grad-u1", "LogSigmoidGrad U1"),
+    "logit_u1": ("logit-u1", "Logit Grad U1"),
 }
 META = "metadata/a6_vector_spill_dags_20261027"
 CASE_META = {"logit-u3": "metadata/a6_logit_u3_dags_20261027",
              "logit-u4": "metadata/a6_logit_predicate_dags_20261027",
-             "logit-u8": "metadata/a6_logit_u8_dags_20261027"}
+             "logit-u8": "metadata/a6_logit_u8_dags_20261027",
+             "round2-logsigmoid_grad-u4": "metadata/a6_logsigmoid_u4_dags_20261028",
+             "round2-logsigmoid_grad-u1": "metadata/a6_u1_predicate_dags_20261028",
+             "logit-u1": "metadata/a6_u1_predicate_dags_20261028"}
+PREDICATE_PLOTS = {"logit-u1", "logit-u3", "logit-u4", "logit-u8",
+                   "round2-logsigmoid_grad-u1", "round2-logsigmoid_grad-u4"}
+CASE_COMPUTE_LANES = {
+    "round2-logsigmoid_grad-u4": ("VABS", "VMULS", "VEXP", "VADDS", "VSEL", "VDIV", "VMUL"),
+    "round2-logsigmoid_grad-u1": ("VABS", "VMULS", "VEXP", "VADDS", "VSEL", "VDIV", "VMUL"),
+    "logit-u1": ("VMULS", "VADDS", "VMUL", "VSEL", "VDIV"),
+}
 COLORS = dict(load="#facc15", reload="#facc15", save="#22c55e", output="#22c55e",
               alu="#60a5fa", special="#60a5fa", barrier="#f87171")
+
+
+def figure_stem(case, variant):
+    date = "20261028" if case in {"logsigmoid_u4", "logsigmoid_u1", "logit_u1"} else "20261027"
+    return f"a6_{case}_{variant}_instruction_order_{date}"
 
 
 def key(instance):
@@ -112,21 +130,30 @@ def build(root, model, case, variant, db):
     from refresh_multisoc_predictions import memory_metadata
 
     ident, title = CASES[case]
-    rows = read(root / "metadata/spill_performance_summary.json")["rows"]
-    summary = rows[ident]["A6"] if ident in rows else {
-        "local_cycles": None,
-        "software_cycles": read(root / "a6_compiler_validation_20261027" / ident / "result.json")["best"]["global_cycles"],
-    }
+    if variant == "original":
+        original_result = read(root / "multisoc_refresh_20261025" / ident / "comparison.json")["arches"]["A6"]["original"]
+        if original_result["status"] != "predicted":
+            raise ValueError("Original input has no archived A6 prediction")
+        summary = dict(global_cycles=original_result["global_cycles"])
+    else:
+        rows = read(root / "metadata/spill_performance_summary.json")["rows"]
+        summary = rows[ident]["A6"] if ident in rows else {
+            "local_cycles": None,
+            "software_cycles": read(root / "a6_compiler_validation_20261027" / ident / "result.json")["best"]["global_cycles"],
+        }
     removed = 0
-    if variant == "local":
+    if variant in ("local", "original"):
         source = root / "logged_vector_replay_20261026" / ident / "A6/vf_000/global_input.json"
         if not source.exists():
             source = root / "multisoc_refresh_20261025" / ident / "original/A6/vf_000/global_input.json"
         if case == "logit_u8":
             source = root / CASE_META[ident] / "global_input.json"
         vf = CanonicalJsonVfInfoAdapter.from_payload(read(source))
-        vf, removed = remove_directional_membars(vf)
-        expected, mode = summary["local_cycles"], "range_overlap"
+        if variant == "local":
+            vf, removed = remove_directional_membars(vf)
+            expected, mode = summary["local_cycles"], "range_overlap"
+        else:
+            expected, mode = summary["global_cycles"], "disabled"
     else:
         selected = read(root / "a6_compiler_validation_20261027" / ident / "result.json")["best"]
         source = (root / selected["evidence"]).parent / "selected_vf.json"
@@ -144,8 +171,8 @@ def build(root, model, case, variant, db):
         raise ValueError(f"Prediction drift: {case}/{variant}: {result.vf_end_cycle} != {expected}")
     starts = {n["stream_seq"]: n for n in engine.trace.cyc_start_log}
     done = {n["stream_seq"]: n for n in engine.trace.cyc_done_log}
-    if variant == "local" and case != "logit_u8":
-        archived = source.parent / "local/start_by_cycle.json.gz"
+    if variant in ("local", "original") and case != "logit_u8":
+        archived = source.parent / ("local" if variant == "local" else "global") / "start_by_cycle.json.gz"
         with gzip.open(archived, "rt") as stream:
             old = [json.loads(line) for line in stream if line.strip()]
         assert [(n["stream_seq"], n["cy"], n["op"]) for n in old] == [(n["stream_seq"], n["cy"], n["op"]) for n in engine.trace.cyc_start_log]
@@ -267,7 +294,7 @@ def build(root, model, case, variant, db):
         source=source.relative_to(root).as_posix(), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest())
     audit_folder = root / CASE_META.get(ident, META)
     audit_folder.mkdir(parents=True, exist_ok=True)
-    stem = f"a6_{case}_{variant}_instruction_order_20261027"
+    stem = figure_stem(case, variant)
     save(audit_folder / (stem + ".json"), dict(stats=stats, nodes=nodes, edges=edges, selected_sequences=sorted(chosen),
           spill_reload_chains=chains, idu_resource_block_log=blocked,
           idu_address_block_log=engine.idu.address_block_log,
@@ -279,8 +306,8 @@ def build(root, model, case, variant, db):
 def operation_layout(stats, nodes, edges, by_seq):
     """Match the archived single-axis order plots, with row lanes for Bank-aware U2."""
     shown = [n for n in nodes if not n["op"].startswith("PSET") and n["op"] != "VSTAS"]
-    if stats["case"].startswith("logit-"):
-        # The historical A5 Logit plots show only the first loop-body group.
+    if stats["case"] in PREDICATE_PLOTS:
+        # Match the historical predicate plots' first loop-body group.
         shown = [n for n in shown if n["iteration_path"]]
         first_loop = next(n["iteration_path"][0]["loop_id"] for n in shown)
         shown = [n for n in shown if n["iteration_path"][0]["loop_id"] == first_loop]
@@ -304,7 +331,7 @@ def operation_layout(stats, nodes, edges, by_seq):
     operations = ("VMUL", "VADD", "VSQRT", "VDIV", "VSUB", "VCGADDV2", "VCADDV2")
     for node in shown:
         category, op = node["category"], node["op"]
-        if stats["case"].startswith("logit-"):
+        if stats["case"] in PREDICATE_PLOTS:
             if op == "PSTS":
                 lane, label, rank = "predicate_store", "Predicate spill PSTS", 2
             elif op == "PLDS":
@@ -318,13 +345,17 @@ def operation_layout(stats, nodes, edges, by_seq):
             elif category == "reload":
                 lane, label, rank = "reload", "Vector reload VLDS", 0.6
             elif category == "output":
-                lane, label, rank = "output", "输出 VSTS", 5
+                lane, label, rank = "output", "输出 VSTS", 20
             elif category == "barrier":
-                lane, label, rank = "barrier", "Membar", 6
+                lane, label, rank = "barrier", "Membar", 30
             elif category in ("alu", "special"):
-                lane, label, rank = "compute", "向量计算 / VSEL", 4
+                separate = CASE_COMPUTE_LANES.get(stats["case"])
+                if separate:
+                    lane, label, rank = op, op, 4 + separate.index(op)
+                else:
+                    lane, label, rank = "compute", "向量计算 / VSEL", 4
             else:
-                raise ValueError(f"Unexpected Logit operation: {op}/{category}")
+                raise ValueError(f"Unexpected predicate-plot operation: {op}/{category}")
         elif category == "load":
             lane, label, rank = "load", "输入 VLDS", 0
         elif category == "save":
@@ -409,15 +440,21 @@ def draw(root, data, font, replace_generated=False):
     positions = {n["seq"]: (i+1, ypos[lane_by_seq[n["seq"]]]) for i, n in enumerate(shown)}
     counts = Counter(lane_by_seq[n["seq"]] for n in shown)
     numbered = len(shown) <= 125
+    named_nodes = len(shown) <= 20
     fig, ax = plt.subplots(figsize=(16, 9))
     fig.subplots_adjust(left=0.19, right=0.975, top=0.80, bottom=0.23)
-    name = "Membar 优化" if stats["variant"] == "local" else "软件优化"
+    name = {"local": "Membar 优化", "software": "软件优化", "original": "单次循环"}[stats["variant"]]
     fig.suptitle(f"{stats['title']} · A6 {name}指令顺序与数据依赖", fontsize=22, y=0.96)
     reference_count = sum(n.get("reference_only", False) for n in shown)
     subtitle = (f"展示首组原始顺序（含 {reference_count} 个原 Membar 标记） · 完整 VF {stats['vf_cycles']} cycles"
                 if reference_count else f"展示 {len(shown)} 条指令 · 各循环保留首组 · 完整 VF {stats['vf_cycles']} cycles")
     if stats["case"] == "logit-u3" and not reference_count:
         subtitle = f"展示首组 U3 的 {len(shown)} 条指令 · 完整 VF {stats['vf_cycles']} cycles"
+    if stats["variant"] == "original":
+        loop_id = shown[0]["iteration_path"][0]["loop_id"]
+        iterations = {n["iteration_path"][0]["iteration"] for n in by_seq.values()
+                      if n["iteration_path"] and n["iteration_path"][0]["loop_id"] == loop_id}
+        subtitle = f"仅展示首轮 {len(shown)} 条指令 · 完整 VF：{len(iterations)} 轮，{stats['vf_cycles']} cycles"
     fig.text(0.59, 0.875, subtitle, ha="center", fontsize=16)
     if stats["case"] == "logit-u8":
         fig.text(0.59, 0.83, "仅预测向量 / 谓词流水；标量 spill 时序未计入", ha="center", fontsize=12, color="#475569")
@@ -440,7 +477,7 @@ def draw(root, data, font, replace_generated=False):
         drawn_edges.append(edge)
     for node in shown:
         x, y = positions[node["seq"]]
-        marker_size = 70 if numbered else 10 if len(shown) > 220 else 15
+        marker_size = 180 if named_nodes else 70 if numbered else 10 if len(shown) > 220 else 15
         if node["category"] == "barrier" and not numbered:
             marker_size = 28
         ax.scatter([x], [y], s=marker_size,
@@ -448,7 +485,10 @@ def draw(root, data, font, replace_generated=False):
                    edgecolors="#475569", linewidths=0.5 if not numbered else 0.7,
                    marker="D" if node["category"] == "barrier" else "o", zorder=3)
         if numbered:
-            ax.text(x, y, str(int(x)), fontsize=5.8, ha="center", va="center", zorder=4)
+            ax.text(x, y, str(int(x)), fontsize=8.5 if named_nodes else 5.8, ha="center", va="center", zorder=4)
+        if named_nodes:
+            ax.text(x, y+0.28, node["op"], fontsize=8, ha="center", va="bottom", color="#334155", zorder=5,
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.8, alpha=0.85))
     # A phase boundary is not a new dependency: the repeated groups are merely hidden.
     for index, (before, after) in enumerate(zip(shown, shown[1:]), 1):
         if isinstance(after["seq"], int) and isinstance(before["seq"], int) and after["seq"]-before["seq"] > 20:
@@ -469,7 +509,7 @@ def draw(root, data, font, replace_generated=False):
     for side in ("top", "right", "left"):
         ax.spines[side].set_visible(False)
     footer = "黄色为加载，蓝色为计算，绿色为写出；灰色曲线为寄存器 RAW，绿色虚线为 UB 数据传递（RAW）。"
-    if stats["case"].startswith("logit-"):
+    if stats["case"] in PREDICATE_PLOTS:
         footer = "黄色为加载，蓝色为计算，绿色为写出；灰色为向量 RAW，紫色为谓词 RAW，绿色虚线为 UB 数据传递（RAW）。"
     fig.text(0.59, 0.105, footer, ha="center", fontsize=11, color="#475569")
     detail = "共同 PSET 掩码与最终 VSTAS 不展开；标量时序未建模。完整节点、编号映射和依赖保存在配套数据中。"
@@ -482,10 +522,14 @@ def draw(root, data, font, replace_generated=False):
         detail = "软件方案为同一 U4 内 2+2 分组重排，A6 编译确认无 spill；共同 PSET 扇出省略，标量时序未建模。"
     elif stats["case"] == "logit-u8":
         detail = "软件方案为同一 U8 内 2+2+2+2 分组重排，A6 编译确认无 spill；图中省略标量指令。"
+    elif stats["case"] == "round2-logsigmoid_grad-u4":
+        detail = "软件方案保持四路 U4 展开，A6 VF 编译确认无 spill；只展示首组，完整 VF 为 12 组 U4。"
     if reference_count:
         detail = "红菱形保留原 Membar 位置：优化后已由局部 UB 依赖替代，不参与调度、不计时，也不添加全局同步边。"
-    if stats["case"].startswith("logit-"):
+    if stats["case"] in PREDICATE_PLOTS:
         detail += " 循环外常量初始化已省略。"
+    if stats["variant"] == "original":
+        detail = "U1 无编译器 spill 和 Membar；仅对比算法依赖结构，不代表 U4 的 spill 行为。循环外常量与 PSET 初始化省略。"
     if stats["case"] == "logit-u3":
         fig.text(0.59, 0.83, "仅展示首组 U3 循环体；完整 VF 时序包含 5 组 U3 + 1 份 tail", ha="center", fontsize=12, color="#475569")
     fig.text(0.59, 0.065, detail, ha="center", fontsize=10, color="#475569")
@@ -512,6 +556,7 @@ def main():
     parser.add_argument("--replace-generated", action="store_true", help="Replace only the selected dated output images")
     parser.add_argument("--render-only", action="store_true", help="Reuse the saved DAG and timing audit")
     parser.add_argument("--cases", nargs="+", choices=list(CASES), default=["adam_u8", "flash_u2"])
+    parser.add_argument("--variants", nargs="+", choices=("local", "software", "original"), default=["local", "software"])
     args = parser.parse_args()
     root, model = args.root.absolute(), args.model_root.absolute()
     provenance = read(root / "a6_software_search_20261025/provenance.json")
@@ -523,9 +568,9 @@ def main():
         metadata = CASE_META.get(CASES[case][0], META)
         if case == "logit_u8" and not args.render_only:
             prepare_logit_u8_input(root)
-        for variant in ("local", "software"):
+        for variant in args.variants:
             if args.render_only:
-                stem = f"a6_{case}_{variant}_instruction_order_20261027"
+                stem = figure_stem(case, variant)
                 stored = read(root / metadata / (stem + ".json"))
                 by_seq = {n["seq"]: n for n in stored["nodes"]}
                 selected = set(stored["selected_sequences"])

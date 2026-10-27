@@ -1,0 +1,253 @@
+{
+  "style": "historical_single_axis_operation_swimlanes",
+  "source_sequences": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "nodes": [
+    {
+      "order": 1,
+      "stream_seq": 3,
+      "op": "PLT",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 2,
+      "stream_seq": 4,
+      "op": "VLDS",
+      "lane": "load",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 3,
+      "stream_seq": 5,
+      "op": "VLDS",
+      "lane": "load",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 4,
+      "stream_seq": 6,
+      "op": "VABS",
+      "lane": "VABS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 5,
+      "stream_seq": 7,
+      "op": "VMULS",
+      "lane": "VMULS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 6,
+      "stream_seq": 8,
+      "op": "VEXP",
+      "lane": "VEXP",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 7,
+      "stream_seq": 9,
+      "op": "VADDS",
+      "lane": "VADDS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 8,
+      "stream_seq": 10,
+      "op": "VCMP_LT",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 9,
+      "stream_seq": 11,
+      "op": "VSEL",
+      "lane": "VSEL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 10,
+      "stream_seq": 12,
+      "op": "VDIV",
+      "lane": "VDIV",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 11,
+      "stream_seq": 13,
+      "op": "VMUL",
+      "lane": "VMUL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 12,
+      "stream_seq": 14,
+      "op": "VSTS",
+      "lane": "output",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    }
+  ],
+  "reference_membars_are_execution_nodes": false,
+  "edge_policy": "dataflow_only_no_war_or_waw",
+  "edges": [
+    {
+      "src": 5,
+      "dst": 6,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 6,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 7,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 7,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 7,
+      "dst": 8,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 8,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 8,
+      "dst": 9,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 9,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 10,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 10,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 8,
+      "dst": 11,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 10,
+      "dst": 11,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 11,
+      "dst": 12,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 9,
+      "dst": 12,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 12,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 12,
+      "dst": 13,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 4,
+      "dst": 13,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 13,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 13,
+      "dst": 14,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 3,
+      "dst": 14,
+      "kind": "predicate",
+      "observed_memory_block": false
+    }
+  ],
+  "cycles": 499,
+  "layout_only": true
+}

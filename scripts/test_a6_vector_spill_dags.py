@@ -1,7 +1,7 @@
 import unittest
 from types import SimpleNamespace
 
-from plot_a6_vector_spill_dags import dataflow_edges, memory_raw, operation_layout, with_reference_membars
+from plot_a6_vector_spill_dags import dataflow_edges, figure_stem, memory_raw, operation_layout, with_reference_membars
 
 
 def node(seq, kind, start, end):
@@ -10,6 +10,45 @@ def node(seq, kind, start, end):
 
 
 class MemoryDagTests(unittest.TestCase):
+    def test_new_case_does_not_rename_archived_figures(self):
+        self.assertEqual(figure_stem("logsigmoid_u4", "local"),
+                         "a6_logsigmoid_u4_local_instruction_order_20261028")
+        self.assertEqual(figure_stem("logit_u4", "local"),
+                         "a6_logit_u4_local_instruction_order_20261027")
+        self.assertEqual(figure_stem("logsigmoid_u1", "original"),
+                         "a6_logsigmoid_u1_original_instruction_order_20261028")
+
+    def test_logsigmoid_u1_has_explicit_math_lanes_without_initialization(self):
+        operations = [("VDUPS", "alu"), ("PLT", "alu"), ("VLDS", "load"),
+                      ("VCMP_LT", "alu"), ("VABS", "alu"), ("VMULS", "alu"),
+                      ("VEXP", "special"), ("VADDS", "alu"), ("VSEL", "alu"),
+                      ("VDIV", "special"), ("VMUL", "alu"), ("VSTS", "output")]
+        nodes = [dict(seq=i, op=op, category=category, writes_predicate=op in ("PLT", "VCMP_LT"),
+                      iteration_path=[] if i == 0 else [dict(loop_id="main", iteration=0)])
+                 for i, (op, category) in enumerate(operations)]
+        shown, _, mapping = operation_layout(dict(variant="original", case="round2-logsigmoid_grad-u1"),
+                                             nodes, [], {n["seq"]: n for n in nodes})
+        self.assertNotIn(0, mapping)
+        self.assertEqual(len(shown), 11)
+        self.assertEqual(mapping[1], "predicate")
+        self.assertEqual(mapping[6], "VEXP")
+        self.assertEqual(mapping[9], "VDIV")
+
+    def test_logsigmoid_separates_exp_div_and_predicate_spills(self):
+        operations = [("VDUPS", "alu"), ("VLDS", "load"), ("VCMP_LT", "alu"),
+                      ("PSTS", "save"), ("PLDS", "reload"), ("VEXP", "special"),
+                      ("VSEL", "alu"), ("VDIV", "special"), ("VSTS", "output"),
+                      ("Membar", "barrier")]
+        nodes = [dict(seq=i, op=op, category=category, writes_predicate=op in ("VCMP_LT", "PLDS"),
+                      iteration_path=[] if i == 0 else [dict(loop_id="main", iteration=0)])
+                 for i, (op, category) in enumerate(operations)]
+        shown, lanes, mapping = operation_layout(dict(variant="local", case="round2-logsigmoid_grad-u4"),
+                                                 nodes, [], {n["seq"]: n for n in nodes})
+        self.assertNotIn(0, mapping)
+        self.assertEqual(len(shown), 9)
+        self.assertEqual([lane["key"] for lane in lanes],
+                         ["load", "predicate", "predicate_store", "predicate_load", "VEXP", "VSEL", "VDIV", "output", "barrier"])
+
     def test_display_omits_storage_reuse_edges_without_changing_audit(self):
         kinds = ("register", "predicate", "state", "ub_raw", "ub_war", "ub_waw")
         edges = [dict(src=i, dst=i+1, kind=kind) for i, kind in enumerate(kinds)]

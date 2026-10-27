@@ -1,0 +1,459 @@
+{
+  "style": "historical_single_axis_operation_swimlanes",
+  "source_sequences": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "nodes": [
+    {
+      "order": 1,
+      "stream_seq": 5,
+      "op": "PLT",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 2,
+      "stream_seq": 6,
+      "op": "VLDS",
+      "lane": "load",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 3,
+      "stream_seq": 7,
+      "op": "VLDS",
+      "lane": "load",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 4,
+      "stream_seq": 8,
+      "op": "VMULS",
+      "lane": "VMULS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 5,
+      "stream_seq": 9,
+      "op": "VADDS",
+      "lane": "VADDS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 6,
+      "stream_seq": 10,
+      "op": "VMUL",
+      "lane": "VMUL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 7,
+      "stream_seq": 11,
+      "op": "VMULS",
+      "lane": "VMULS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 8,
+      "stream_seq": 12,
+      "op": "VMUL",
+      "lane": "VMUL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 9,
+      "stream_seq": 13,
+      "op": "VMULS",
+      "lane": "VMULS",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 10,
+      "stream_seq": 14,
+      "op": "VCMP_LT",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 11,
+      "stream_seq": 15,
+      "op": "VSEL",
+      "lane": "VSEL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 12,
+      "stream_seq": 16,
+      "op": "VSEL",
+      "lane": "VSEL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 13,
+      "stream_seq": 17,
+      "op": "VDIV",
+      "lane": "VDIV",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 14,
+      "stream_seq": 18,
+      "op": "VCMP_GE",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 15,
+      "stream_seq": 19,
+      "op": "VCMP_LE",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 16,
+      "stream_seq": 20,
+      "op": "PAND",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 17,
+      "stream_seq": 21,
+      "op": "VSEL",
+      "lane": "VSEL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 18,
+      "stream_seq": 22,
+      "op": "VCMP_EQ",
+      "lane": "predicate",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 19,
+      "stream_seq": 23,
+      "op": "VSEL",
+      "lane": "VSEL",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    },
+    {
+      "order": 20,
+      "stream_seq": 24,
+      "op": "VSTS",
+      "lane": "output",
+      "reference_only": false,
+      "original_stream_seq": null,
+      "barrier": null
+    }
+  ],
+  "reference_membars_are_execution_nodes": false,
+  "edge_policy": "dataflow_only_no_war_or_waw",
+  "edges": [
+    {
+      "src": 6,
+      "dst": 8,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 8,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 8,
+      "dst": 9,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 9,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 10,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 9,
+      "dst": 10,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 10,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 11,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 11,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 11,
+      "dst": 12,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 9,
+      "dst": 12,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 12,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 7,
+      "dst": 13,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 13,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 14,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 14,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 12,
+      "dst": 15,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 10,
+      "dst": 15,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 14,
+      "dst": 15,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 13,
+      "dst": 16,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 7,
+      "dst": 16,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 14,
+      "dst": 16,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 16,
+      "dst": 17,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 15,
+      "dst": 17,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 17,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 18,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 18,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 19,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 19,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 18,
+      "dst": 20,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 19,
+      "dst": 20,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 20,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 17,
+      "dst": 21,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 20,
+      "dst": 21,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 22,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 6,
+      "dst": 22,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 22,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 21,
+      "dst": 23,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 22,
+      "dst": 23,
+      "kind": "predicate",
+      "observed_memory_block": false
+    },
+    {
+      "src": 23,
+      "dst": 24,
+      "kind": "register",
+      "observed_memory_block": false
+    },
+    {
+      "src": 5,
+      "dst": 24,
+      "kind": "predicate",
+      "observed_memory_block": false
+    }
+  ],
+  "cycles": 231,
+  "layout_only": true
+}
