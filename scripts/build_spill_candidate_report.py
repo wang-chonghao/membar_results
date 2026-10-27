@@ -18,6 +18,12 @@ ARCHIVE = DEST / "spill_candidate_alignment"
 PAGE = DEST / "spill_candidate_alignment_summary.html"
 CASE_ORDER = ["swiglu", "focal", "swiglu_quant", "bce", "adam_decay",
               "groupnorm", "logit", "lstm", "syncbn", "deepnorm"]
+RELATED_CCE_LINKS = {
+    "softmax_three_loop": (
+        dict(path="a6_softmax_fp16_row_scaling/runnable_a6/rows8/no_membar.cce",
+             label="Giant-loop CCE（A6，FP32→FP16）"),
+    ),
+}
 
 
 def read(path):
@@ -290,6 +296,14 @@ def metric(value, digits=0):
     return "--" if value is None else f"{value:.{digits}f}" + ("%" if digits else "")
 
 
+def related_cce_links(row):
+    return "".join(
+        f'<small class="related-cce-links"><a class="related-cce-link" href="{html.escape(item["path"])}" '
+        f'target="_blank" rel="noopener" title="补充实现源码，不是本行周期数据的来源">{html.escape(item["label"])}</a></small>'
+        for item in RELATED_CCE_LINKS.get(row["case"], ())
+    )
+
+
 def row_html(row):
     values = [row.get("unroll"), row["camodel"], row["global_cycles"], row["local_cycles"],
               metric(row["original_accuracy"], 2), metric(row["local_gain"], 2), row["software_cycles"],
@@ -308,7 +322,7 @@ def row_html(row):
     if primary:
         title=f'<a class="cce-link" href="{html.escape(primary["path"])}" target="_blank" rel="noopener" title="查看此版本的原始 CCE 源码">{title}</a>'
     replay=(f'<small><a href="{html.escape(secondary["path"])}" target="_blank" rel="noopener">{html.escape(secondary["label"])}</a></small>' if secondary else "")
-    return (f'<tr data-id="{row["id"]}"><th scope="row">{title}<small>{row["case"]}</small>{replay}</th>'
+    return (f'<tr data-id="{row["id"]}"><th scope="row">{title}<small>{row["case"]}</small>{replay}{related_cce_links(row)}</th>'
             + f'<td class="variant">{variant}<small>{shape} · {origin}</small></td>'
             + f'<td class="num" title="{html.escape(row.get("loop_count_detail",""))}">{html.escape(row.get("loop_count_label") or "--")}</td>'
             + cells + f'<td class="strategy">{html.escape(row["strategy"])}</td><td class="status" title="{html.escape(row.get("spill_count_basis",""))}">{status}</td>'

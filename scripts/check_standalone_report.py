@@ -52,6 +52,16 @@ def main():
                         approximations = page.evaluate("Object.values(SPILL_PERFORMANCE_SUMMARY.rows).filter(r => r.A6.scalar_spill_excluded).map(r => r.id)")
                         for key in approximations:
                             assert page.locator(f'tr[data-id="{key}"] .scalar-timing-note').count() == 1
+                    related = page.locator('tr[data-id="history-softmax_three_loop-round56"] .related-cce-link')
+                    if related.count():
+                        assert related.count() == 1
+                        assert related.get_attribute("href") == "a6_softmax_fp16_row_scaling/runnable_a6/rows8/no_membar.cce"
+                related = page.locator('tr[data-id="history-softmax_three_loop-round56"] .related-cce-link')
+                if related.count():
+                    related.click()
+                    page.wait_for_function("document.querySelector('#embedded-body pre')?.textContent.includes('__NPU_ARCH__ != 9201')")
+                    assert "no_membar.cce" in page.locator("#embedded-title").inner_text()
+                    page.locator("#embedded-close").click()
                 page.select_option("#version-scope", "all")
                 assert page.locator("#results-body tr").count() == 153
                 page.select_option("#version-scope", "main")
