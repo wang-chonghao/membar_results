@@ -295,7 +295,10 @@ def row_html(row):
               metric(row["original_accuracy"], 2), metric(row["local_gain"], 2), row["software_cycles"],
               row["software_camodel"], metric(row["software_accuracy"], 2),
               metric(row.get("membar_vs_software_performance"), 2)]
-    cells = "".join(f'<td class="num">{html.escape(str(v)) if v is not None else "--"}</td>' for v in values)
+    keys = ("unroll", "camodel", "global_cycles", "local_cycles", "original_accuracy", "local_gain",
+            "software_cycles", "software_camodel", "software_accuracy", "membar_vs_software_performance")
+    cells = "".join(f'<td class="num" data-metric="{key}">{html.escape(str(v)) if v is not None else "--"}</td>' for key, v in zip(keys, values))
+    cells += '<td class="num" data-metric="a6_vs_a5_local_performance">--</td>'
     status = "栈超限" if row["status"] == "vf_stack_exceeded" else spill_status_html(row)
     variant = html.escape(row.get("variant_label",f"U{row['unroll']}"))
     shape = html.escape(row.get("comparison_label","1024 元素"))
@@ -313,10 +316,13 @@ def row_html(row):
 
 
 def build_page(data):
+    replay_scripts = ('<script defer src="metadata/replay_validation.js"></script>\n'
+                      '<script defer src="assets/replay_validation_view.js"></script>') if data.get("replay_validation_available") else ""
     columns = [("unroll", "U"), ("camodel", "原 CAModel"), ("global_cycles", "VfSim 全局"),
                ("local_cycles", "VfSim 局部"), ("original_accuracy", "全局精度"), ("local_gain", "局部周期减少"),
                ("software_cycles", "VfSim 软件优化全局"), ("software_camodel", "优化后 CAModel"), ("software_accuracy", "优化后精度"),
-               ("membar_vs_software_performance", "Membar / 软件性能")]
+               ("membar_vs_software_performance", "Membar / 软件性能"),
+               ("a6_vs_a5_local_performance", "A6 / A5 局部性能")]
     headers = '<th scope="col" class="num"><button data-sort="loop_count" title="按未展开前的主循环次数排序">循环次数 &#8597;</button></th>'
     headers += ''.join(f'<th scope="col" class="num"><button data-sort="{key}" title="按{label}排序">{label} &#8597;</button></th>' for key,label in columns)
     operators = ''.join(f'<option value="{case}">{html.escape(data["titles"][case])}</option>' for case in data["case_order"])
@@ -326,33 +332,58 @@ def build_page(data):
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>A5 Spill 与同步优化 · 统一汇总</title>
+  <title>A5 / A6 Spill 与同步优化 · 统一汇总</title>
   <link rel="stylesheet" href="assets/spill_report.css">
   <script defer src="assets/chart.umd.js"></script>
   <script defer src="metadata/spill_candidate_alignment.js"></script>
+  <script defer src="metadata/multisoc_predictions.js"></script>
+  <script defer src="metadata/spill_performance_summary.js"></script>
+  <script defer src="metadata/software_cce_links.js"></script>
+  <script defer src="assets/multisoc_view.js"></script>
   <script defer src="assets/spill_report.js"></script>
+  <script defer src="assets/spill_performance_summary.js"></script>
+  {replay_scripts}
 </head>
 <body>
-<header><div><p>A5 / DV100 · CANN 9.0.0-beta.1 · 本轮寻优与历史归档</p><h1>Spill 与同步优化结果</h1></div>
-<nav aria-label="归档导航"><a href="spill_candidate_alignment_summary.md">实验总结与字段说明</a><a href="spill_candidate_alignment.csv" download>结果 CSV</a><a href="metadata/spill_candidate_manifest.json">文件校验清单</a><a href="a6_softmax_fusion_results_summary.html">A6 Softmax 融合与多 Shape</a><a href="explicit_spill_roundtrip.md">显式 Spill 重编译验证</a></nav></header>
+<header><div><p id="arch-heading">A5 / DV100 · A6 / DV121 · MultiSoC-membar-refactor</p><h1>Spill 与同步优化结果</h1></div>
+<nav aria-label="归档导航"><a href="multisoc_refresh_20261025/comparison.md">A5/A6 对比说明</a><a href="spill_candidate_alignment_summary.md">历史实验总结与字段说明</a><a href="spill_candidate_alignment_multisoc.csv" download>双架构结果 CSV</a><a href="metadata/spill_candidate_manifest.json">文件校验清单</a><a href="a6_softmax_fusion_results_summary.html">A6 Softmax 融合与多 Shape</a><a href="a6_spill_dag_comparison_20261027.html">A6 Spill DAG 对比</a><a href="explicit_spill_roundtrip.md">历史显式 Spill 验证</a>{'<a href="replay_recompile_20261025/README.md">回放重编译验证状态</a>' if data.get('replay_validation_available') else ''}</nav></header>
 <main>
 <section class="totals" aria-label="实验统计">
-<div><span>Case 分组</span><strong>{len(data['case_order'])}</strong></div><div><span>Spill 版本 / U1 与原始基线</span><strong>{sum(row['spill'] for row in data['rows'])} / {sum(not row['spill'] for row in data['rows'])}</strong></div><div><span>已验证无 spill 软件方案</span><strong>{sum(row.get('plan') is not None for row in data['rows'])}</strong></div><div><span>搜索候选 / 编译验证</span><strong>{data['candidate_count']} / {data['finalists']}</strong></div>
+<div><span>Case 分组</span><strong>{len(data['case_order'])}</strong></div><div><span>Spill / 无 Spill 归档版本</span><strong>{sum(row['spill'] for row in data['rows'])} / {sum(not row['spill'] for row in data['rows'])}</strong></div><div><span>历史验证无 spill 软件方案</span><strong>{sum(row.get('plan') is not None for row in data['rows'])}</strong></div><div><span>历史搜索候选 / 编译验证</span><strong>{data['candidate_count']} / {data['finalists']}</strong></div>
 </section>
 <section aria-labelledby="table-title">
 <div class="section-title"><h2 id="table-title">统一汇总</h2><span id="row-count" role="status">{len(data['rows'])} 个版本</span></div>
-<div class="filters"><label>算子<select id="case-filter"><option value="all">全部算子</option>{operators}</select></label>
+<div class="filters"><label>Architecture<select id="arch-filter"><option value="A5">A5 arch · DV100</option><option value="A6">A6 arch · DV121</option></select></label>
+<label>显示范围<select id="version-scope"><option value="main">Spill / U1 基线</option><option value="all">全部成功 unroll</option></select></label>
+<label>算子<select id="case-filter"><option value="all">全部算子</option>{operators}</select></label>
 <label>来源<select id="origin-filter"><option value="all">全部来源</option><option value="fixed_unroll_search">首批固定 unroll 寻优</option><option value="supplemental_search">第二批新增例子</option><option value="round3_search">第三批 11 个入口</option><option value="historical_membar">历史 Membar 归档</option></select></label>
-<label>版本<select id="status-filter"><option value="all">Spill 与基线</option><option value="spill">register spill</option><option value="no-spill">U1 / 原始基线</option><option value="unsupported">原版本未预测</option></select></label>
+<label>版本<select id="status-filter"><option value="all">Spill 与基线</option><option value="spill">register spill</option><option value="no-spill">无 register spill</option><option value="unsupported">原版本未预测</option></select></label>
 <label class="search-label">搜索<input id="search" type="search" placeholder="算子名称" autocomplete="off"></label></div>
+<p id="architecture-note" role="status"></p>
+{'<p>回放验证标记仅针对 A5 重编译：允许等价编码变化，但数据流、实际 UB 字节区间、屏障和 VF 总周期必须完全一致。未通过验证的回放仍是审计清单，不能当作同周期可编译源码；本轮不覆盖原有预测和 CAModel 数字。</p>' if data.get('replay_validation_available') else ''}
 <div class="table-scroll" tabindex="0" role="region" aria-label="周期与精度汇总表">
-<table><caption>单位：VF cycles。精度列为周期预测精度，不是数值精度；历史与本轮参数版本分别保留。</caption><thead><tr><th scope="col"><button data-sort="case">Case &#8597;</button></th><th scope="col">版本 / Shape 与来源</th>{headers}<th scope="col">软件策略</th><th scope="col">原版本 / Spill 写读次数</th><th scope="col">证据</th></tr></thead>
+<table><caption>单位：VF cycles。CAModel 均为 A5 实测参考；A6 没有同代实测，精度列留空。架构切换同时更新表格、详情和图表。</caption><thead><tr><th scope="col"><button data-sort="case">Case &#8597;</button></th><th scope="col">版本 / Shape 与来源</th>{headers}<th scope="col">软件策略</th><th scope="col">原版本 / Spill 写读次数</th><th scope="col">证据</th></tr></thead>
 <tbody id="results-body">{''.join(row_html(row) for row in data['rows'])}</tbody></table></div>
 <p id="empty-state" hidden>没有匹配的版本。</p>
+</section>
+<section id="spill-performance-section" aria-labelledby="spill-performance-title">
+<h2 id="spill-performance-title">硬件 Membar 优化达到软件优化的性能比例</h2>
+<p>固定历史 35 个 spill 版本：Vector 14、Predicate 13、两者都有 8。不是 35 个不同算子。统计跟随 Architecture 选择，不随主表筛选改变。</p>
+<p>性能比 = <strong>软件优化全局 VfSim 周期 / 原始 spill 流局部依赖 VfSim 周期 × 100%</strong>。100% 为持平，高于 100% 表示仅做硬件 Membar 优化更快。括号内占比以有效比较数为分母。</p>
+<div class="table-scroll"><table><caption>A5 保留历史 35 项，并另列同模型复算；A6 使用本轮 A6 重新寻优结果。缺失不按零值补齐。</caption>
+<thead><tr><th>数据口径</th><th>Spill 类型</th><th>范围</th><th>有效</th><th>缺失</th><th>≥100%</th><th>90–&lt;100%</th><th>80–&lt;90%</th><th>70–&lt;80%</th><th>&lt;70%</th></tr></thead>
+<tbody id="spill-performance-body"></tbody></table></div>
+<p id="spill-performance-missing" role="status"></p>
+<p id="spill-performance-scalar-note" role="status"></p>
+<p>A6 候选保持 shape、算术、名义 unroll 和 tail，通过重排或最多五段切分寻优，保留全局屏障及分段搬运。A6 target 展开后完整动态流的活跃值上限：<strong>Vector ≤32、Predicate ≤8</strong>，包含前缀、循环不变量、exit 和 V2 临时值。不改变物理资源或时序参数。</p>
+<p>这是有限候选中的最优，不是理论最优。A5 软件预测来自通过 CAModel 数值/无 spill 验证的编译后日志；A6 软件方案已按原周期排名做 VF 编译期寄存器 spill 检查，首个通过者入选。A6 软件周期仍是源级 Canonical 预测，不是二进制回放，也没有 A6 数值验证；编译探针不含外围 DMA/AscendC 包装。硬件侧保留原始 A5 编译后 spill 流，只改同步方式。<a href="a5_software_search_20261026/README.md">A5 重新寻优与实测</a> · <a href="a6_software_search_20261025/README.md">A6 寻优记录</a> · <a href="a6_compiler_validation_20261027/README.md">A6 编译期检查</a> · <a href="metadata/spill_performance_summary.json">完整数据</a></p>
 </section>
 <section class="chart-section" aria-labelledby="chart-title"><div class="section-title"><h2 id="chart-title">版本周期对比</h2><div class="chart-pickers"><label>算子<select id="chart-case">{operators}</select></label><label>对照组<select id="chart-group"></select></label></div></div>
 <div class="chart"><canvas id="cycles-chart" role="img" aria-label="同一算子的 unroll 周期对比"></canvas></div></section>
 <section class="scope" aria-labelledby="scope-title"><h2 id="scope-title">比较口径</h2>
+<p>架构选择使用同一 MultiSoC-membar-refactor 提交重跑的 A5/A6 结果；两侧复用 A5 编译日志还原的指令流、spill、Membar 和字节地址，再应用各自的 SoC 指令展开。没有重新使用 A6 编译器；Spill 次数仍描述该 A5 编译指令流。只去掉方向屏障的局部实验仍保留 UB 地址依赖。完整结果和配置哈希见 <a href="multisoc_refresh_20261025/summary.json">双架构运行记录</a>与 <a href="multisoc_refresh_20261025/provenance.json">模型来源</a>。旧表数据保留在详情中，不作为新架构的兜底值。</p>
+<p>A6 / A5 局部性能 = 同一版本 A5 局部周期 / A6 局部周期 × 100%，高于 100% 表示 A6 更快。历史 35 项范围的 A6 软件列改用本轮资源约束寻优结果，其他行仍是历史选定实现的 A6 预测。新 A6 方案没有 CAModel 实测，旧软件实测不得当作新方案的精度依据。未支持输入显示空值和诊断，不视为 0 cycles。</p>
+<details><summary>历史归档的测量、寻优与比较口径（以下旧周期不作为架构切换的兜底数据）</summary>
 <p>原全局和局部列使用同一份编译后指令流，仅改变同步机制；软件优化列使用重新编译后的另一份源码，保持原 shape、算术及名义 unroll，保留全局 Membar。软件列是本轮有限搜索的最佳已验证结果，不是理论最优。</p>
 <p>“软件性能”指该软件改写方案在全局 Membar 下的 VfSim 预测性能，按相同工作量的周期数倒数比较；不是 CAModel 周期或预测程序运行耗时。例如软件为 100 cycle、局部依赖为 110 cycle，Membar / 软件性能为 90.91%，不是周期减少 90.91%。</p>
 <p>Logit 和 MHC Partial Merge 的残留 AscendC 接口已改为显式 CCE 并重新验证。Case 链接指向本行 CAModel 实际编译源码，预测来自该版本新编译日志，源代码及输入、二进制、日志 SHA256 在详情中可查；转换前结果独立保留为历史证据。标量 spill 版本仍明确拒绝预测，不因换成纯 CCE 而忽略指令。</p>
@@ -370,7 +401,7 @@ def build_page(data):
 <p>入选软件方案通过 AscendC/U1 逐位一致、独立 golden 与输出 guard 检查，并确认无编译器 stack spill；分段新增的显式临时 UB 搬运不算编译器 spill。51 组原始全局预测已逐项复核一致。现有 forwarding/II fallback 仍保留，不将所有时序参数声称为已实测。</p>
 <p>周期预测精度 = (1 − |VfSim − CAModel| / CAModel) × 100%；周期减少 = (1 − 局部 / 全局) × 100%。图表中缺失数据保留缺口。</p>
 <p>Membar / 软件性能 = VfSim 软件优化全局周期 / VfSim 局部依赖周期 × 100%，两侧统一使用 VfSim。100% 表示持平，大于 100% 表示 Membar 优化更快，小于 100% 表示软件优化更快。任一预测缺失时不计算；原无 spill 行仍以保留的原全局版本作为软件侧对照。</p>
-<p class="provenance">{evidence}</p></section>
+</details><p class="provenance">{evidence}</p></section>
 </main>
 <dialog id="detail-dialog" aria-labelledby="detail-title"><div class="dialog-heading"><h2 id="detail-title"></h2><button id="close-detail" aria-label="关闭详情" title="关闭详情">&#215;</button></div><div id="detail-body"></div></dialog>
 <footer>报告更新：{data['date']}。原测量来源与参数版本分别保留，未调整核心时序参数。全部引用资源在本目录内。</footer>

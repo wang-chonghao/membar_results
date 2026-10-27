@@ -2,6 +2,12 @@
 
 (() => {
   const data = window.SPILL_REPORT;
+  const baseRows = data.rows;
+  const refreshed = window.MULTISOC_REPORT;
+  const archFilter = document.querySelector("#arch-filter");
+  const versionScope = document.querySelector("#version-scope");
+  const mainIds = new Set(data.default_row_ids || baseRows.map(row => row.id));
+  let architecture = archFilter?.value || "A5";
   const tbody = document.querySelector("#results-body");
   const nodes = new Map(Array.from(tbody.rows, row => [row.dataset.id, row]));
   const filters = ["#case-filter", "#status-filter", "#search", "#origin-filter"].map(id => document.querySelector(id));
@@ -9,6 +15,7 @@
   let descending = false;
 
   function matches(row) {
+    if (versionScope?.value !== "all" && !mainIds.has(row.id)) return false;
     const [operator, state, query, origin] = filters.map(input => input.value);
     if (operator !== "all" && operator !== row.case) return false;
     if (origin !== "all" && origin !== row.origin) return false;
@@ -35,7 +42,59 @@
     document.querySelector("#row-count").textContent = `${rows.length} / ${data.rows.length} 个版本`;
     document.querySelector("#empty-state").hidden = rows.length !== 0;
   }
+
+  function applyArchitecture() {
+    architecture = archFilter.value;
+    data.rows = baseRows.map(row => window.MultiSocView.project(row, architecture, refreshed));
+    const percentages = new Set(["original_accuracy", "local_gain", "software_accuracy", "membar_vs_software_performance", "a6_vs_a5_local_performance"]);
+    for (const row of data.rows) {
+      const node = nodes.get(row.id);
+      for (const cell of node.querySelectorAll("[data-metric]")) {
+        const key = cell.dataset.metric, value = row[key];
+        cell.textContent = value == null ? "--" : percentages.has(key) ? `${value.toFixed(2)}%` : String(value);
+        cell.title = architecture === "A6" && key.includes("accuracy") ? "无 A6 CAModel 实测，不能计算同代预测精度" : "";
+      }
+      node.classList.toggle("prediction-unavailable", row.status !== "predicted");
+      node.querySelector(".detail-button").title = row.reason || `${architecture} 运行证据`;
+      const strategyCell = node.querySelector(".strategy");
+      if (strategyCell) strategyCell.textContent = row.strategy;
+      node.querySelectorAll(".software-cce-links").forEach(link => link.remove());
+      if (row.software_cycles != null) {
+        for (const file of row.software_cce_links) {
+          const line = document.createElement("small"), link = document.createElement("a");
+          line.className = "software-cce-links";
+          link.className = "software-cce-link";
+          link.href = file.path;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = file.label;
+          link.title = file.vf_compile_only ? "A6 VF 编译期寄存器 spill 检查通过；外围 DMA/AscendC 包装不在验证范围，未做运行或数值验证。周期仍是源级 VfSim 预测。" : file.compiler_verified ? "对应当前软件预测，已通过 A5 CAModel 验证" : "对应当前 A6 软件预测；未做 A6 编译或 CAModel 验证";
+          if (file.source_kind === "selected_canonical_ssa_listing") link.title += "；由选中的 Canonical 还原，重新编译可能改变调度或 spill";
+          line.append(link);
+          node.cells[0].append(line);
+        }
+      }
+      node.querySelector(".scalar-timing-note")?.remove();
+      if (row.scalar_spill_excluded) {
+        const note = document.createElement("small");
+        note.className = "scalar-timing-note";
+        note.textContent = "* 仅向量/谓词计时，标量 spill 忽略";
+        node.querySelector(".status").append(note);
+      }
+    }
+    const predicted = data.rows.filter(row => row.status === "predicted").length;
+    document.querySelector("#architecture-note").textContent = `${architecture === "A6" ? "A6 / DV121" : "A5 / DV100"} · 同分支重跑 · ${predicted}/${data.rows.length} 个归档版本有原始全局预测 · 模型 ${refreshed?.model_commit?.slice(0, 7) || "未加载"}。CAModel 为 A5 实测参考。`;
+    for (const [key, label] of [["camodel", "原 CAModel（A5）"], ["software_camodel", "优化后 CAModel（A5）"],
+                               ["original_accuracy", architecture === "A6" ? "全局精度（无 A6 实测）" : "全局精度"],
+                               ["software_accuracy", architecture === "A6" ? "优化后精度（无 A6 实测）" : "优化后精度"]]) {
+      const button = document.querySelector(`[data-sort="${key}"]`);
+      if (button) button.textContent = `${label} ↕`;
+    }
+    render();
+    plot();
+  }
   filters.forEach(input => input.addEventListener("input", render));
+  versionScope?.addEventListener("change", render);
   document.querySelectorAll("[data-sort]").forEach(button => button.addEventListener("click", () => {
     descending = sortKey === button.dataset.sort ? !descending : false;
     sortKey = button.dataset.sort;
@@ -88,7 +147,11 @@
       metrics.append(group);
     });
     detail.append(metrics);
-    paragraph(`${row.shape}；来源：${row.origin === "round3_search" ? "第三批新入口实测（尚未软件寻优）" : row.origin === "historical_membar" ? "历史 Membar 归档（未复测）" : "本轮固定 unroll 寻优"}。`);
+    paragraph(`${row.arch} / ${row.arch === "A6" ? "DV121" : "DV100"}；模型 MultiSoC-membar-refactor ${refreshed?.model_commit?.slice(0, 7)}；${row.shape}。`);
+    if (row.arch === "A6") paragraph(row.a6_search?.compiler_verified ? "软件方案已通过 A6 VF 编译期寄存器 spill 检查。外围 DMA/AscendC 包装不在检查范围，未做 A6 数值验证；周期仍是配对源级 Canonical 的 VfSim 预测，不是编译后二进制回放。CAModel 数字均为 A5 实测参考，不计算 A6 精度。" : row.a6_search ? "原 CAModel 为 A5 实测参考。软件列是本轮 A6 资源约束寻优结果，没有对应 CAModel 实测，不计算精度。" : "CAModel 数字仍为 A5 实测参考，不代表 A6 实测，也不计算 A6 预测精度。本行不在历史 35 项寻优范围，软件仍为历史选定实现。");
+    if (row.architecture_evidence) files("当前架构重跑证据", [{label: "A5/A6 输入、诊断与逐 VF 周期", path: row.architecture_evidence}], true);
+    paragraph(`历史预测仅供追溯：全局 ${row.legacy_metrics.global_cycles ?? "--"}，局部 ${row.legacy_metrics.local_cycles ?? "--"}，软件全局 ${row.legacy_metrics.software_cycles ?? "--"} cycles。当前表格不使用历史数值填补缺项。`);
+    if (row.software_reason) paragraph(`软件优化预测：${row.software_reason}`, "reason");
     paragraph(`循环次数：${row.loop_count_label ?? "--"}。${row.loop_count_detail}`);
     paragraph(`Vector spill：写 ${row.vector_spill_store ?? "--"} / 读 ${row.vector_spill_load ?? "--"} 次；Predicate spill：写 ${row.predicate_spill_store ?? "--"} / 读 ${row.predicate_spill_load ?? "--"} 次。统计整个 VF 的动态搬运次数，不是寄存器个数。`);
     paragraph(row.spill_count_basis);
@@ -98,7 +161,22 @@
       paragraph(`Membar / 软件性能：${row.membar_vs_software_performance.toFixed(2)}%（VfSim 软件优化 ${row.software_cycles} / VfSim 局部依赖 ${row.local_cycles}）。100% 表示持平，大于 100% 表示 Membar 优化更快。`);
     }
     if (row.reason) paragraph(row.reason, "reason");
-    if (row.plan) {
+    if (row.scalar_spill_excluded && row.architecture_record?.original?.evidence) {
+      const evidence = row.architecture_record.original.evidence;
+      files("原始日志回放与标量排除审计", [{label: "逐 PC、地址和指令数量审计", path: evidence.path},
+        {label: "回放 CCE 阅读参考（预测使用 Canonical）", path: evidence.cce}], true);
+    }
+    if (row.a6_search) {
+      const search = row.a6_search;
+      paragraph(`${search.unique_candidates == null ? "A6 沿用软件方案" : `A6 搜索：${search.feasible_candidates}/${search.unique_candidates} 个唯一候选满足约束并成功预测；峰值 Vector=${search.peaks?.Register ?? "--"} / 32，Predicate=${search.peaks?.PredicateRegister ?? "--"} / 8`}。保持名义 U${row.unroll}；${search.compiler_verified ? `VF 编译期无寄存器 spill 已检查，选中排名 ${search.selected_rank}；未做运行/数值验证` : "未做 A6 编译器验证"}。`);
+      files("本轮 A6 Canonical、源码与编译期检查", search.files, true);
+      paragraph("下列软件 CCE 和 CAModel 链接为历史 A5 方案证据，不是本轮新排列的实测记录。新方案以以上 Canonical 为准。");
+    } else if (row.a5_search) {
+      const search = row.a5_search;
+      paragraph(`A5 当前模型重新寻优；选中 CCE 已重编译、与已通过 golden 的参考输出逐字节比较，并检查无新增编译器 spill。软件周期来自该 CCE 编译后日志的全局 Membar 预测，CAModel 为该版本实测，不沿用历史方案。`);
+      files("本轮 A5 软件 CCE、CAModel 与编译后 Canonical", search.files, true);
+      paragraph("下列历史软件链接仅作归档参考，不是本轮选中方案。");
+    } else if (row.plan) {
       const plan = row.plan;
       paragraph(`${row.strategy}；${plan.stages} 段；cohort=${plan.cohort}；压力权重=${plan.pressure_weight}；临时 UB=${plan.scratch_bytes}B；UB 高水位=${plan.ub_high_water}B。`);
       paragraph(`保持原 U${row.unroll} 和算术；本轮 ${row.candidate_count} 个候选、${row.finalists} 个编译验证结果。AscendC/U1 逐位一致，独立 golden 与 guard 通过，无编译器 stack spill。`);
@@ -145,10 +223,13 @@
       }));
     }
     const rows = candidates.filter(row => row.comparison_group === groupSelect.value);
-    const datasets = [["camodel", "原 CAModel", "#344251"], ["global_cycles", "VfSim 全局", "#2376b8"],
+    const datasetSpecs = [["global_cycles", `${architecture} VfSim 全局`, "#2376b8"],
       ["local_cycles", "VfSim 局部", "#18846d"], ["software_cycles", "VfSim 软件优化全局 / 保留原版本", "#a94f69"]]
+    if (architecture === "A5") datasetSpecs.unshift(["camodel", "A5 CAModel 实测", "#344251"]);
+    else datasetSpecs.push(["a5_local_cycles", "A5 VfSim 局部（对照）", "#68737d"]);
+    const datasets = datasetSpecs
       .map(([key, label, color]) => ({label, data: rows.map(row => row[key]), borderColor: color,
-        backgroundColor: color, pointRadius: 3, borderWidth: 2, spanGaps: false, tension: 0}));
+        backgroundColor: color, borderDash: key === "a5_local_cycles" ? [5, 4] : [], pointRadius: 3, borderWidth: 2, spanGaps: false, tension: 0}));
     if (chart) chart.destroy();
     chart = new Chart(document.querySelector("#cycles-chart"), {
       type: "line", data: {labels: rows.map(row => row.chart_label), datasets},
@@ -172,6 +253,7 @@
     plot();
   }));
   window.SPILL_CHART = () => chart;
-  render();
-  plot();
+  window.SPILL_VIEW = () => data.rows;
+  archFilter?.addEventListener("change", applyArchitecture);
+  applyArchitecture();
 })();

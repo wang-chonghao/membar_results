@@ -1,0 +1,210 @@
+// Selected A6 software schedule. Compile-only VF spill check passed; not runtime verified.
+// Prediction uses the paired best_vf_000.json; recompilation may change scheduling/spill.
+/**
+ * Copyright (c) 2025 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+#include "kernel_operator.h"
+#include <cfloat>
+#include <type_traits>
+__aicore__ inline void candidate_vf(__ubuf__ float* xAddr, __ubuf__ float* dyAddr) {
+    __ubuf__ uint8_t* arena = (__ubuf__ uint8_t*)get_imm(0);
+    __VEC_SCOPE__ {
+        vector_bool r0;
+        vector_f32 r1;
+        vector_f32 r2;
+        vector_f32 r3;
+        vector_f32 r4;
+        vector_f32 r5;
+        vector_f32 r6;
+        vector_f32 r7;
+        vector_f32 r8;
+        vector_bool r9;
+        vector_f32 r10;
+        vector_f32 r11;
+        vector_f32 r12;
+        vector_f32 r13;
+        vector_f32 r14;
+        vector_f32 r15;
+        vector_bool r16;
+        vector_f32 r17;
+        vector_f32 r18;
+        vector_f32 r19;
+        vector_f32 r20;
+        vector_f32 r21;
+        vector_f32 r22;
+        vector_bool r23;
+        vector_f32 r24;
+        vector_f32 r25;
+        vector_f32 r26;
+        vector_bool r27;
+        vector_f32 r28;
+        vector_f32 r29;
+        vector_f32 r30;
+        vector_bool r31;
+        vector_bool r32;
+        vector_bool r33;
+        vector_bool r34;
+        vector_f32 r35;
+        vector_bool r36;
+        vector_f32 r37;
+        vector_bool r38;
+        vector_bool r39;
+        vector_f32 r40;
+        vector_bool r41;
+        vector_f32 r42;
+        vector_f32 r43;
+        vector_f32 r44;
+        vector_bool r45;
+        vector_f32 r46;
+        vector_f32 r47;
+        vector_f32 r48;
+        vector_f32 r49;
+        vector_f32 r50;
+        vector_f32 r51;
+        vector_bool r52;
+        vector_f32 r53;
+        vector_f32 r54;
+        vector_f32 r55;
+        vector_bool r56;
+        vector_bool r57;
+        vector_bool r58;
+        vector_f32 r59;
+        vector_bool r60;
+        vector_f32 r61;
+        vector_f32 r62;
+        vector_f32 r63;
+        vector_bool r64;
+        vector_f32 r65;
+        vector_f32 r66;
+        vector_f32 r67;
+        vector_f32 r68;
+        vector_f32 r69;
+        vector_f32 r70;
+        vector_bool r71;
+        vector_f32 r72;
+        vector_f32 r73;
+        vector_f32 r74;
+        vector_bool r75;
+        vector_bool r76;
+        vector_bool r77;
+        vector_f32 r78;
+        vector_bool r79;
+        vector_f32 r80;
+        r0 = pset_b32(PAT_ALL);
+        vdup(r1, 0x0.0p+0f, r0, MODE_ZEROING);
+        vdup(r2, 0x1.0000000000000p+0f, r0, MODE_ZEROING);
+        vdup(r3, __builtin_nanf(""), r0, MODE_ZEROING);
+        vdup(r4, 0x1.0000000000000p-126f, r0, MODE_ZEROING);
+        uint32_t mask_remaining_s0_0 = 1024;
+#pragma unroll 1
+        for (uint16_t iter_s0_0 = 0; iter_s0_0 < 5; ++iter_s0_0) {
+            vlds(r5, (__ubuf__ float*)(arena + (0 + 256 * (0 + 3 * iter_s0_0 + 0))), 0, NORM);
+            vlds(r6, (__ubuf__ float*)(arena + (0 + 256 * (0 + 3 * iter_s0_0 + 1))), 0, NORM);
+            vlds(r7, (__ubuf__ float*)(arena + (4096 + 256 * (0 + 3 * iter_s0_0 + 0))), 0, NORM);
+            vlds(r8, (__ubuf__ float*)(arena + (4096 + 256 * (0 + 3 * iter_s0_0 + 1))), 0, NORM);
+            r9 = plt_b32(mask_remaining_s0_0, POST_UPDATE);
+            vmuls(r10, r5, -0x1.0000000000000p+0f, r9, MODE_ZEROING);
+            vadds(r11, r10, 0x1.0000000000000p+0f, r9, MODE_ZEROING);
+            vmuls(r12, r5, 0x1.0000000000000p+23f, r9, MODE_ZEROING);
+            vmul(r13, r12, r11, r9, MODE_ZEROING);
+            vmul(r14, r5, r11, r9, MODE_ZEROING);
+            vmuls(r15, r7, 0x1.0000000000000p+23f, r9, MODE_ZEROING);
+            r16 = plt_b32(mask_remaining_s0_0, POST_UPDATE);
+            vmuls(r17, r6, -0x1.0000000000000p+0f, r16, MODE_ZEROING);
+            vadds(r18, r17, 0x1.0000000000000p+0f, r16, MODE_ZEROING);
+            vmuls(r19, r6, 0x1.0000000000000p+23f, r16, MODE_ZEROING);
+            vmul(r20, r19, r18, r16, MODE_ZEROING);
+            vmul(r21, r6, r18, r16, MODE_ZEROING);
+            vmuls(r22, r8, 0x1.0000000000000p+23f, r16, MODE_ZEROING);
+            vcmp_lt(r23, r5, r4, r9);
+            vsel(r24, r13, r14, r23);
+            vsel(r25, r15, r7, r23);
+            vdiv(r26, r25, r24, r9, MODE_ZEROING);
+            vcmp_lt(r27, r6, r4, r16);
+            vsel(r28, r20, r21, r27);
+            vsel(r29, r22, r8, r27);
+            vdiv(r30, r29, r28, r16, MODE_ZEROING);
+            vcmp_ge(r31, r5, r1, r9);
+            vcmp_ge(r32, r6, r1, r16);
+            vcmp_le(r33, r5, r2, r9);
+            pand(r34, r31, r33, r9);
+            vsel(r35, r26, r1, r34);
+            vcmp_eq(r36, r5, r5, r9);
+            vsel(r37, r35, r3, r36);
+            vsts(r37, (__ubuf__ float*)(arena + (0 + 256 * (0 + 3 * iter_s0_0 + 0))), 0, NORM_B32,
+                 r9);
+            vcmp_le(r38, r6, r2, r16);
+            pand(r39, r32, r38, r16);
+            vsel(r40, r30, r1, r39);
+            vcmp_eq(r41, r6, r6, r16);
+            vsel(r42, r40, r3, r41);
+            vsts(r42, (__ubuf__ float*)(arena + (0 + 256 * (0 + 3 * iter_s0_0 + 1))), 0, NORM_B32,
+                 r16);
+            vlds(r43, (__ubuf__ float*)(arena + (0 + 256 * (0 + 3 * iter_s0_0 + 2))), 0, NORM);
+            vlds(r44, (__ubuf__ float*)(arena + (4096 + 256 * (0 + 3 * iter_s0_0 + 2))), 0, NORM);
+            r45 = plt_b32(mask_remaining_s0_0, POST_UPDATE);
+            vmuls(r46, r43, -0x1.0000000000000p+0f, r45, MODE_ZEROING);
+            vadds(r47, r46, 0x1.0000000000000p+0f, r45, MODE_ZEROING);
+            vmuls(r48, r43, 0x1.0000000000000p+23f, r45, MODE_ZEROING);
+            vmul(r49, r48, r47, r45, MODE_ZEROING);
+            vmul(r50, r43, r47, r45, MODE_ZEROING);
+            vmuls(r51, r44, 0x1.0000000000000p+23f, r45, MODE_ZEROING);
+            vcmp_lt(r52, r43, r4, r45);
+            vsel(r53, r49, r50, r52);
+            vsel(r54, r51, r44, r52);
+            vdiv(r55, r54, r53, r45, MODE_ZEROING);
+            vcmp_le(r56, r43, r2, r45);
+            vcmp_ge(r57, r43, r1, r45);
+            pand(r58, r57, r56, r45);
+            vsel(r59, r55, r1, r58);
+            vcmp_eq(r60, r43, r43, r45);
+            vsel(r61, r59, r3, r60);
+            vsts(r61, (__ubuf__ float*)(arena + (0 + 256 * (0 + 3 * iter_s0_0 + 2))), 0, NORM_B32,
+                 r45);
+        }
+        uint32_t mask_remaining_s0_1 = 64;
+#pragma unroll 1
+        for (uint16_t iter_s0_1 = 0; iter_s0_1 < 1; ++iter_s0_1) {
+            vlds(r62, (__ubuf__ float*)(arena + (0 + 256 * (15 + 1 * iter_s0_1 + 0))), 0, NORM);
+            vlds(r63, (__ubuf__ float*)(arena + (4096 + 256 * (15 + 1 * iter_s0_1 + 0))), 0, NORM);
+            r64 = plt_b32(mask_remaining_s0_1, POST_UPDATE);
+            vmuls(r65, r62, -0x1.0000000000000p+0f, r64, MODE_ZEROING);
+            vadds(r66, r65, 0x1.0000000000000p+0f, r64, MODE_ZEROING);
+            vmuls(r67, r62, 0x1.0000000000000p+23f, r64, MODE_ZEROING);
+            vmul(r68, r67, r66, r64, MODE_ZEROING);
+            vmul(r69, r62, r66, r64, MODE_ZEROING);
+            vmuls(r70, r63, 0x1.0000000000000p+23f, r64, MODE_ZEROING);
+            vcmp_lt(r71, r62, r4, r64);
+            vsel(r72, r68, r69, r71);
+            vsel(r73, r70, r63, r71);
+            vdiv(r74, r73, r72, r64, MODE_ZEROING);
+            vcmp_le(r75, r62, r2, r64);
+            vcmp_ge(r76, r62, r1, r64);
+            pand(r77, r76, r75, r64);
+            vsel(r78, r74, r1, r77);
+            vcmp_eq(r79, r62, r62, r64);
+            vsel(r80, r78, r3, r79);
+            vsts(r80, (__ubuf__ float*)(arena + (0 + 256 * (15 + 1 * iter_s0_1 + 0))), 0, NORM_B32,
+                 r64);
+        }
+    }
+}
+
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ uint8_t* input,
+                                                       __gm__ uint8_t* output) {
+    __ubuf__ float* xAddr = (__ubuf__ float*)get_imm(0);
+    __ubuf__ float* dyAddr = (__ubuf__ float*)get_imm(4096);
+    copy_gm_to_ubuf_align_v2((__ubuf__ uint8_t*)get_imm(0), input, 0, 1, 8192, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(xAddr, dyAddr);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output + 0, (__ubuf__ uint8_t*)xAddr, 0, 1, 4096, 0, 0, 0);
+}

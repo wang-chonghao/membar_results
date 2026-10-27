@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>A6 Spill DAG 对比</title>
+<style>
+body {font-family: sans-serif; max-width: 1400px; margin: 32px auto; padding: 0 24px; color: #20242a; line-height: 1.7;}
+table {border-collapse: collapse; width: 100%; margin: 24px 0;}
+th, td {text-align: left; border-bottom: 1px solid #cbd5e1; padding: 12px;}
+th {background: #f1f5f9;} a {color: #1758b0;} img {display: block; width: 100%; height: auto;}
+section {margin: 40px 0; border-top: 1px solid #cbd5e1;} code {overflow-wrap: anywhere;}
+</style>
+</head>
+<body>
+<h1>A6 Spill DAG 对比</h1>
+<p>固定 A6 / DV121 模型提交 <code>336844700d704bc3afdc4b190b215e736b65ebc9</code>。横轴是指令顺序，不是时间；黄色为加载、绿色为写出、蓝色为计算。只画数据流，不画 WAR/WAW 地址复用约束；原 Membar 的红菱形在局部依赖图中仅作位置参考，不参与调度和计时。</p>
+<table>
+<thead><tr><th>Case</th><th>Membar 优化 / cycles</th><th>软件优化 / cycles</th><th>口径</th></tr></thead>
+<tbody>
+<tr><td>AdamApplyOne U8</td><td><a href="#adam-local">604</a></td><td><a href="#adam-software">455</a></td><td>软件方案保留阶段间主动暂存和全局屏障。</td></tr>
+<tr><td>FlashAttention Grad U2</td><td><a href="#flash-local">252</a></td><td><a href="#flash-software">207</a></td><td>软件方案采用 Bank-aware 顺序。</td></tr>
+<tr><td>Logit Grad U3</td><td><a href="#logit3-local">229</a></td><td><a href="#logit3-software">224</a></td><td>软件采用 2+1 分组；整段预测含最后 1 份 tail。</td></tr>
+<tr><td>Logit Grad U4</td><td><a href="#logit4-local">390</a></td><td><a href="#logit4-software">223</a></td><td>软件采用 2+2 分组，实际并行程度接近 U2。</td></tr>
+<tr><td>Logit Grad U8</td><td><a href="#logit8-local">297</a></td><td><a href="#logit8-software">223</a></td><td>原始版忽略 57 条 SSTI 和 57 条 SLDI 的标量时序；软件采用 2+2+2+2 分组。</td></tr>
+</tbody>
+</table>
+<p>图中为首组循环体，周期是整段模型结果。模型均不计时标量流水；297 cycles 不是完整硬件 VF 周期。A6 软件方案通过 VF 编译无 spill 检查，但未做 A6 simulator 数值验证。详情见 <a href="metadata/a6_dag_figures_20261027.md">核验及复现说明</a>。</p>
+<section id="adam-local"><h2>AdamApplyOne U8 · Membar 优化</h2><a href="figure/DAG/a6_adam_u8_local_instruction_order_20261027.png"><img src="figure/DAG/a6_adam_u8_local_instruction_order_20261027.png" alt="AdamApplyOne U8 A6 Membar 优化 DAG"></a></section>
+<section id="adam-software"><h2>AdamApplyOne U8 · 软件优化</h2><a href="figure/DAG/a6_adam_u8_software_instruction_order_20261027.png"><img src="figure/DAG/a6_adam_u8_software_instruction_order_20261027.png" alt="AdamApplyOne U8 A6 软件优化 DAG"></a></section>
+<section id="flash-local"><h2>FlashAttention Grad U2 · Membar 优化</h2><a href="figure/DAG/a6_flash_u2_local_instruction_order_20261027.png"><img src="figure/DAG/a6_flash_u2_local_instruction_order_20261027.png" alt="FlashAttention Grad U2 A6 Membar 优化 DAG"></a></section>
+<section id="flash-software"><h2>FlashAttention Grad U2 · 软件优化</h2><a href="figure/DAG/a6_flash_u2_software_instruction_order_20261027.png"><img src="figure/DAG/a6_flash_u2_software_instruction_order_20261027.png" alt="FlashAttention Grad U2 A6 软件优化 DAG"></a></section>
+<section id="logit3-local"><h2>Logit Grad U3 · Membar 优化</h2><a href="figure/DAG/a6_logit_u3_local_instruction_order_20261027.png"><img src="figure/DAG/a6_logit_u3_local_instruction_order_20261027.png" alt="Logit Grad U3 A6 Membar 优化 DAG"></a></section>
+<section id="logit3-software"><h2>Logit Grad U3 · 软件优化</h2><a href="figure/DAG/a6_logit_u3_software_instruction_order_20261027.png"><img src="figure/DAG/a6_logit_u3_software_instruction_order_20261027.png" alt="Logit Grad U3 A6 软件优化 DAG"></a></section>
+<section id="logit4-local"><h2>Logit Grad U4 · Membar 优化</h2><a href="figure/DAG/a6_logit_u4_local_instruction_order_20261027.png"><img src="figure/DAG/a6_logit_u4_local_instruction_order_20261027.png" alt="Logit Grad U4 A6 Membar 优化 DAG"></a></section>
+<section id="logit4-software"><h2>Logit Grad U4 · 软件优化</h2><a href="figure/DAG/a6_logit_u4_software_instruction_order_20261027.png"><img src="figure/DAG/a6_logit_u4_software_instruction_order_20261027.png" alt="Logit Grad U4 A6 软件优化 DAG"></a></section>
+<section id="logit8-local"><h2>Logit Grad U8 · Membar 优化</h2><a href="figure/DAG/a6_logit_u8_local_instruction_order_20261027.png"><img src="figure/DAG/a6_logit_u8_local_instruction_order_20261027.png" alt="Logit Grad U8 A6 Membar 优化 DAG"></a></section>
+<section id="logit8-software"><h2>Logit Grad U8 · 软件优化</h2><a href="figure/DAG/a6_logit_u8_software_instruction_order_20261027.png"><img src="figure/DAG/a6_logit_u8_software_instruction_order_20261027.png" alt="Logit Grad U8 A6 软件优化 DAG"></a></section>
+</body>
+</html>

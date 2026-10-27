@@ -67,6 +67,20 @@ class MemoryDagTests(unittest.TestCase):
                          ["predicate", "predicate_store", "predicate_load", "compute", "barrier"])
         self.assertEqual([lane["key"] for lane in lanes],
                          ["predicate", "predicate_store", "predicate_load", "compute", "barrier"])
+        u3_shown, _, u3_mapping = operation_layout(dict(variant="local", case="logit-u3"), nodes, [],
+                                                  {n["seq"]: n for n in nodes})
+        self.assertEqual(u3_shown, shown)
+        self.assertEqual(u3_mapping, mapping)
+
+    def test_logit_u3_omits_separate_tail_loop_from_first_group_plot(self):
+        nodes = [dict(seq=0, op="VLDS", category="load",
+                      iteration_path=[dict(loop_id="main", iteration=0)]),
+                 dict(seq=1, op="VLDS", category="load",
+                      iteration_path=[dict(loop_id="tail", iteration=0)])]
+        shown, _, mapping = operation_layout(dict(variant="software", case="logit-u3"), nodes, [],
+                                             {n["seq"]: n for n in nodes})
+        self.assertEqual([n["seq"] for n in shown], [0])
+        self.assertNotIn(1, mapping)
 
     def test_logit_u8_keeps_both_spill_banks_and_omits_initialization(self):
         nodes = [dict(seq=0, op="VDUPS", category="alu", iteration_path=[]),

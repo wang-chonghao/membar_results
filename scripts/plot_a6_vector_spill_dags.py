@@ -13,11 +13,13 @@ from search_a6_spill_schedules import read, save, setup_model
 CASES = {
     "adam_u8": ("history-adam_apply_one-u8", "AdamApplyOne U8"),
     "flash_u2": ("history-flash_attention_grad_front-u2_concentrated_spill", "FlashAttention Grad U2"),
+    "logit_u3": ("logit-u3", "Logit Grad U3"),
     "logit_u4": ("logit-u4", "Logit Grad U4"),
     "logit_u8": ("logit-u8", "Logit Grad U8"),
 }
 META = "metadata/a6_vector_spill_dags_20261027"
-CASE_META = {"logit-u4": "metadata/a6_logit_predicate_dags_20261027",
+CASE_META = {"logit-u3": "metadata/a6_logit_u3_dags_20261027",
+             "logit-u4": "metadata/a6_logit_predicate_dags_20261027",
              "logit-u8": "metadata/a6_logit_u8_dags_20261027"}
 COLORS = dict(load="#facc15", reload="#facc15", save="#22c55e", output="#22c55e",
               alu="#60a5fa", special="#60a5fa", barrier="#f87171")
@@ -280,6 +282,8 @@ def operation_layout(stats, nodes, edges, by_seq):
     if stats["case"].startswith("logit-"):
         # The historical A5 Logit plots show only the first loop-body group.
         shown = [n for n in shown if n["iteration_path"]]
+        first_loop = next(n["iteration_path"][0]["loop_id"] for n in shown)
+        shown = [n for n in shown if n["iteration_path"][0]["loop_id"] == first_loop]
     parents = defaultdict(list)
     for edge in edges:
         if edge["kind"] in ("register", "ub_raw"):
@@ -412,6 +416,8 @@ def draw(root, data, font, replace_generated=False):
     reference_count = sum(n.get("reference_only", False) for n in shown)
     subtitle = (f"展示首组原始顺序（含 {reference_count} 个原 Membar 标记） · 完整 VF {stats['vf_cycles']} cycles"
                 if reference_count else f"展示 {len(shown)} 条指令 · 各循环保留首组 · 完整 VF {stats['vf_cycles']} cycles")
+    if stats["case"] == "logit-u3" and not reference_count:
+        subtitle = f"展示首组 U3 的 {len(shown)} 条指令 · 完整 VF {stats['vf_cycles']} cycles"
     fig.text(0.59, 0.875, subtitle, ha="center", fontsize=16)
     if stats["case"] == "logit-u8":
         fig.text(0.59, 0.83, "仅预测向量 / 谓词流水；标量 spill 时序未计入", ha="center", fontsize=12, color="#475569")
@@ -470,6 +476,8 @@ def draw(root, data, font, replace_generated=False):
     if stats["case"] == "history-adam_apply_one-u8":
         detail = ("阶段间主动 UB 暂存不是编译器自动 spill；红菱形为保留的全局 Membar。" if stats["variant"] == "software" else
                   "已移除方向性 Membar，保留真实 spill 写出与重载；循环外初始化也包含在图中。")
+    elif stats["case"] == "logit-u3":
+        detail = "软件方案为 U3 内 2+1 分组重排，A6 编译确认无 spill；完整预测包含 5 组 U3 和 1 份 tail。"
     elif stats["case"] == "logit-u4":
         detail = "软件方案为同一 U4 内 2+2 分组重排，A6 编译确认无 spill；共同 PSET 扇出省略，标量时序未建模。"
     elif stats["case"] == "logit-u8":
@@ -478,6 +486,8 @@ def draw(root, data, font, replace_generated=False):
         detail = "红菱形保留原 Membar 位置：优化后已由局部 UB 依赖替代，不参与调度、不计时，也不添加全局同步边。"
     if stats["case"].startswith("logit-"):
         detail += " 循环外常量初始化已省略。"
+    if stats["case"] == "logit-u3":
+        fig.text(0.59, 0.83, "仅展示首组 U3 循环体；完整 VF 时序包含 5 组 U3 + 1 份 tail", ha="center", fontsize=12, color="#475569")
     fig.text(0.59, 0.065, detail, ha="center", fontsize=10, color="#475569")
     output = root / "figure/DAG" / (stem + ".png")
     if output.exists() and not replace_generated:

@@ -11,6 +11,7 @@
 |---|---|---|---|
 | AdamApplyOne U8 | [604 cycles](../figure/DAG/a6_adam_u8_local_instruction_order_20261027.png) | [455 cycles](../figure/DAG/a6_adam_u8_software_instruction_order_20261027.png) | 软件方案包含主动 UB 暂存和真实的全局 Membar。 |
 | FlashAttention Grad U2 | [252 cycles](../figure/DAG/a6_flash_u2_local_instruction_order_20261027.png) | [207 cycles](../figure/DAG/a6_flash_u2_software_instruction_order_20261027.png) | 软件方案使用 Bank-aware 顺序，按两行分别展示。 |
+| Logit Grad U3 | [229 cycles](../figure/DAG/a6_logit_u3_local_instruction_order_20261027.png) | [224 cycles](../figure/DAG/a6_logit_u3_software_instruction_order_20261027.png) | U3 内按 2+1 分组；整段为 5 组 U3 加 1 份 tail，图中仅展示首组。 |
 | Logit Grad U4 | [390 cycles](../figure/DAG/a6_logit_u4_local_instruction_order_20261027.png) | [223 cycles](../figure/DAG/a6_logit_u4_software_instruction_order_20261027.png) | U4 代码体内按 2+2 分组，实际并行展开程度接近 U2。 |
 | Logit Grad U8 | [297 cycles](../figure/DAG/a6_logit_u8_local_instruction_order_20261027.png) | [223 cycles](../figure/DAG/a6_logit_u8_software_instruction_order_20261027.png) | U8 代码体内按 2+2+2+2 分组，实际并行展开程度接近 U2。 |
 
@@ -34,13 +35,14 @@ python3 -m unittest discover -s scripts -p test_a6_vector_spill_dags.py
 python3 scripts/plot_a6_vector_spill_dags.py \
   --model-root /path/to/model-at-3368447 \
   --font /path/to/chinese-font.ttf \
-  --cases adam_u8 flash_u2 logit_u4 logit_u8 \
+  --cases adam_u8 flash_u2 logit_u3 logit_u4 logit_u8 \
   --render-only --replace-generated
 ```
 
 核验目录：
 
 - [Adam / Flash 图及模型数据](a6_vector_spill_dags_20261027/summary.json)
+- [Logit U3 图及模型数据](a6_logit_u3_dags_20261027/summary.json)
 - [Logit U4 图及模型数据](a6_logit_predicate_dags_20261027/summary.json)
 - [Logit U8 图及模型数据](a6_logit_u8_dags_20261027/summary.json)
 - [Logit U8 原始日志投影和地址核验](a6_logit_u8_dags_20261027/input_audit.json)
