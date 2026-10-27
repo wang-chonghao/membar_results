@@ -9,7 +9,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from build_standalone_report import build, collect_files, json_script, local_path
+from build_standalone_report import build, collect_files, json_script, lean_files, local_path
 
 
 class PayloadParser(HTMLParser):
@@ -85,6 +85,32 @@ class SingleFileTests(unittest.TestCase):
             (root / "code.cce").unlink()
             with self.assertRaises(FileNotFoundError):
                 collect_files(root)
+
+    def test_lean_keeps_ui_and_source_but_explicitly_omits_binaries(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.fixture(root)
+            index = build(root, root / "lean.html", mode="lean")
+            self.assertEqual(index["bundle_mode"], "lean")
+            for name in ("code.cce", "child.html", "assets/test.js", "assets/test.css", "image.svg"):
+                self.assertIn(name, index["files"])
+            self.assertNotIn("golden.bin", index["files"])
+            self.assertIn("golden.bin", index["omitted"])
+
+    def test_lean_excludes_intermediate_search_but_keeps_selected_source(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.fixture(root)
+            selected = "a5_software_search_20261026/case/camodel_trial_02/cce/kernel.cce"
+            rejected = "a5_software_search_20261026/case/camodel_trial_01/cce/kernel.cce"
+            (root / "metadata/software_cce_links.json").write_text(json.dumps(dict(source=selected)))
+            for name in (selected, rejected):
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("// candidate\n")
+            kept, omitted = lean_files(root, [selected, rejected])
+            self.assertEqual(kept, [selected])
+            self.assertEqual(omitted[rejected], "中间寻优候选")
 
 
 if __name__ == "__main__":

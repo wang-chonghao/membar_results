@@ -35,7 +35,8 @@ def main():
                     page.evaluate("document.fonts.ready")
                     page.evaluate("Chart.defaults.font.family = 'Report Test CJK'")
                 count = page.evaluate("Object.keys(EMBEDDED_REPORT.files).length")
-                assert count > 7000, count
+                bundle_mode = page.evaluate("EMBEDDED_REPORT.bundleMode || 'full'")
+                assert count > (100 if bundle_mode == "lean" else 7000), count
                 assert page.locator("#results-body tr").count() == 92
                 for arch in ("A6", "A5", "A6"):
                     page.select_option("#arch-filter", arch)
@@ -126,6 +127,13 @@ def main():
                 page.fill("#embedded-search", "figure/cycles/")
                 assert page.locator(".embedded-file-table tr").count() > 0
                 page.locator("#embedded-close").click()
+                if bundle_mode == "lean":
+                    omitted = page.evaluate("Object.keys(EMBEDDED_REPORT.omitted).find(p => p.endsWith('.dump'))")
+                    assert omitted
+                    page.evaluate("p => EMBEDDED_REPORT.open(p)", omitted)
+                    page.wait_for_function("document.querySelector('#embedded-body')?.textContent.includes('精简版未收录')")
+                    assert page.locator("#embedded-download").is_hidden()
+                    page.locator("#embedded-close").click()
                 page.select_option("#case-filter", "all")
                 page.select_option("#chart-case", "swiglu")
                 page.locator("#cycles-chart").screenshot(path=str(args.out / "standalone_chart.png"))
@@ -133,7 +141,7 @@ def main():
                 page.screenshot(path=str(args.out / "standalone_desktop.png"))
                 assert not errors, errors
                 assert not dependencies, dependencies
-                result = dict(passed=True, embedded_files=count, rows=153, external_dependencies=dependencies, errors=errors, html_bytes=html.stat().st_size)
+                result = dict(passed=True, bundle_mode=bundle_mode, embedded_files=count, rows=153, external_dependencies=dependencies, errors=errors, html_bytes=html.stat().st_size)
                 (args.out / "verification.json").write_text(json.dumps(result, indent=2))
                 print(json.dumps(result), flush=True)
             finally:

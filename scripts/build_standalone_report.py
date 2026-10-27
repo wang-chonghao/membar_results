@@ -146,8 +146,63 @@ def mime_type(path):
     return mimetypes.guess_type(path)[0] or "application/octet-stream"
 
 
-def build(root, output):
+def lean_files(root, paths):
+    """Keep the browser experience and source links, not full experiment dumps."""
+    selected_sources = set()
+
+    def sources(value):
+        if isinstance(value, dict):
+            for item in value.values():
+                sources(item)
+        elif isinstance(value, list):
+            for item in value:
+                sources(item)
+        elif isinstance(value, str) and value.endswith(".cce"):
+            selected_sources.add(value)
+
+    for name in ("metadata/software_cce_links.json", "metadata/spill_performance_summary.json"):
+        path = root / name
+        if path.exists():
+            sources(json.loads(path.read_text()))
+    selected_folders = {str(Path(path).parent) + "/" for path in selected_sources}
+    dataset = {"metadata/data.json", "metadata/spill_candidate_alignment.json",
+               "metadata/spill_performance_summary.json", "metadata/multisoc_predictions.json",
+               "metadata/replay_validation.json", "metadata/software_cce_links.json"}
+    mandatory = {ENTRY}
+    for name in paths:
+        if Path(name).suffix.lower() == ".html":
+            for reference in PageParser((root / name).read_text(encoding="utf-8"), name).references:
+                if Path(reference).suffix.lower() in {".js", ".css", ".html", ".png", ".svg", ".jpg", ".jpeg", ".webp"}:
+                    mandatory.add(reference)
+    kept, omitted = [], {}
+    for name in paths:
+        path = Path(name)
+        suffix = path.suffix.lower()
+        search = name.startswith(("a5_software_search_", "a6_software_search_"))
+        intermediate = search and len(path.parts) > 3 and not any(name.startswith(p) for p in selected_folders)
+        key_record = (suffix == ".json" and (root / name).stat().st_size <= 256 * 1024
+                      and any(word in path.stem.lower() for word in
+                              ("result", "validation", "audit", "provenance", "comparison", "summary", "verification", ".view")))
+        include = (name in mandatory or name in dataset
+                   or suffix in {".js", ".css", ".html", ".md", ".csv"}
+                   or name.startswith("figure/") and suffix == ".png"
+                   or not intermediate and (suffix in {".cce", ".cpp", ".h", ".sh"} or key_record))
+        if include:
+            kept.append(name)
+        else:
+            omitted[name] = ("中间寻优候选" if intermediate else
+                             "完整日志或编译产物" if suffix in {".dump", ".log", ".o", ".bin", ".binary", ".gz", ".text"}
+                             else "完整复现或详细核验数据")
+    return kept, omitted
+
+
+def build(root, output, mode="full"):
+    if mode not in {"full", "lean"}:
+        raise ValueError(f"Unsupported bundle mode: {mode}")
     paths = collect_files(root)
+    omitted = {}
+    if mode == "lean":
+        paths, omitted = lean_files(root, paths)
     page = PageParser((root / ENTRY).read_text(encoding="utf-8"))
     document = "".join(page.parts)
     for style in page.styles:
@@ -182,6 +237,7 @@ def build(root, output):
                 if number % 1000 == 0:
                     print(f"Packed {number}/{len(paths)} files; {packed_total / 2**20:.1f} MiB compressed", flush=True)
             info = dict(entry=ENTRY, scripts=page.scripts, files=index, file_count=len(index),
+                        bundle_mode=mode, omitted=omitted,
                         unique_blobs=len(blobs), raw_bytes=raw_total, compressed_bytes=packed_total)
             stream.write('<script type="application/json" id="embedded-index">' + json_script(info) + "</script>\n")
             stream.write("<script>" + runtime + "</script>\n</body></html>\n")
@@ -197,8 +253,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--mode", choices=("full", "lean"), default="full")
     args = parser.parse_args()
-    build(args.root, args.output or args.root / OUTPUT)
+    build(args.root, args.output or args.root / OUTPUT, mode=args.mode)
 
 
 if __name__ == "__main__":

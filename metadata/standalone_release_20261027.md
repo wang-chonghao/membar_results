@@ -3,6 +3,8 @@
 GitHub 普通文件列表仅保存源码、图片和核验数据。完整单文件报告通过
 [membar_results Releases](https://github.com/wang-chonghao/membar_results/releases)
 发布，下载附件 `spill_candidate_alignment_standalone.html` 即可，不需要下载配套目录。
+本次发布精简浏览版：保留表格、图表、CCE 源码和关键核验记录，不内嵌完整日志、编译产物和中间寻优候选。
+点击未收录的详细证据会明确提示，不会尝试联网读取；精简版不用于完整复现实验。
 
 下载后在桌面浏览器打开 HTML。可以切换 A5/A6、查看汇总表、图表、源码和归档附件；
 顶部的“A6 Spill DAG 对比”包含 AdamApplyOne U8、FlashAttention Grad U2 和 Logit Grad U3/U4/U8 的两种优化图。
@@ -16,5 +18,5 @@ sha256sum -c SHA256SUMS.txt
 ```
 
 完整 HTML 不加入 Git，以免把大型打包文件写入版本历史。打包与验证脚本：
-`scripts/build_standalone_report.py`、`scripts/check_standalone_report.py`。
+`scripts/build_standalone_report.py --mode lean`、`scripts/check_standalone_report.py`。
 发布脚本 `scripts/publish_standalone_release.py` 只在内存中使用登录凭据，先上传并校验文件大小和 SHA256，再公开 Release。

@@ -134,6 +134,10 @@
     body.textContent = "正在解压附件…";
     showDialog();
     try {
+      if (!files[path] && archive.bundle_mode === "lean" && archive.omitted?.[path]) {
+        body.textContent = `精简版未收录：${archive.omitted[path]}。此文件属于详细复现证据，不影响表格、图表或源码浏览。路径：${path}`;
+        return;
+      }
       if (!files[path]) throw new Error(`未内嵌文件：${path}`);
       if (files[path].mime.startsWith("text/html")) {
         const source = await htmlPreview(path);
@@ -205,7 +209,7 @@
   if (nav) {
     const link = document.createElement("a");
     link.href = "#embedded-files";
-    link.textContent = `内嵌文件（${names.length}）`;
+    link.textContent = `${archive.bundle_mode === "lean" ? "精简版 · " : ""}内嵌文件（${names.length}）`;
     nav.prepend(link);
   }
   try {
@@ -216,7 +220,7 @@
       document.head.append(script);
     }
     status.remove();
-    window.EMBEDDED_REPORT = {files, readBytes: bytes, open, list, ready: true};
+    window.EMBEDDED_REPORT = {files, omitted: archive.omitted || {}, bundleMode: archive.bundle_mode || "full", readBytes: bytes, open, list, ready: true};
   } catch (error) {
     status.textContent = `单文件报表加载失败：${error.message}`;
   }
