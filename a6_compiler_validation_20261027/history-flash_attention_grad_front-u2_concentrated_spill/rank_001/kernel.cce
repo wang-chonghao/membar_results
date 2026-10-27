@@ -1,0 +1,377 @@
+// Selected A6 software schedule. Compile-only VF spill check passed; not runtime verified.
+// Prediction uses the paired best_vf_000.json; recompilation may change scheduling/spill.
+#define __aicore__ [aicore]
+// CastAligned768F32VF768: eight independent rows, preserve its add tree.
+__attribute__((always_inline)) inline [aicore] void candidate_vf(
+    __ubuf__ float *src, __ubuf__ float *grad, __ubuf__ float *dst) {
+    __ubuf__ float *s0 = src + 0;
+    __ubuf__ float *g0 = grad + 0;
+    __ubuf__ float *s1 = src + 64;
+    __ubuf__ float *g1 = grad + 64;
+    __ubuf__ float *s2 = src + 128;
+    __ubuf__ float *g2 = grad + 128;
+    __ubuf__ float *s3 = src + 192;
+    __ubuf__ float *g3 = grad + 192;
+    __ubuf__ float *s4 = src + 256;
+    __ubuf__ float *g4 = grad + 256;
+    __ubuf__ float *s5 = src + 320;
+    __ubuf__ float *g5 = grad + 320;
+    __ubuf__ float *s6 = src + 384;
+    __ubuf__ float *g6 = grad + 384;
+    __ubuf__ float *s7 = src + 448;
+    __ubuf__ float *g7 = grad + 448;
+    __ubuf__ float *s8 = src + 512;
+    __ubuf__ float *g8 = grad + 512;
+    __ubuf__ float *s9 = src + 576;
+    __ubuf__ float *g9 = grad + 576;
+    __ubuf__ float *s10 = src + 640;
+    __ubuf__ float *g10 = grad + 640;
+    __ubuf__ float *s11 = src + 704;
+    __ubuf__ float *g11 = grad + 704;
+    __VEC_SCOPE__ {
+        // Selected A6 Canonical schedule; not compiler/CAModel verified.
+        __ubuf__ uint8_t* listing_arena = (__ubuf__ uint8_t*)get_imm(0);
+        __ubuf__ float* pointer0 = (__ubuf__ float*)(listing_arena + 0);
+        __ubuf__ float* pointer1 = (__ubuf__ float*)(listing_arena + 2816);
+        __ubuf__ float* pointer2 = (__ubuf__ float*)(listing_arena + 32768);
+        __ubuf__ float* pointer3 = (__ubuf__ float*)(listing_arena + 35584);
+        __ubuf__ float* pointer4 = (__ubuf__ float*)(listing_arena + 1536);
+        __ubuf__ float* pointer5 = (__ubuf__ float*)(listing_arena + 1280);
+        __ubuf__ float* pointer6 = (__ubuf__ float*)(listing_arena + 34304);
+        __ubuf__ float* pointer7 = (__ubuf__ float*)(listing_arena + 34048);
+        __ubuf__ float* pointer8 = (__ubuf__ float*)(listing_arena + 512);
+        __ubuf__ float* pointer9 = (__ubuf__ float*)(listing_arena + 2304);
+        __ubuf__ float* pointer10 = (__ubuf__ float*)(listing_arena + 33280);
+        __ubuf__ float* pointer11 = (__ubuf__ float*)(listing_arena + 35072);
+        __ubuf__ float* pointer12 = (__ubuf__ float*)(listing_arena + 2048);
+        __ubuf__ float* pointer13 = (__ubuf__ float*)(listing_arena + 768);
+        __ubuf__ float* pointer14 = (__ubuf__ float*)(listing_arena + 34816);
+        __ubuf__ float* pointer15 = (__ubuf__ float*)(listing_arena + 33536);
+        __ubuf__ float* pointer16 = (__ubuf__ float*)(listing_arena + 2560);
+        __ubuf__ float* pointer17 = (__ubuf__ float*)(listing_arena + 256);
+        __ubuf__ float* pointer18 = (__ubuf__ float*)(listing_arena + 35328);
+        __ubuf__ float* pointer19 = (__ubuf__ float*)(listing_arena + 33024);
+        __ubuf__ float* pointer20 = (__ubuf__ float*)(listing_arena + 1024);
+        __ubuf__ float* pointer21 = (__ubuf__ float*)(listing_arena + 1792);
+        __ubuf__ float* pointer22 = (__ubuf__ float*)(listing_arena + 33792);
+        __ubuf__ float* pointer23 = (__ubuf__ float*)(listing_arena + 34560);
+        vector_bool reg0;
+        vector_f32 reg1;
+        vector_f32 reg2;
+        vector_f32 reg3;
+        vector_f32 reg4;
+        vector_f32 reg5;
+        vector_f32 reg6;
+        vector_f32 reg7;
+        vector_f32 reg8;
+        vector_f32 reg9;
+        vector_f32 reg10;
+        vector_f32 reg11;
+        vector_f32 reg12;
+        vector_f32 reg13;
+        vector_f32 reg14;
+        vector_f32 reg15;
+        vector_f32 reg16;
+        vector_f32 reg17;
+        vector_f32 reg18;
+        vector_f32 reg19;
+        vector_f32 reg20;
+        vector_f32 reg21;
+        vector_f32 reg22;
+        vector_f32 reg23;
+        vector_f32 reg24;
+        vector_f32 reg25;
+        vector_f32 reg26;
+        vector_f32 reg27;
+        vector_f32 reg28;
+        vector_f32 reg29;
+        vector_f32 reg30;
+        vector_f32 reg31;
+        vector_f32 reg32;
+        vector_f32 reg33;
+        vector_f32 reg34;
+        vector_f32 reg35;
+        vector_f32 reg36;
+        vector_f32 reg37;
+        vector_f32 reg38;
+        vector_f32 reg39;
+        vector_f32 reg40;
+        vector_f32 reg41;
+        vector_f32 reg42;
+        vector_f32 reg43;
+        vector_f32 reg44;
+        vector_f32 reg45;
+        vector_f32 reg46;
+        vector_f32 reg47;
+        vector_f32 reg48;
+        vector_f32 reg49;
+        vector_f32 reg50;
+        vector_f32 reg51;
+        vector_f32 reg52;
+        vector_f32 reg53;
+        vector_f32 reg54;
+        vector_f32 reg55;
+        vector_f32 reg56;
+        vector_f32 reg57;
+        vector_f32 reg58;
+        vector_f32 reg59;
+        vector_f32 reg60;
+        vector_f32 reg61;
+        vector_f32 reg62;
+        vector_f32 reg63;
+        vector_f32 reg64;
+        vector_f32 reg65;
+        vector_f32 reg66;
+        vector_f32 reg67;
+        vector_f32 reg68;
+        vector_f32 reg69;
+        vector_f32 reg70;
+        vector_f32 reg71;
+        vector_f32 reg72;
+        vector_f32 reg73;
+        vector_f32 reg74;
+        vector_f32 reg75;
+        vector_f32 reg76;
+        vector_f32 reg77;
+        vector_f32 reg78;
+        vector_f32 reg79;
+        vector_f32 reg80;
+        vector_f32 reg81;
+        vector_f32 reg82;
+        vector_f32 reg83;
+        vector_f32 reg84;
+        vector_f32 reg85;
+        vector_f32 reg86;
+        vector_f32 reg87;
+        vector_f32 reg88;
+        vector_f32 reg89;
+        vector_f32 reg90;
+        vector_f32 reg91;
+        vector_f32 reg92;
+        vector_f32 reg93;
+        vector_f32 reg94;
+        vector_f32 reg95;
+        vector_f32 reg96;
+        vector_align align0;
+        // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a200.0
+        reg0 = pset_b32(PAT_ALL);
+        #pragma unroll 1
+        for (int32_t iter_13b3a268 = 0; iter_13b3a268 < 4; ++iter_13b3a268) {
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a26c.2
+            vlds(reg1, pointer0, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a270.3
+            vlds(reg2, pointer1, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a274.4
+            vlds(reg3, pointer2, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a278.5
+            vlds(reg4, pointer3, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a27c.6
+            vlds(reg5, pointer0, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a280.7
+            vlds(reg6, pointer1, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a284.8
+            vlds(reg7, pointer2, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a288.9
+            vlds(reg8, pointer3, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a290.11
+            vmul(reg9, reg4, reg2, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a298.13
+            vmul(reg10, reg7, reg5, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a28c.10
+            vmul(reg11, reg3, reg1, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a29c.14
+            vmul(reg12, reg8, reg6, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2a0.15
+            vadd(reg13, reg10, reg12, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a294.12
+            vadd(reg14, reg11, reg9, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2a4.16
+            vlds(reg15, pointer4, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2a8.17
+            vlds(reg16, pointer5, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2ac.18
+            vlds(reg17, pointer6, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2b0.19
+            vlds(reg18, pointer7, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2b4.20
+            vlds(reg19, pointer4, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2b8.21
+            vlds(reg20, pointer5, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2bc.22
+            vlds(reg21, pointer6, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2c0.23
+            vlds(reg22, pointer7, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2c4.24
+            vmul(reg23, reg18, reg16, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2d0.27
+            vmul(reg24, reg22, reg20, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2d4.28
+            vmul(reg25, reg21, reg19, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2c8.25
+            vmul(reg26, reg17, reg15, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2d8.29
+            vadd(reg27, reg24, reg25, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2cc.26
+            vadd(reg28, reg23, reg26, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2dc.30
+            vadd(reg29, reg14, reg28, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2e0.31
+            vadd(reg30, reg13, reg27, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2e4.32
+            vlds(reg31, pointer8, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2e8.33
+            vlds(reg32, pointer9, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2ec.34
+            vlds(reg33, pointer10, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2f0.35
+            vlds(reg34, pointer11, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2f4.36
+            vlds(reg35, pointer8, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2f8.37
+            vlds(reg36, pointer9, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a2fc.38
+            vlds(reg37, pointer10, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a300.39
+            vlds(reg38, pointer11, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a314.44
+            vmul(reg39, reg38, reg36, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a304.40
+            vmul(reg40, reg33, reg31, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a310.43
+            vmul(reg41, reg37, reg35, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a308.41
+            vmul(reg42, reg34, reg32, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a318.45
+            vadd(reg43, reg41, reg39, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a30c.42
+            vadd(reg44, reg40, reg42, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a31c.46
+            vlds(reg45, pointer12, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a320.47
+            vlds(reg46, pointer13, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a324.48
+            vlds(reg47, pointer14, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a328.49
+            vlds(reg48, pointer15, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a32c.50
+            vlds(reg49, pointer12, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a330.51
+            vlds(reg50, pointer13, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a334.52
+            vlds(reg51, pointer14, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a338.53
+            vlds(reg52, pointer15, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a33c.54
+            vmul(reg53, reg48, reg46, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a34c.58
+            vmul(reg54, reg51, reg49, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a340.55
+            vmul(reg55, reg47, reg45, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a348.57
+            vmul(reg56, reg52, reg50, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a350.59
+            vadd(reg57, reg56, reg54, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a344.56
+            vadd(reg58, reg53, reg55, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a358.61
+            vadd(reg59, reg43, reg57, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a354.60
+            vadd(reg60, reg44, reg58, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a35c.62
+            vadd(reg61, reg29, reg60, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a360.63
+            vadd(reg62, reg30, reg59, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a364.64
+            vlds(reg63, pointer16, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a368.65
+            vlds(reg64, pointer17, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a36c.66
+            vlds(reg65, pointer18, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a370.67
+            vlds(reg66, pointer19, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a374.68
+            vlds(reg67, pointer16, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a378.69
+            vlds(reg68, pointer17, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a37c.70
+            vlds(reg69, pointer18, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a380.71
+            vlds(reg70, pointer19, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a394.76
+            vmul(reg71, reg69, reg67, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a388.73
+            vmul(reg72, reg65, reg63, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a384.72
+            vmul(reg73, reg66, reg64, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a390.75
+            vmul(reg74, reg70, reg68, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a398.77
+            vadd(reg75, reg74, reg71, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a38c.74
+            vadd(reg76, reg73, reg72, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a39c.78
+            vlds(reg77, pointer20, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3a0.79
+            vlds(reg78, pointer21, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3a4.80
+            vlds(reg79, pointer22, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3a8.81
+            vlds(reg80, pointer23, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3ac.82
+            vlds(reg81, pointer20, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3b0.83
+            vlds(reg82, pointer21, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3b4.84
+            vlds(reg83, pointer22, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3b8.85
+            vlds(reg84, pointer23, 768, NORM, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3bc.86
+            vmul(reg85, reg79, reg77, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3cc.90
+            vmul(reg86, reg84, reg82, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3c0.87
+            vmul(reg87, reg80, reg78, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3c8.89
+            vmul(reg88, reg83, reg81, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3c4.88
+            vadd(reg89, reg85, reg87, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3d0.91
+            vadd(reg90, reg88, reg86, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3d8.93
+            vadd(reg91, reg75, reg90, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3d4.92
+            vadd(reg92, reg76, reg89, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3e0.95
+            vadd(reg93, reg62, reg91, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3dc.94
+            vadd(reg94, reg61, reg92, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3e4.96
+            vcadd(reg95, reg94, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3e8.97
+            vcadd(reg96, reg93, reg0, MODE_ZEROING);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3ec.98
+            __ubuf__ float* access_pointer98 = (__ubuf__ float*)(listing_arena + (65536 + (iter_13b3a268 * 8)));
+            vstus(align0, 1, reg95, access_pointer98, POST_UPDATE);
+            // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3f0.99
+            __ubuf__ float* access_pointer99 = (__ubuf__ float*)(listing_arena + (65540 + (iter_13b3a268 * 8)));
+            vstus(align0, 1, reg96, access_pointer99, POST_UPDATE);
+        }
+        // history-flash_attention_grad_front-u2_concentrated_spill.vf0.pc13b3a3f4.100
+        __ubuf__ float* access_pointer100 = (__ubuf__ float*)(listing_arena + (65568));
+        vstas(align0, access_pointer100, 0, POST_UPDATE);
+    }
+}
+extern "C" __global__ __aicore__ void candidate_kernel(__gm__ float *input, __gm__ float *output) {
+    __ubuf__ float *src = (__ubuf__ float *)get_imm(0);
+    __ubuf__ float *grad = (__ubuf__ float *)get_imm(0x8000);
+    __ubuf__ float *dst = (__ubuf__ float *)get_imm(0x10000);
+    copy_gm_to_ubuf_align_v2(src, input, 0, 1, 24576, 0, 0, 0, 0, 0, 0);
+    copy_gm_to_ubuf_align_v2(grad, input + 6144, 0, 1, 24576, 0, 0, 0, 0, 0, 0);
+    copy_gm_to_ubuf_align_v2(dst, input + 12288, 0, 1, 64, 0, 0, 0, 0, 0, 0);
+    set_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    wait_flag(PIPE_MTE2, PIPE_V, (event_t)0);
+    candidate_vf(src, grad, dst);
+    set_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    wait_flag(PIPE_V, PIPE_MTE3, (event_t)0);
+    copy_ubuf_to_gm_align_v2(output, dst, 0, 1, 64, 0, 0, 0);
+}
